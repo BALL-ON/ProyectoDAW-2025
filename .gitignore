@@ -1,0 +1,23 @@
+# --- Java y Spring Boot ---
+target/
+*.class
+.classpath
+.project
+.settings/
+.sts4-cache/
+bin/
+
+# --- Frontend (Node/JS) ---
+node_modules/
+dist/
+build/
+.npm
+.cache
+
+# --- Sistema y Entorno ---
+.DS_Store
+Thumbs.db
+.env
+.vscode/
+.idea/
+*.log
