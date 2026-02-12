@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.metadata/
+.recommenders/
+RemoteSystemsTempFiles/
+.classpath
+.project
+.settings/
+bin/
+target/
