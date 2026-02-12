@@ -1,4 +1,4 @@
-package com.proyectoDAW.backend;
+package com.ballon.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
