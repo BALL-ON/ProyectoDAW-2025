@@ -35,7 +35,7 @@ public class HorarioPista {
     @JoinColumn(name = "id_pista", nullable = false)
     private Pista pista;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)	
     @Column(name = "dia_semana")
     private DiaSemana diaSemana;
 
