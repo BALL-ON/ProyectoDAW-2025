@@ -8,6 +8,8 @@ import com.ballon.backend.models.Polideportivo;
 
 @Repository
 public interface PolideportivoRepository extends JpaRepository<Polideportivo, Long> {
+
+	boolean existsByNombre(String nombre);
 	
 	
 }
