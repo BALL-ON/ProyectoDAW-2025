@@ -61,4 +61,7 @@ public class Pista {
     @OneToMany(mappedBy = "pista", fetch = FetchType.LAZY)
     @JsonIgnore @ToString.Exclude
     private List<HorarioPista> horarios;
+    
+    @Column(nullable = false)
+    private boolean activa = true;
 }

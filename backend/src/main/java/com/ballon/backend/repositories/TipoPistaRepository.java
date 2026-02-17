@@ -9,5 +9,7 @@ import com.ballon.backend.models.TipoPista;
 @Repository
 public interface TipoPistaRepository extends JpaRepository<TipoPista, Long> {
 
+	boolean existsByNombreTipo(String nombreTipo);
+
 	
 }
