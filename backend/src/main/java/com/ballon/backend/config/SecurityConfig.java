@@ -57,13 +57,13 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder(10);
 	}
 
-	@Bean
+	/*@Bean
 	public AuthenticationProvider authenticationProvider() {
 	    DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 	    provider.setPasswordEncoder(passwordEncoder());
 
 	    return provider;
-	}
+	}*/
 
 	@Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

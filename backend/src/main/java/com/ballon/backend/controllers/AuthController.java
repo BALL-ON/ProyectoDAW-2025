@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.models.Usuario;
 import com.ballon.backend.models.enums.Rol;
+import com.ballon.backend.repositories.UsuarioRepository;
 import com.ballon.backend.services.JwtService;
 
 import lombok.RequiredArgsConstructor;

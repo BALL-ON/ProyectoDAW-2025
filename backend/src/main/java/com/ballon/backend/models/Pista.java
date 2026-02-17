@@ -2,8 +2,6 @@ package com.ballon.backend.models;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -11,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -45,7 +44,7 @@ public class Pista {
 
     private Integer capacidad = 4;
 
-    @Column(name = "precio_hora", precision = 10, scale = 2)
+    @Column(name = "precio_hora")
     private Double precioHora;
 
     @Column(name = "requiere_pago_previo")
