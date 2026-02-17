@@ -10,7 +10,7 @@ import com.ballon.backend.models.Reserva;
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
-	List<Reserva> findByUsuarioId(Long usuarioId);
-    List<Reserva> findByPistaId(Long pistaId);
+	List<Reserva> findByUsuarioIdUsuario(Long usuarioId);
+    List<Reserva> findByPistaIdPista(Long pistaId);
 	
 }

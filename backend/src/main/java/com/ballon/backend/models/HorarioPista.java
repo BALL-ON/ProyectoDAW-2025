@@ -2,8 +2,6 @@ package com.ballon.backend.models;
 
 import java.time.LocalTime;
 
-import org.springframework.data.annotation.Id;
-
 import com.ballon.backend.models.enums.DiaSemana;
 
 import jakarta.persistence.Column;
@@ -13,6 +11,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;

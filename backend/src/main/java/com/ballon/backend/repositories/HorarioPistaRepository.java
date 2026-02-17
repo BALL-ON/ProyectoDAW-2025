@@ -12,6 +12,6 @@ import com.ballon.backend.models.HorarioPista;
 @Repository
 public interface HorarioPistaRepository extends JpaRepository<HorarioPista, Long> {
 
-	List<HorarioPista> findByPistaId(Long pistaId);
+	List<HorarioPista> findByPistaIdPista(Long pistaId);
 	
 }

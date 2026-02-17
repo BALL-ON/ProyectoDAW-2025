@@ -11,7 +11,7 @@ import com.ballon.backend.models.Pista;
 @Repository
 public interface PistaRepository extends JpaRepository<Pista, Long> {
 	
-	List<Pista> findByPolideportivoId(Long polideportivoId);
+	List<Pista> findByPolideportivoIdPolideportivo(Long polideportivoId);
 	
 	
 }
