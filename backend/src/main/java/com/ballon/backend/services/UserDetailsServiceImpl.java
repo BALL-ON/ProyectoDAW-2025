@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ballon.backend.models.Usuario;
+import com.ballon.backend.repositories.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 
