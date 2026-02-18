@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.ConflictException;
+import com.ballon.backend.exception.PolideportivoDuplicatedException;
+import com.ballon.backend.exception.PolideportivoNotFoundException;
 import com.ballon.backend.models.Polideportivo;
 import com.ballon.backend.repositories.PistaRepository;
 import com.ballon.backend.repositories.PolideportivoRepository;
@@ -23,7 +26,7 @@ public class PolideportivoService {
 
     public Polideportivo buscarPorId(Long id) {
         return polideportivoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Polideportivo no encontrado"));
+                .orElseThrow(() -> new PolideportivoNotFoundException(id));
     }
     
     /*
@@ -32,7 +35,7 @@ public class PolideportivoService {
      */
     public Polideportivo guardar(Polideportivo poli) {
         if (polideportivoRepository.existsByNombre(poli.getNombre())) {
-            throw new RuntimeException("Ya existe un polideportivo con ese nombre.");
+            throw new PolideportivoDuplicatedException(poli);
         }
         return polideportivoRepository.save(poli);
     }
@@ -43,9 +46,13 @@ public class PolideportivoService {
      * Antes se compueba que no tenga ninguna pista asociada.
      */
     public void eliminar(Long id) {
+    	if (!polideportivoRepository.existsById(id)) {
+            throw new PolideportivoNotFoundException(id);
+        }
+    	
         boolean tienePistas = !pistaRepository.findByPolideportivoIdPolideportivo(id).isEmpty();
         if (tienePistas) {
-            throw new RuntimeException("No se puede eliminar: este centro tiene pistas asociadas.");
+            throw new ConflictException("No se puede eliminar: este centro tiene pistas asociadas.");
         }
         polideportivoRepository.deleteById(id);
     }

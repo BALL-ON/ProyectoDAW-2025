@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.UsuarioDuplicatedException;
+import com.ballon.backend.exception.UsuarioNotFoundException;
 import com.ballon.backend.models.Usuario;
 import com.ballon.backend.repositories.UsuarioRepository;
 
@@ -22,7 +24,7 @@ public class UsuarioService {
     public Usuario guardarUsuario(Usuario usuario) {
     	
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new RuntimeException("¡Error! Ya existe un usuario registrado con el email: " + usuario.getEmail());
+            throw new UsuarioDuplicatedException(usuario);
         }
 
         // Añadir cifrado de contraseña en la fase de Seguridad
@@ -31,7 +33,7 @@ public class UsuarioService {
 
     public Usuario buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNotFoundException(email));
     }
 
 }

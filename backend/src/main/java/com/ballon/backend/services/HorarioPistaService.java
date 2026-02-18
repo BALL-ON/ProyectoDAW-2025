@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.HorarioNotFoundException;
 import com.ballon.backend.models.HorarioPista;
 import com.ballon.backend.repositories.HorarioPistaRepository;
 
@@ -21,6 +22,6 @@ public class HorarioPistaService {
     
     public HorarioPista buscarPorId(Long id) {
         return horarioPistaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+                .orElseThrow(() -> new HorarioNotFoundException(id));
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.MensajeNotFoundException;
 import com.ballon.backend.models.MensajeContacto;
 import com.ballon.backend.repositories.MensajeContactoRepository;
 
@@ -33,7 +34,7 @@ public class MensajeContactoService {
 
     public void marcarComoLeido(Long id) {
         MensajeContacto mensaje = mensajeContactoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
+                .orElseThrow(() -> new MensajeNotFoundException(id));
         mensaje.setLeido(true);
         mensajeContactoRepository.save(mensaje);
     }

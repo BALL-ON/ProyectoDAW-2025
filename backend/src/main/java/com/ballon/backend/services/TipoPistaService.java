@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.TipoPistaDuplicatedException;
 import com.ballon.backend.models.TipoPista;
 import com.ballon.backend.repositories.TipoPistaRepository;
 
@@ -26,7 +27,7 @@ public class TipoPistaService {
     public TipoPista crearTipo(TipoPista tipo) {
 
         if (tipoPistaRepository.existsByNombreTipo(tipo.getNombreTipo())) {
-            throw new RuntimeException("Este tipo de pista ya está creda.");
+            throw new TipoPistaDuplicatedException(tipo);
         }
         return tipoPistaRepository.save(tipo);
     }

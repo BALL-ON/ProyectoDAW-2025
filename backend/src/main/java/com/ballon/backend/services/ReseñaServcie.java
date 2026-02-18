@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.InvalidReviewException;
 import com.ballon.backend.models.Reseña;
 import com.ballon.backend.repositories.ReservaRepository;
 import com.ballon.backend.repositories.ReseñaRepository;
@@ -28,7 +29,7 @@ public class ReseñaServcie {
             );
 
             if (!haReservado) {
-                throw new RuntimeException("No puedes valorar una pista en la que no has jugado.");
+                throw new InvalidReviewException("No puedes valorar una pista en la que no has jugado.");
             }
 
             return reseñaRepository.save(reseña);

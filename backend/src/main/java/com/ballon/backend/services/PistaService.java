@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.PistaNotFoundException;
 import com.ballon.backend.models.Pista;
 import com.ballon.backend.repositories.PistaRepository;
 
@@ -29,7 +30,7 @@ public class PistaService {
 
     public Pista buscarPorId(Long id) {
         return pistaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pista no encontrada"));
+                .orElseThrow(() -> new PistaNotFoundException(id));
     }
 
 }

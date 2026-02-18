@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.exception.BadRequestException;
+import com.ballon.backend.exception.ReservaNotFoundException;
 import com.ballon.backend.models.Reserva;
 import com.ballon.backend.models.enums.EstadoReserva;
 import com.ballon.backend.repositories.ReservaRepository;
@@ -32,7 +34,7 @@ public class ReservaService {
     public Reserva crearReserva(Reserva reserva) {
         
         if (reserva.getFechaReserva().isBefore(LocalDate.now())) {
-            throw new RuntimeException("No puedes reservar en una fecha que ya ha pasado.");
+            throw new BadRequestException("No puedes reservar en una fecha que ya ha pasado.");
         }
 
         boolean ocupada = reservaRepository.existsByPistaIdPistaAndFechaReservaAndHoraInicio(
@@ -42,7 +44,7 @@ public class ReservaService {
         );
 
         if (ocupada) {
-            throw new RuntimeException("Lo sentimos, esta pista ya está reservada para ese horario.");
+            throw new BadRequestException("Lo sentimos, esta pista ya está reservada para ese horario.");
         }
 
         reserva.setEstadoReserva(EstadoReserva.Confirmada);
@@ -56,7 +58,7 @@ public class ReservaService {
     public void cancelarReserva(Long id) {
     	
     	Reserva reserva = reservaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No se puede cancelar una reserva que no existe."));
+                .orElseThrow(() -> new ReservaNotFoundException(id));
 
         reserva.setEstadoReserva(EstadoReserva.Cancelada);
 
