@@ -29,4 +29,5 @@ public class PistaRequestDTO {
     private Double precioHora;
     private Boolean requierePagoPrevio;
     private Integer tiempoMinCancelacionHoras;
+    private Boolean activa;
 }
