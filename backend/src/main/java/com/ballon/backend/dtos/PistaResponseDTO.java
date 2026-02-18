@@ -17,6 +17,7 @@ public class PistaResponseDTO {
     private Double precioHora;
     private Boolean requierePagoPrevio;
     private Integer tiempoMinCancelacionHoras;
+    private Boolean activa;
     
     // Relaciones aplanadas para facilitar lectura en frontend
     private Long idPolideportivo;
