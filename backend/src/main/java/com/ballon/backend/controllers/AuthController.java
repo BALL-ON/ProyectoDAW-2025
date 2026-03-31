@@ -6,16 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.models.Usuario;
-import com.ballon.backend.models.enums.Rol;
-import com.ballon.backend.repositories.UsuarioRepository;
 import com.ballon.backend.services.JwtService;
+import com.ballon.backend.services.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,36 +22,38 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController { 
 
+	/*
+	 * Inyeccion de motor de Spring Security que se encarga de validar si las credenciales son correctas
+	 */
     private final AuthenticationManager authManager;
-    private final UsuarioRepository usuarioRepository; 
-    private final PasswordEncoder passwordEncoder;
+    
+    /*
+     * Inyeccion servicio que contiene la logica de negocio
+     */
+    private final UsuarioService usuarioService;
+    
+    /*
+     * Inyeccion de servicio que crea, firma y lee tokens JWT
+     */
     private final JwtService jwtService; 
 
+    
+    /**
+     * Endpoint para registrar nuevos usuarios
+     * @param usuario El objeto Usuario mapeado automaticamente desde el JSON que envia el frontend.
+     */
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Map<String, String> body) {
-        String username = body.get("username");
-        String email = body.get("email");
-        String password = body.get("password");
-
-        if (usuarioRepository.findByUsername(username).isPresent()) { 
-            return ResponseEntity.badRequest().body("El nombre de usuario ya existe"); 
-        }
+    public ResponseEntity<String> register(@RequestBody Usuario usuario) {
+    	
+    	usuarioService.guardarUsuario(usuario);
+        return ResponseEntity.ok("Usuario registrado correctamente.");
         
-        if (usuarioRepository.findByEmail(email).isPresent()) {
-        	return ResponseEntity.badRequest().body("El correo ya está asociado a una cuenta existente");
-        }
-
-        Usuario usuario = new Usuario(); // Usamos vuestra entidad
-        usuario.setUsername(username); 
-        usuario.setEmail(email);
-        usuario.setContrasena(passwordEncoder.encode(password)); // Ciframos la clave 
-
-        usuario.setRol(Rol.Usuario); // Por defecto, les ponemos rol de usuario normal
-        
-        usuarioRepository.save(usuario); 
-        return ResponseEntity.ok("Usuario registrado correctamente en Ball-on");
     }
 
+    /**
+     * Endpoint para el inicio de sesión.
+     * @param body Un mapa que contiene el 'username' y la 'password' enviados desde el formulario de login.
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         String username = body.get("username"); 
@@ -68,6 +68,7 @@ public class AuthController {
             return ResponseEntity.ok(Map.of("token", token));
 
         } catch (Exception e) { 
+        	//Si las credenciales fallan, capturamos el error y devolvemos un código 401 (No autorizado)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
     }
