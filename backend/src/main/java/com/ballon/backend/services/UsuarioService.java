@@ -65,6 +65,15 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsuarioNotFoundException(email));
     }
+    
+    /*
+    * Método que busca un usuario a traves de su nombre de usuario
+    * Lo necesitamos para el controlador de reservas.
+    */
+    public Usuario buscarPorUsername(String username) {
+        return usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el nombre: " + username));
+    }
 
 }
 

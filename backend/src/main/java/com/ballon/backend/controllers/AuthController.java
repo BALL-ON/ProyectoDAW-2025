@@ -57,7 +57,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         String username = body.get("username"); 
-        String password = body.get("password");
+        String password = body.get("contrasena");
 
         try {
             //Comprueba si el usuario y la clave son correctos

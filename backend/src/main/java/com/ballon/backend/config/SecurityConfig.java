@@ -34,12 +34,29 @@ public class SecurityConfig {
 			.httpBasic(basic -> basic.disable())
 			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(auth -> auth
-					.requestMatchers("/auth/**").permitAll()
-					.requestMatchers("/swagger-ui/**").permitAll()
-					.requestMatchers("/v3/api-docs/**").permitAll()
-					.requestMatchers("/api/admin/**").hasRole("Admin_Centro") // Solo para administradores
-		            .requestMatchers("/api/reservas/**").hasAnyRole("Admin_Centro", "Usuario") // Ambos pueden reservar
-					.anyRequest().authenticated()
+					// NIVEL PUBLICO: Todo el mundo puede entrar aquí (incluso sin login)
+	                .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+	                .requestMatchers(org.springframework.http.HttpMethod.GET, 
+	                        "/api/polideportivos/**", 
+	                        "/api/pistas/**", 
+	                        "/api/tipos-pista/**",
+	                        "/api/resenas/**",
+	                        "/api/horarios/**").permitAll()
+	                
+	                // NIVEL USUARIO: Solo usuarios logueado (Usuarios y Admins)
+	                .requestMatchers("/api/usuarios/perfil").authenticated()
+	                .requestMatchers("/api/reservas/**").hasAnyRole("Admin_Centro", "Usuario")
+	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/resenas").authenticated()
+
+	                // NIVEL ADMIN (Admin_Centro)
+	                .requestMatchers("/api/admin/**").hasRole("Admin_Centro")
+	                .requestMatchers("/api/usuarios").hasRole("Admin_Centro")
+	                .requestMatchers("/api/contacto/**").hasRole("Admin_Centro")
+	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
+	                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
+	                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
+
+	                .anyRequest().authenticated()
 				).exceptionHandling(ex -> ex
 					.authenticationEntryPoint(customAuthenticationEntryPoint)
 					.accessDeniedHandler(customAccessDeniedHandler)
