@@ -1,0 +1,167 @@
+:host {
+  display: block;
+  background-color: #0a0a0a;
+  min-height: 100vh;
+  color: white;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.booking-card {
+  background: #151515;
+  border: 1px solid #333;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.neon-text {
+  color: #00d2ff;
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.7);
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.custom-input {
+  background-color: #222 !important;
+  border: 1px solid #444 !important;
+  color: white !important;
+  border-radius: 10px;
+}
+
+.custom-input:focus {
+  border-color: #00d2ff !important;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.4) !important;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.slot-btn {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 12px 5px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.slot-btn:hover:not(:disabled) {
+  border-color: #00d2ff;
+  color: white;
+}
+
+.slot-btn.selected {
+  background: rgba(0, 210, 255, 0.15);
+  border-color: #00d2ff;
+  color: #00d2ff;
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+  font-weight: bold;
+}
+
+.slot-btn.busy {
+  background: #0d0d0d;
+  border-color: #222;
+  color: #333;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.selection-summary {
+  margin-top: 1.5rem;
+  padding: 10px;
+  background: rgba(0, 210, 255, 0.05);
+  border-left: 4px solid #00d2ff;
+  font-size: 0.9rem;
+}
+
+.selection-summary span {
+  color: #00d2ff;
+  font-weight: bold;
+}
+
+.btn-neon-confirm {
+  background: #00d2ff;
+  border: none;
+  color: #000;
+  font-weight: 900;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 1rem;
+  transition: all 0.4s ease;
+}
+
+.btn-neon-confirm:hover:not(:disabled) {
+  background: #00b8e6;
+  box-shadow: 0 0 25px rgba(0, 210, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-neon-confirm:disabled {
+  background: #333;
+  color: #666;
+}
+
+.neon-text-blue {
+  color: #00d2ff;
+  text-shadow: 0 0 15px rgba(0, 210, 255, 0.6);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Contenedor para el futuro mapa */
+.map-placeholder {
+  background: #151515;
+  border: 2px dashed #333; /* Estilo temporal para que veas el área */
+  height: 600px;
+  border-radius: 20px;
+  padding: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.map-placeholder:hover {
+  border-color: #00d2ff;
+}
+
+.map-mockup {
+  width: 80%;
+  height: 300px;
+  margin: 0 auto;
+  background: linear-gradient(45deg, #0a0a0a 25%, #111 25%, #111 50%, #0a0a0a 50%, #0a0a0a 75%, #111 75%, #111 100%);
+  background-size: 20px 20px;
+  border: 1px solid #222;
+  border-radius: 10px;
+}
+
+/* Ajuste para que el formulario no se vea estirado en pantallas grandes */
+.booking-card {
+  max-width: 100%;
+}
+
+/* Estilo para el botón de limpiar discreto */
+.btn-reset-small {
+  background: transparent;
+  border: 1px solid #444;
+  color: #777;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  height: fit-content;
+  margin-top: 5px;
+}
+
+.btn-reset-small:hover {
+  border-color: #ff4b2b; /* Un tono rojizo muy suave para indicar cancelar */
+  color: #ff4b2b;
+  box-shadow: 0 0 8px rgba(255, 75, 43, 0.2);
+}
+
+/* Aseguramos que el contenedor de resumen no ocupe todo el ancho para dejar sitio al botón */
+.selection-summary {
+  flex-grow: 1;
+  margin-right: 10px;
+}
