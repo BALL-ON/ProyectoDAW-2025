@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.dtos.AuthResponseDTO;
 import com.ballon.backend.dtos.LoginRequestDTO;
-import com.ballon.backend.models.Usuario;
+import com.ballon.backend.dtos.UsuarioRequestDTO;
+import com.ballon.backend.dtos.UsuarioResponseDTO;
+import com.ballon.backend.models.enums.Rol;
 import com.ballon.backend.services.JwtService;
 import com.ballon.backend.services.UsuarioService;
 
@@ -20,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController { 
 
 	/*
@@ -40,14 +44,18 @@ public class AuthController {
     
     /**
      * Endpoint para registrar nuevos usuarios
-     * @param usuario El objeto Usuario mapeado automaticamente desde el JSON que envia el frontend.
+     * @param request El objeto DTO mapeado automaticamente desde el JSON que envia el frontend.
      */
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Usuario usuario) {
-    	
-    	usuarioService.guardarUsuario(usuario);
-        return ResponseEntity.ok("Usuario registrado correctamente.");
+    public ResponseEntity<UsuarioResponseDTO> register(@RequestBody UsuarioRequestDTO request) {
+        //  Forzamos el rol por seguridad
+        request.setRol(Rol.Usuario);
         
+        //Guardamos y recogemos el usuario convertido a DTO
+        UsuarioResponseDTO nuevoUsuario = usuarioService.guardarUsuario(request);
+        
+        // Devolvemos el DTO
+        return ResponseEntity.ok(nuevoUsuario);
     }
 
     /**

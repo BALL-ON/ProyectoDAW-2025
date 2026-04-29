@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.dtos.UsuarioRequestDTO;
+import com.ballon.backend.dtos.UsuarioResponseDTO;
 import com.ballon.backend.exception.UsuarioDuplicatedException;
 import com.ballon.backend.exception.UsuarioNotFoundException;
+import com.ballon.backend.mapper.UsuarioMapper;
 import com.ballon.backend.models.Usuario;
 import com.ballon.backend.models.enums.Rol;
 import com.ballon.backend.repositories.UsuarioRepository;
@@ -26,36 +29,49 @@ public class UsuarioService {
 	 * Inyeccion codificador de contraseñas
 	 */
 	private final PasswordEncoder passwordEncoder;
+	
+	/*
+	 * Inyeccion del mapper de Usuario
+	 */
+	private final UsuarioMapper usuarioMapper;
 
 	/*
 	 * Método que lista todos los usuarios existentes
 	 */
-    public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponseDTO> listarTodos() {
+    	return usuarioRepository.findAll().stream()
+                .map(usuarioMapper::toResponse)
+                .toList();
     }
 
     /*
      * Método que guarda/regista un usuario, revisando que no existen duplicados
      * y encriptando la contraseña antes de guardarla para que sea ilegible en la bbdd
      */
-    public Usuario guardarUsuario(Usuario usuario) {
+    public UsuarioResponseDTO guardarUsuario(UsuarioRequestDTO usuarioRequest) {
     	
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new UsuarioDuplicatedException(usuario);
+        if (usuarioRepository.existsByEmail(usuarioRequest.getEmail())) {
+            throw new UsuarioDuplicatedException(usuarioRequest);
         }
-        if (usuarioRepository.existsByUsername(usuario.getUsername())) {
-            throw new RuntimeException("El nombre de usuario ya existe");
-       }
+        
+        Usuario usuario = usuarioMapper.toEntity(usuarioRequest);
 
-        String passwordEncriptada = passwordEncoder.encode(usuario.getContrasena());
-        usuario.setContrasena(passwordEncriptada);
+        // Copiamos el email en el campo username para cumplir con la base de datos (el username es el email)
+        usuario.setUsername(usuarioRequest.getEmail());
+
+        // Encriptamos la contraseña en la entidad
+        usuario.setContrasena(passwordEncoder.encode(usuarioRequest.getContrasena()));
         
-        if (usuario.getRol() == null) {
-            usuario.setRol(Rol.Usuario);
+        // Si no viene rol, forzamos que sea Usuario
+        if (usuarioRequest.getRol() == null) {
+        	usuarioRequest.setRol(Rol.Usuario);
         }
         
+        // Guardamos en Base de Datos
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
         
-        return usuarioRepository.save(usuario);
+        //Devolvemos la entidad traducida a ResponseDTO
+        return usuarioMapper.toResponse(usuarioGuardado);
     }
 
     /*

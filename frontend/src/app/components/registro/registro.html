@@ -1,1 +1,153 @@
-<p>registro works!</p>
+<main>
+  <div class="register-wrap">
+
+    <div class="steps-header">
+      <div class="step" [class.active]="step() === 1" [class.done]="step() > 1">
+        <div class="step-dot">{{ step() > 1 ? '✓' : '1' }}</div>
+        <span class="step-label">Tus Datos</span>
+      </div>
+      <div class="step-line" [class.filled]="step() > 1"></div>
+      
+      <div class="step" [class.active]="step() === 2">
+        <div class="step-dot">{{ step() === 2 ? '✓' : '2' }}</div>
+        <span class="step-label">Listo</span>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      @if (step() === 1) {
+        <div class="card-header">
+          <div>
+            <div class="card-title">Crear Cuenta</div>
+            <div class="card-sub">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></div>
+          </div>
+          <div class="perks">
+            <div class="perk"><div class="perk-dot"></div>Acceso gratuito</div>
+            <div class="perk"><div class="perk-dot"></div>Sin tarjeta de crédito</div>
+            <div class="perk"><div class="perk-dot"></div>Cancela cuando quieras</div>
+          </div>
+        </div>
+      }
+
+      <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+        
+        @if (step() === 1) {
+          <div id="panel-1">
+            <div class="form-grid">
+              
+              <div class="form-group">
+                <label>Nombre</label>
+                <div class="input-wrap">
+                  <input type="text" placeholder="Carlos" formControlName="nombre">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                </div>
+                @if (registroForm.get('nombre')?.touched && registroForm.get('nombre')?.invalid) {
+                  <small class="error-text">Obligatorio</small>
+                }
+              </div>
+
+              <div class="form-group">
+                <label>Apellidos</label>
+                <div class="input-wrap">
+                  <input type="text" placeholder="García López" formControlName="apellidos">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                </div>
+                @if (registroForm.get('apellidos')?.touched && registroForm.get('apellidos')?.invalid) {
+                  <small class="error-text">Obligatorio</small>
+                }
+              </div>
+
+              <div class="form-group">
+                <label>Teléfono</label>
+                <div class="input-wrap">
+                  <input type="tel" placeholder="+34 600 000 000" formControlName="telefono">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.08 4.18 2 2 0 0 1 5.09 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                @if (registroForm.get('telefono')?.touched && registroForm.get('telefono')?.invalid) {
+                  <small class="error-text">Teléfono inválido</small>
+                }
+              </div>
+
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <div class="input-wrap">
+                  <input type="email" placeholder="tu@correo.com" formControlName="email">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                </div>
+                @if (registroForm.get('email')?.touched && registroForm.get('email')?.invalid) {
+                  <small class="error-text">Email inválido</small>
+                }
+              </div>
+
+              <div class="form-group">
+                <label>Contraseña</label>
+                <div class="input-wrap">
+                  <input [type]="showPassword() ? 'text' : 'password'" placeholder="••••••••" formControlName="contrasena">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <button type="button" class="eye-toggle" (click)="togglePass('pass')">
+                    <svg style="pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                
+                <div class="strength-bar">
+                  <div class="strength-seg" [class.weak]="pwScore() >= 1"></div>
+                  <div class="strength-seg" [class.weak]="pwScore() >= 2"></div>
+                  <div class="strength-seg" [class.medium]="pwScore() >= 3"></div>
+                  <div class="strength-seg" [class.strong]="pwScore() >= 4"></div>
+                </div>
+                <div class="strength-label" [style.color]="pwLabel().color">{{ pwLabel().text }}</div>
+              </div>
+
+              <div class="form-group">
+                <label>Confirmar Contraseña</label>
+                <div class="input-wrap">
+                  <input [type]="showConfirm() ? 'text' : 'password'" placeholder="••••••••" formControlName="confirmar">
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <button type="button" class="eye-toggle" (click)="togglePass('confirm')">
+                    <svg style="pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                @if (registroForm.get('confirmar')?.touched && registroForm.hasError('passwordsMismatch')) {
+                  <small class="error-text">Las contraseñas no coinciden</small>
+                }
+              </div>
+
+              <div class="form-group full">
+                <div class="terms-row">
+                  <div class="custom-check-wrap">
+                    <div class="custom-check" [class.checked]="termsChecked()" (click)="toggleTerms()"></div>
+                  </div>
+                  <div class="terms-text">
+                    Acepto los <a href="#">Términos de Servicio</a> y la <a href="#">Política de Privacidad</a> de Ballon.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">
+                Crear Cuenta
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+              </button>
+            </div>
+          </div>
+        }
+      </form>
+
+      @if (step() === 2) {
+        <div id="panel-3" style="text-align:center; padding: 20px 0;">
+          <div style="width:72px;height:72px;background:var(--success-dim);border:2px solid var(--success);border-radius:50%;display:grid;place-items:center;margin:0 auto 24px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22d87a" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;text-transform:uppercase;margin-bottom:12px;">¡Hola, {{ nombreUsuario() }}!</div>
+          <p style="color:var(--text-muted);font-size:14px;max-width:360px;margin:0 auto 28px;line-height:1.7;">Tu cuenta ha sido creada con éxito. Ya puedes iniciar sesión en la plataforma.</p>
+          <button class="btn-primary" style="max-width:280px;margin:0 auto;" routerLink="/login">
+            Ir a Iniciar Sesión
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+</main>

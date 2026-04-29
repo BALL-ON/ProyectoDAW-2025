@@ -31,11 +31,23 @@ export class Login {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Datos del login:', this.loginForm.value);
-      // Aquí llamamos al AuthService del backend
-    } else {
-      console.log('Formulario no válido');
-      this.loginForm.markAllAsTouched();
+      // Se usa el operador ?? para decirle: "Si es null o undefined, usa '' o false"
+      const email = this.loginForm.value.email ?? '';
+      const contrasena = this.loginForm.value.contrasena ?? '';
+      const remember = this.loginForm.value.remember ?? false;
+
+      this.authService.login(email, contrasena, remember).subscribe({
+        next: (respuesta) => {
+          //console.log('¡Login correcto! Token recibido:', respuesta.token);
+          
+          // Redirigimos al usuario a la página principal
+          this.router.navigate(['/']); 
+        },
+        error: (err) => {
+          console.error('Error en el login', err);
+          alert('El usuario o la contraseña no son correctos.');
+        }
+      });
     }
   }
 }
