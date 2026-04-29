@@ -1,15 +1,22 @@
 package com.ballon.backend.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.ballon.backend.models.Reserva;
+import com.ballon.backend.dtos.OcupacionSlotDTO;
+import com.ballon.backend.dtos.ReservaRequestDTO;
+import com.ballon.backend.dtos.ReservaResponseDTO;
 import com.ballon.backend.models.Usuario;
 import com.ballon.backend.services.ReservaService;
-import com.ballon.backend.services.UsuarioService; // Asegúrate de tenerlo
+import com.ballon.backend.services.UsuarioService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,20 +27,56 @@ public class ReservaController {
     private final ReservaService reservaService;
     private final UsuarioService usuarioService;
 
+    /**
+     * Devuelve las reservas del usuario autenticado.
+     * Útil para el "Historial" del perfil y para la página de reserva.
+     */
     @GetMapping("/mis-reservas")
-    public ResponseEntity<List<Reserva>> listarMisReservas() { 
+    public ResponseEntity<List<ReservaResponseDTO>> listarMisReservas() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioService.buscarPorUsername(username);
-        
         return ResponseEntity.ok(reservaService.listarPorUsuario(usuario.getIdUsuario()));
     }
 
-    @PostMapping
-    public ResponseEntity<Reserva> reservar(@RequestBody Reserva reserva) {
+    /**
+     * Devuelve las reservas del usuario autenticado FILTRADAS por pista.
+     * Lo usa la página /reserva/:idPista para pintar el historial de esa pista.
+     */
+    @GetMapping("/mis-reservas/pista/{idPista}")
+    public ResponseEntity<List<ReservaResponseDTO>> listarMisReservasPorPista(@PathVariable Long idPista) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new ResponseEntity<>(reservaService.crearReserva(reserva, username), HttpStatus.CREATED);
+        Usuario usuario = usuarioService.buscarPorUsername(username);
+        return ResponseEntity.ok(reservaService.listarPorUsuarioYPista(usuario.getIdUsuario(), idPista));
     }
 
+    /**
+     * NUEVO: Devuelve los slots OCUPADOS de una pista en una fecha concreta.
+     * No expone datos personales: solo horaInicio y horaFin.
+     * Usado por el grid de slots para deshabilitar las horas reservadas.
+     */
+    @GetMapping("/pista/{idPista}/ocupacion")
+    public ResponseEntity<List<OcupacionSlotDTO>> ocupacionDelDia(
+            @PathVariable Long idPista,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+        return ResponseEntity.ok(reservaService.obtenerOcupacion(idPista, fecha));
+    }
+
+    /**
+     * Crea una reserva. Recibe DTO (no la entidad), valida con @Valid
+     * y devuelve un DTO limpio.
+     */
+    @PostMapping
+    public ResponseEntity<ReservaResponseDTO> reservar(@Valid @RequestBody ReservaRequestDTO dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        ReservaResponseDTO creada = reservaService.crearReserva(dto, username);
+        return new ResponseEntity<>(creada, HttpStatus.CREATED);
+    }
+
+    /**
+     * Cancela una reserva propia (CU-03).
+     * El servicio se encarga de validar que la reserva pertenezca al usuario
+     * y que cumpla la política de cancelación.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelar(@PathVariable Long id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

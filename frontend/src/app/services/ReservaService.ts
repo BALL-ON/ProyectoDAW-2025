@@ -1,30 +1,53 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Reserva as IReserva } from '../model/reserva.model';
+import {
+  OcupacionSlot,
+  ReservaRequest,
+  ReservaResponse,
+} from '../model/reserva.model';
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class ReservaService {
-  private apiUrl = 'http://localhost:9999/daw/reservas';
+  
+  private readonly apiUrl = 'http://localhost:8080/api/reservas';
 
   constructor(private http: HttpClient) {}
 
- buscarReservas(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl); 
+  /** GET /api/reservas/mis-reservas */
+  misReservas(): Observable<ReservaResponse[]> {
+    return this.http.get<ReservaResponse[]>(`${this.apiUrl}/mis-reservas`);
   }
 
-  crearReserva(reserva: IReserva): Observable<IReserva> {
-    return this.http.post<IReserva>(this.apiUrl, reserva);
+  /** GET /api/reservas/mis-reservas/pista/{idPista} */
+  misReservasEnPista(idPista: number): Observable<ReservaResponse[]> {
+    return this.http.get<ReservaResponse[]>(
+      `${this.apiUrl}/mis-reservas/pista/${idPista}`
+    );
   }
 
-  eliminarReserva(id: number): Observable<void> {
+  /**
+   * GET /api/reservas/pista/{idPista}/ocupacion?fecha=YYYY-MM-DD
+   * Devuelve sólo los rangos ocupados (sin datos personales) para pintar
+   * el grid de slots.
+   */
+  ocupacionDelDia(idPista: number, fecha: string): Observable<OcupacionSlot[]> {
+    const params = new HttpParams().set('fecha', fecha);
+    return this.http.get<OcupacionSlot[]>(
+      `${this.apiUrl}/pista/${idPista}/ocupacion`,
+      { params }
+    );
+  }
+
+  /** POST /api/reservas */
+  crearReserva(dto: ReservaRequest): Observable<ReservaResponse> {
+    return this.http.post<ReservaResponse>(this.apiUrl, dto);
+  }
+
+  /** DELETE /api/reservas/{id} */
+  cancelarReserva(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  actualizarReserva(id: number, reserva: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, reserva);
   }
 }

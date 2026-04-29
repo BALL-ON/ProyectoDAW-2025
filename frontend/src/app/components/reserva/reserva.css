@@ -1,38 +1,65 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Ball·On — Página de Reserva
+   Paleta del manual de identidad:
+   - Fondos:        #000000  (negro)
+   - Bordes:        #32323C  (gris)
+   - Acento neón:   #008dff  (azul neón) — botones, iconos activos
+   - Texto:         #FFFFFF  (blanco)
+   - Descripciones: #C8C8D2  (blanco humo)
+   - OK/Confirm:    #00FF82  (verde)
+   - Error/Ocupado: #FF2D55  (rojo)
+   ════════════════════════════════════════════════════════════════════════ */
+
 :host {
   display: block;
-  background-color: #0a0a0a;
+  background-color: #000000;
   min-height: 100vh;
-  color: white;
+  color: #ffffff;
   font-family: 'Segoe UI', Roboto, sans-serif;
 }
 
+/* ─── Tarjeta principal del formulario ──────────────────────────────────── */
 .booking-card {
-  background: #151515;
-  border: 1px solid #333;
+  background: #0d0d12;
+  border: 1px solid #32323C;
   padding: 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 30px rgba(0, 141, 255, 0.08);
+  max-width: 100%;
 }
 
-.neon-text {
-  color: #00d2ff;
-  text-shadow: 0 0 10px rgba(0, 210, 255, 0.7);
+/* ─── Tipografía neón ───────────────────────────────────────────────────── */
+.neon-text-blue {
+  color: #008dff;
+  text-shadow: 0 0 15px rgba(0, 141, 255, 0.6);
   font-weight: 800;
+  text-transform: uppercase;
   letter-spacing: 2px;
 }
 
+/* ─── Inputs ────────────────────────────────────────────────────────────── */
 .custom-input {
-  background-color: #222 !important;
-  border: 1px solid #444 !important;
-  color: white !important;
+  background-color: #1a1a22 !important;
+  border: 1px solid #32323C !important;
+  color: #ffffff !important;
   border-radius: 10px;
+  padding: 0.6rem 0.9rem;
 }
 
 .custom-input:focus {
-  border-color: #00d2ff !important;
-  box-shadow: 0 0 8px rgba(0, 210, 255, 0.4) !important;
+  border-color: #008dff !important;
+  box-shadow: 0 0 8px rgba(0, 141, 255, 0.4) !important;
+  background-color: #1a1a22 !important;
+  color: #ffffff !important;
 }
 
+/* Hack para que el icono del date picker se vea sobre fondo oscuro */
+.custom-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.7);
+  cursor: pointer;
+}
+
+/* ─── Grid de slots horarios ────────────────────────────────────────────── */
 .time-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -40,128 +67,309 @@
 }
 
 .slot-btn {
-  background: #1a1a1a;
-  border: 1px solid #444;
-  color: #aaa;
+  background: #14141a;
+  border: 1px solid #32323C;
+  color: #C8C8D2;
   padding: 12px 5px;
   border-radius: 8px;
   font-size: 0.85rem;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
 
 .slot-btn:hover:not(:disabled) {
-  border-color: #00d2ff;
-  color: white;
+  border-color: #008dff;
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
 .slot-btn.selected {
-  background: rgba(0, 210, 255, 0.15);
-  border-color: #00d2ff;
-  color: #00d2ff;
-  box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+  background: rgba(0, 141, 255, 0.15);
+  border-color: #008dff;
+  color: #008dff;
+  box-shadow: 0 0 15px rgba(0, 141, 255, 0.35);
   font-weight: bold;
 }
 
 .slot-btn.busy {
-  background: #0d0d0d;
-  border-color: #222;
-  color: #333;
+  background: #0a0a0e;
+  border-color: rgba(255, 45, 85, 0.25);
+  color: #FF2D55;
   cursor: not-allowed;
   text-decoration: line-through;
+  opacity: 0.55;
 }
 
+/* ─── Resumen de la selección ───────────────────────────────────────────── */
 .selection-summary {
-  margin-top: 1.5rem;
-  padding: 10px;
-  background: rgba(0, 210, 255, 0.05);
-  border-left: 4px solid #00d2ff;
+  padding: 12px 14px;
+  background: rgba(0, 141, 255, 0.06);
+  border-left: 4px solid #008dff;
+  border-radius: 4px;
   font-size: 0.9rem;
+  color: #C8C8D2;
 }
 
 .selection-summary span {
-  color: #00d2ff;
+  color: #008dff;
   font-weight: bold;
 }
 
-.btn-neon-confirm {
-  background: #00d2ff;
-  border: none;
-  color: #000;
-  font-weight: 900;
-  padding: 15px;
-  border-radius: 12px;
-  margin-top: 1rem;
-  transition: all 0.4s ease;
-}
-
-.btn-neon-confirm:hover:not(:disabled) {
-  background: #00b8e6;
-  box-shadow: 0 0 25px rgba(0, 210, 255, 0.5);
-  transform: translateY(-2px);
-}
-
-.btn-neon-confirm:disabled {
-  background: #333;
-  color: #666;
-}
-
-.neon-text-blue {
-  color: #00d2ff;
-  text-shadow: 0 0 15px rgba(0, 210, 255, 0.6);
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-/* Contenedor para el futuro mapa */
-.map-placeholder {
-  background: #151515;
-  border: 2px dashed #333; /* Estilo temporal para que veas el área */
-  height: 600px;
-  border-radius: 20px;
-  padding: 20px;
-  transition: border-color 0.3s ease;
-}
-
-.map-placeholder:hover {
-  border-color: #00d2ff;
-}
-
-.map-mockup {
-  width: 80%;
-  height: 300px;
-  margin: 0 auto;
-  background: linear-gradient(45deg, #0a0a0a 25%, #111 25%, #111 50%, #0a0a0a 50%, #0a0a0a 75%, #111 75%, #111 100%);
-  background-size: 20px 20px;
-  border: 1px solid #222;
-  border-radius: 10px;
-}
-
-/* Ajuste para que el formulario no se vea estirado en pantallas grandes */
-.booking-card {
-  max-width: 100%;
-}
-
-/* Estilo para el botón de limpiar discreto */
 .btn-reset-small {
   background: transparent;
-  border: 1px solid #444;
-  color: #777;
+  border: 1px solid #32323C;
+  color: #C8C8D2;
   font-size: 0.75rem;
   padding: 4px 10px;
   border-radius: 6px;
   transition: all 0.3s ease;
   height: fit-content;
-  margin-top: 5px;
+  cursor: pointer;
 }
 
 .btn-reset-small:hover {
-  border-color: #ff4b2b; /* Un tono rojizo muy suave para indicar cancelar */
-  color: #ff4b2b;
-  box-shadow: 0 0 8px rgba(255, 75, 43, 0.2);
+  border-color: #FF2D55;
+  color: #FF2D55;
+  box-shadow: 0 0 8px rgba(255, 45, 85, 0.2);
 }
 
-/* Aseguramos que el contenedor de resumen no ocupe todo el ancho para dejar sitio al botón */
-.selection-summary {
-  flex-grow: 1;
-  margin-right: 10px;
+/* ─── Botón principal de confirmar ──────────────────────────────────────── */
+.btn-neon-confirm {
+  background: #008dff;
+  border: none;
+  color: #000000;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-neon-confirm:hover:not(:disabled) {
+  background: #2596be;
+  box-shadow: 0 0 25px rgba(0, 141, 255, 0.55);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+.btn-neon-confirm:disabled {
+  background: #32323C;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* ─── Mensajes de feedback ──────────────────────────────────────────────── */
+.alert-error {
+  background: rgba(255, 45, 85, 0.1);
+  border: 1px solid #FF2D55;
+  color: #FF2D55;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.alert-ok {
+  background: rgba(0, 255, 130, 0.1);
+  border: 1px solid #00FF82;
+  color: #00FF82;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+/* ─── Plano de la pista (placeholder visual) ────────────────────────────── */
+.map-placeholder {
+  background: #0d0d12;
+  border: 1px solid #32323C;
+  min-height: 600px;
+  border-radius: 20px;
+  padding: 24px;
+  transition: border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-placeholder:hover {
+  border-color: #008dff;
+  box-shadow: 0 0 25px rgba(0, 141, 255, 0.15);
+}
+
+.map-mockup {
+  flex: 1;
+  width: 100%;
+  margin: 0 auto;
+  background:
+    linear-gradient(45deg, #08080c 25%, #101018 25%, #101018 50%, #08080c 50%, #08080c 75%, #101018 75%, #101018 100%);
+  background-size: 24px 24px;
+  border: 1px solid #32323C;
+  border-radius: 10px;
+  position: relative;
+  min-height: 350px;
+}
+
+/* Líneas decorativas tipo cancha de baloncesto/fútbol sala */
+.court-line {
+  position: absolute;
+  background: rgba(0, 141, 255, 0.4);
+  box-shadow: 0 0 6px rgba(0, 141, 255, 0.5);
+}
+
+.top-line, .bottom-line {
+  left: 10%;
+  right: 10%;
+  height: 2px;
+}
+
+.top-line { top: 12%; }
+.bottom-line { bottom: 12%; }
+
+.center-line {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.court-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90px;
+  height: 90px;
+  border: 2px solid rgba(0, 141, 255, 0.4);
+  box-shadow: 0 0 8px rgba(0, 141, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Leyenda de colores */
+.legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #C8C8D2;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-free {
+  background: #14141a;
+  border: 1px solid #32323C;
+}
+
+.dot-selected {
+  background: #008dff;
+  box-shadow: 0 0 6px rgba(0, 141, 255, 0.7);
+}
+
+.dot-busy {
+  background: #FF2D55;
+  box-shadow: 0 0 6px rgba(255, 45, 85, 0.5);
+}
+
+/* ─── Tabla del historial ───────────────────────────────────────────────── */
+.custom-table {
+  background: #0d0d12;
+  border: 1px solid #32323C;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.custom-table thead th {
+  background: #14141a;
+  border-bottom: 2px solid #008dff;
+  color: #008dff;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.custom-table tbody td {
+  vertical-align: middle;
+  border-color: #32323C;
+  color: #C8C8D2;
+}
+
+/* ─── Badges de estado ──────────────────────────────────────────────────── */
+.badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding: 0.4em 0.7em;
+}
+
+.badge-confirmada {
+  background: rgba(0, 141, 255, 0.15);
+  color: #008dff;
+  border: 1px solid #008dff;
+}
+
+.badge-finalizada {
+  background: rgba(200, 200, 210, 0.1);
+  color: #C8C8D2;
+  border: 1px solid #32323C;
+}
+
+.badge-cancelada {
+  background: rgba(255, 45, 85, 0.1);
+  color: #FF2D55;
+  border: 1px solid #FF2D55;
+}
+
+.badge-pagado {
+  background: rgba(0, 255, 130, 0.1);
+  color: #00FF82;
+  border: 1px solid #00FF82;
+}
+
+.badge-pendiente {
+  background: rgba(255, 200, 0, 0.1);
+  color: #FFC800;
+  border: 1px solid #FFC800;
+}
+
+.badge-reembolsado {
+  background: rgba(200, 200, 210, 0.1);
+  color: #C8C8D2;
+  border: 1px solid #32323C;
+}
+
+/* ─── Botón cancelar ────────────────────────────────────────────────────── */
+.btn-outline-danger {
+  border-color: #FF2D55;
+  color: #FF2D55;
+}
+
+.btn-outline-danger:hover:not(:disabled) {
+  background: #FF2D55;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 45, 85, 0.4);
+}
+
+.btn-outline-danger:disabled {
+  border-color: #32323C;
+  color: #555;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+  .map-placeholder {
+    min-height: 400px;
+  }
+  .booking-card {
+    padding: 1.5rem;
+  }
 }

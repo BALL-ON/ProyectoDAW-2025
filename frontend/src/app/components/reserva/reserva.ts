@@ -1,205 +1,289 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ReservaService } from '../../services/ReservaService';
-import { Reserva as IReserva } from '../../model/reserva.model';
+import {
+  OcupacionSlot,
+  ReservaRequest,
+  ReservaResponse,
+  SlotHorario,
+} from '../../model/reserva.model';
 
 @Component({
   selector: 'app-reserva',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './reserva.html',
   styleUrl: './reserva.css',
 })
 export class Reserva implements OnInit {
-  reservasExistentes: any[] = [];
-  idEdicion: number | null = null;
-  minDate: string = '';
-  
-  timeSlots = [
-    { id: 8, label: '08:00 - 09:00', start: '08:00', end: '09:00' },
-    { id: 9, label: '09:00 - 10:00', start: '09:00', end: '10:00' },
-    { id: 10, label: '10:00 - 11:00', start: '10:00', end: '11:00' },
-    { id: 11, label: '11:00 - 12:00', start: '11:00', end: '12:00' },
-    { id: 12, label: '12:00 - 13:00', start: '12:00', end: '13:00' },
-    { id: 13, label: '13:00 - 14:00', start: '13:00', end: '14:00' },
-    { id: 14, label: '14:00 - 15:00', start: '14:00', end: '15:00' },
-    { id: 15, label: '15:00 - 16:00', start: '15:00', end: '16:00' },
-    { id: 16, label: '16:00 - 17:00', start: '16:00', end: '17:00' },
-    { id: 17, label: '17:00 - 18:00', start: '17:00', end: '18:00' },
-    { id: 18, label: '18:00 - 19:00', start: '18:00', end: '19:00' },
-    { id: 19, label: '19:00 - 20:00', start: '19:00', end: '20:00' },
-    { id: 20, label: '20:00 - 21:00', start: '20:00', end: '21:00' },
-    { id: 21, label: '21:00 - 22:00', start: '21:00', end: '22:00' }
-  ];
+  // Servicios inyectados
+  private readonly service = inject(ReservaService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly cd = inject(ChangeDetectorRef);
 
-  startSlot: any = null;
-  endSlot: any = null;
+  // Pista que estamos reservando (viene como ruta /reserva/:idPista)
+  idPista!: number;
 
+  // Estado del formulario
   reservaForm = new FormGroup({
-    fecha: new FormControl('', [Validators.required]),
-    hora: new FormControl<any>(null, [Validators.required])
+    fecha: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
   });
 
-  constructor(private service: ReservaService, private cd: ChangeDetectorRef) {}
+  minDate = '';
 
-  ngOnInit() {
-    // Validación de antelación de un día requerida por el backend
-    const mañana = new Date();
-    mañana.setDate(mañana.getDate() + 1);
-    this.minDate = mañana.toISOString().split('T')[0];
+  // Catálogo de slots: horario de apertura del polideportivo
+  // (08:00 - 22:00, en bloques de 1h). Si en el futuro queréis bloques de
+  // 90 min como dice el RF_07, sólo hay que regenerar este array.
+  readonly timeSlots: SlotHorario[] = this.generarSlots(8, 22);
 
-    this.obtenerDatos();
-  }
+  // Selección actual del usuario
+  startSlot: SlotHorario | null = null;
+  endSlot: SlotHorario | null = null;
 
-  obtenerDatos() {
-    this.service.buscarReservas().subscribe({
-      next: (data: any[]) => {
-        // Ordenar datos
-        const ordenadas = data.sort((a, b) => {
-          if (a.estado === 'FINALIZADA' && b.estado !== 'FINALIZADA') return 1;
-          if (a.estado !== 'FINALIZADA' && b.estado === 'FINALIZADA') return -1;
-          return 0;
-        });
+  // Datos cargados desde el backend
+  ocupacion: OcupacionSlot[] = [];     // slots ocupados de la pista en la fecha elegida
+  misReservas: ReservaResponse[] = []; // historial del usuario en esta pista
 
-        // 1. Cambiamos la referencia del array
-        this.reservasExistentes = [...ordenadas];
-        
-        // 2. Forzamos a Angular a revisar la vista inmediatamente
-        this.cd.detectChanges(); 
-        
-        console.log('Interfaz actualizada');
+  // Estado UI
+  cargandoOcupacion = false;
+  enviando = false;
+  mensajeError: string | null = null;
+  mensajeOk: string | null = null;
+
+  ngOnInit(): void {
+    // 1. Sacamos idPista de la ruta /reserva/:idPista
+    const idParam = this.route.snapshot.paramMap.get('idPista');
+    if (!idParam) {
+      this.mensajeError = 'No se ha indicado ninguna pista.';
+      return;
+    }
+    this.idPista = Number(idParam);
+
+    // 2. Fecha mínima = mañana (mantengo tu validación de antelación de 1 día)
+    const manana = new Date();
+    manana.setDate(manana.getDate() + 1);
+    this.minDate = manana.toISOString().split('T')[0];
+
+    // 3. Cargar el historial del usuario en esta pista
+    this.cargarMisReservas();
+
+    // 4. Cuando cambie la fecha, recargar la ocupación
+    this.reservaForm.get('fecha')!.valueChanges.subscribe((fecha) => {
+      this.limpiarSeleccion();
+      if (fecha) {
+        this.cargarOcupacion(fecha);
+      } else {
+        this.ocupacion = [];
       }
     });
   }
 
-  seleccionarSlot(slot: any) {
-    if (!this.startSlot || (this.startSlot && this.endSlot)) {
-      this.startSlot = slot;
-      this.endSlot = null;
-    } else {
-      const startIndex = this.timeSlots.indexOf(this.startSlot);
-      const endIndex = this.timeSlots.indexOf(slot);
+  // ─── Carga de datos ───────────────────────────────────────────────────────
 
-      if (endIndex >= startIndex && endIndex - startIndex < 3) {
-        // Verificar si hay huecos ocupados en medio
-        for (let i = startIndex; i <= endIndex; i++) {
-          if (this.estaOcupado(this.timeSlots[i])) {
-            alert("El rango seleccionado contiene horas ya reservadas.");
-            this.limpiarSeleccion();
-            return;
-          }
-        }
-        this.endSlot = slot;
-      } else {
-        this.startSlot = slot;
-        this.endSlot = null;
-      }
-    }
-    // Actualizamos el valor del formulario para que sea válido
-    this.reservaForm.patchValue({ hora: this.startSlot });
+  private cargarMisReservas(): void {
+    this.service.misReservasEnPista(this.idPista).subscribe({
+      next: (data) => {
+        // Ordenar: futuras/confirmadas primero, finalizadas/canceladas al final
+        this.misReservas = [...data].sort((a, b) => {
+          const pesoA = a.estadoReserva === 'Confirmada' ? 0 : 1;
+          const pesoB = b.estadoReserva === 'Confirmada' ? 0 : 1;
+          if (pesoA !== pesoB) return pesoA - pesoB;
+          // Dentro del mismo grupo, por fecha+hora descendente (más reciente arriba)
+          const claveA = `${a.fechaReserva}T${a.horaInicio}`;
+          const claveB = `${b.fechaReserva}T${b.horaInicio}`;
+          return claveB.localeCompare(claveA);
+        });
+        this.cd.detectChanges();
+      },
+      error: (err) => console.error('Error al cargar mis reservas', err),
+    });
   }
 
-  hayOcupadosEnMedio(idInicio: number, idFin: number): boolean {
-    for (let i = idInicio; i <= idFin; i++) {
-      const slot = this.timeSlots.find(s => s.id === i);
-      if (slot && this.estaOcupado(slot)) return true;
-    }
-    return false;
+  private cargarOcupacion(fecha: string): void {
+    this.cargandoOcupacion = true;
+    this.service.ocupacionDelDia(this.idPista, fecha).subscribe({
+      next: (data) => {
+        this.ocupacion = data;
+        this.cargandoOcupacion = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar ocupación', err);
+        this.ocupacion = [];
+        this.cargandoOcupacion = false;
+      },
+    });
   }
 
-  estaSeleccionado(slot: any): boolean {
-    if (!this.startSlot) return false;
-    const startIndex = this.timeSlots.indexOf(this.startSlot);
-    const endIndex = this.endSlot ? this.timeSlots.indexOf(this.endSlot) : startIndex;
-    const currentIndex = this.timeSlots.indexOf(slot);
-    return currentIndex >= startIndex && currentIndex <= endIndex;
-  }
+  // ─── Lógica de selección de slots ─────────────────────────────────────────
 
-  estaOcupado(slot: any): boolean {
-    const fecha = this.reservaForm.get('fecha')?.value;
-    if (!fecha) return false;
-    
-    const slotInicio = `${fecha}T${slot.start}:00`;
-    const slotFin = `${fecha}T${slot.end}:00`;
-
-    return this.reservasExistentes.some(res => 
-      // Un slot está ocupado si se solapa con cualquier reserva existente
-      slotInicio < res.fechaHoraFin && slotFin > res.fechaHoraInicio
+  /**
+   * Un slot está ocupado si su rango [start, end) se solapa
+   * con cualquier rango de la lista de ocupación.
+   */
+  estaOcupado(slot: SlotHorario): boolean {
+    return this.ocupacion.some(
+      (oc) => slot.start < oc.horaFin.substring(0, 5) && slot.end > oc.horaInicio.substring(0, 5)
     );
   }
 
-  limpiarSeleccion() {
+  /**
+   * Devuelve true si el slot está dentro del rango actualmente seleccionado.
+   */
+  estaSeleccionado(slot: SlotHorario): boolean {
+    if (!this.startSlot) return false;
+    const startIdx = this.timeSlots.indexOf(this.startSlot);
+    const endIdx = this.endSlot
+      ? this.timeSlots.indexOf(this.endSlot)
+      : startIdx;
+    const idx = this.timeSlots.indexOf(slot);
+    return idx >= startIdx && idx <= endIdx;
+  }
+
+  /**
+   * Maneja el clic en un slot. Permite rangos contiguos de hasta 3h.
+   */
+  seleccionarSlot(slot: SlotHorario): void {
+    this.mensajeError = null;
+
+    // Caso 1: no hay nada seleccionado o ya había rango cerrado → empezar de nuevo
+    if (!this.startSlot || (this.startSlot && this.endSlot)) {
+      this.startSlot = slot;
+      this.endSlot = null;
+      return;
+    }
+
+    // Caso 2: ya hay startSlot, este clic intenta cerrar el rango
+    const startIdx = this.timeSlots.indexOf(this.startSlot);
+    const endIdx = this.timeSlots.indexOf(slot);
+
+    // Si clica el mismo slot, lo deselecciona
+    if (startIdx === endIdx) {
+      this.startSlot = null;
+      this.endSlot = null;
+      return;
+    }
+
+    // Si clica anterior al inicio, se reinicia con ese como nuevo inicio
+    if (endIdx < startIdx) {
+      this.startSlot = slot;
+      this.endSlot = null;
+      return;
+    }
+
+    // Validación: máximo 3 horas (índices 0, 1, 2 = 3 slots de 1h)
+    if (endIdx - startIdx >= 3) {
+      this.mensajeError = 'Sólo puedes reservar un máximo de 3 horas seguidas.';
+      return;
+    }
+
+    // Validación: que no haya huecos ocupados en medio
+    for (let i = startIdx; i <= endIdx; i++) {
+      if (this.estaOcupado(this.timeSlots[i])) {
+        this.mensajeError = 'El rango contiene horas ya reservadas. Elige otro tramo.';
+        this.limpiarSeleccion();
+        return;
+      }
+    }
+
+    this.endSlot = slot;
+  }
+
+  limpiarSeleccion(): void {
     this.startSlot = null;
     this.endSlot = null;
-    this.reservaForm.get('hora')?.reset();
+    this.mensajeError = null;
+    this.mensajeOk = null;
   }
 
-  borrar(id: number) {
-    if (confirm('¿Seguro que quieres cancelar esta reserva?')) {
-      // Cambiamos el subscribe para que sea un objeto con la función next
-      this.service.eliminarReserva(id).subscribe({
-        next: () => {
-          // 1. Refrescar la tabla y los botones de horas
-          this.obtenerDatos();
-          this.limpiarSeleccion(); 
-        },
-        error: (err) => {
-          console.error('Error al borrar:', err);
-          alert('No se pudo eliminar la reserva');
-        }
-      });
+  // ─── Envío ────────────────────────────────────────────────────────────────
+
+  enviar(): void {
+    this.mensajeError = null;
+    this.mensajeOk = null;
+
+    const fecha = this.reservaForm.get('fecha')!.value;
+    if (!fecha || !this.startSlot) {
+      this.mensajeError = 'Selecciona una fecha y un horario.';
+      return;
     }
-  }
 
-  cargarParaEditar(reserva: any) {
-    // 1. Ponemos la fecha en el formulario (aunque no la dejaremos cambiar)
-    const fecha = reserva.fechaHoraInicio.split('T')[0];
-    this.reservaForm.patchValue({ fecha: fecha });
-    
-    // 2. Avisamos al usuario que elija el nuevo rango arriba
-    alert("Selecciona el nuevo horario en el panel superior para la fecha " + fecha);
-    
-    // Guardamos el ID que estamos editando para que el botón "Confirmar" sepa que es un PUT y no un POST
-    this.idEdicion = reserva.id;
-  }
+    const ultimoSlot = this.endSlot ?? this.startSlot;
 
-  enviar() {
-    const fecha = this.reservaForm.get('fecha')?.value;
-  
-    // Si hay fecha y al menos un slot inicial seleccionado
-    if (fecha && this.startSlot) {
-    
-      // Determinamos cuál es el último slot del rango (si no hay endSlot, es el mismo startSlot)
-      const ultimoSlot = this.endSlot ? this.endSlot : this.startSlot;
+    const dto: ReservaRequest = {
+      idPista: this.idPista,
+      fechaReserva: fecha,
+      horaInicio: `${this.startSlot.start}:00`,
+      horaFin: `${ultimoSlot.end}:00`,
+    };
 
-      const nuevaReserva = {
-        // Tomamos la hora de inicio del primer slot seleccionado
-        fechaHoraInicio: `${fecha}T${this.startSlot.start}:00`,
-        // Tomamos la hora de fin del ÚLTIMO slot seleccionado
-        fechaHoraFin: `${fecha}T${ultimoSlot.end}:00`,
-        estado: 'CONFIRMADA'
-      };
-
-      console.log('Enviando reserva de rango:', nuevaReserva);
-
-      this.service.crearReserva(nuevaReserva).subscribe({
-        next: () => {
-          this.limpiarSeleccion(); // Limpiamos slots y formulario
-          this.obtenerDatos();     // Refrescamos la tabla
-        },
-        error: (err) => {
-          alert(err.error || 'Error al procesar la reserva');
-      }
+    this.enviando = true;
+    this.service.crearReserva(dto).subscribe({
+      next: (creada) => {
+        this.enviando = false;
+        this.mensajeOk = `Reserva confirmada el ${creada.fechaReserva} de ${creada.horaInicio.substring(0, 5)} a ${creada.horaFin.substring(0, 5)}.`;
+        this.limpiarSeleccion();
+        // Refrescar grid de ocupación y tabla de mis reservas
+        this.cargarOcupacion(fecha);
+        this.cargarMisReservas();
+      },
+      error: (err) => {
+        this.enviando = false;
+        this.mensajeError = err?.error?.message || err?.error || 'No se pudo crear la reserva.';
+      },
     });
   }
+
+  borrar(reserva: ReservaResponse): void {
+    if (reserva.estadoReserva !== 'Confirmada') return;
+    if (!confirm('¿Seguro que quieres cancelar esta reserva?')) return;
+
+    this.service.cancelarReserva(reserva.idReserva).subscribe({
+      next: () => {
+        this.cargarMisReservas();
+        const fecha = this.reservaForm.get('fecha')!.value;
+        if (fecha) this.cargarOcupacion(fecha);
+      },
+      error: (err) => {
+        this.mensajeError = err?.error?.message || 'No se pudo cancelar la reserva.';
+      },
+    });
   }
 
-  // Función auxiliar para no repetir código de limpieza
-  finalizarProceso() {
-    this.reservaForm.reset();
-    this.startSlot = null;
-    this.endSlot = null;
-    this.idEdicion = null; 
-    this.obtenerDatos();
+  // ─── Helpers de plantilla ────────────────────────────────────────────────
+
+  /** Texto resumen del rango seleccionado */
+  resumenRango(): string {
+    if (!this.startSlot) return '';
+    const fin = this.endSlot ?? this.startSlot;
+    return `${this.startSlot.start} - ${fin.end}`;
+  }
+
+  /** Número de horas seleccionadas (para mostrar al usuario el coste estimado, etc.) */
+  horasSeleccionadas(): number {
+    if (!this.startSlot) return 0;
+    const startIdx = this.timeSlots.indexOf(this.startSlot);
+    const endIdx = this.endSlot
+      ? this.timeSlots.indexOf(this.endSlot)
+      : startIdx;
+    return endIdx - startIdx + 1;
+  }
+
+  // ─── Util ────────────────────────────────────────────────────────────────
+
+  private generarSlots(horaInicio: number, horaFin: number): SlotHorario[] {
+    const slots: SlotHorario[] = [];
+    for (let h = horaInicio; h < horaFin; h++) {
+      const start = `${String(h).padStart(2, '0')}:00`;
+      const end = `${String(h + 1).padStart(2, '0')}:00`;
+      slots.push({ id: h, label: `${start} - ${end}`, start, end });
+    }
+    return slots;
   }
 }
