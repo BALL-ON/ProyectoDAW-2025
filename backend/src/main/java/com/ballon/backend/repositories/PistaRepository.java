@@ -14,7 +14,7 @@ public interface PistaRepository extends JpaRepository<Pista, Long> {
 	
 	List<Pista> findByPolideportivoIdPolideportivo(Long polideportivoId);
 	
-	Optional<Pista> findByNombreAndPolideportivo_IdPolideportivo(String nombre, Long idPolideportivo);
+	Optional<Pista> findByNombrePistaAndPolideportivo_IdPolideportivo(String nombre, Long idPolideportivo);
 	
 	
 }

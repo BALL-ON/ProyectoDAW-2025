@@ -49,7 +49,7 @@ public class PistaService {
     public Pista guardar(Pista pista) {
         
         if (pista.getPolideportivo() != null) {
-            pistaRepository.findByNombreAndPolideportivo_IdPolideportivo(
+            pistaRepository.findByNombrePistaAndPolideportivo_IdPolideportivo(
                 pista.getNombrePista(), 
                 pista.getPolideportivo().getIdPolideportivo()
             ).ifPresent(p -> {
