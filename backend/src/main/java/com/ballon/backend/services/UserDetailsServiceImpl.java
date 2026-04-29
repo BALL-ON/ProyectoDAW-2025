@@ -20,15 +20,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private final UsuarioRepository usuarioRepository;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	    Usuario usuario = usuarioRepository.findByUsername(username)
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+	    Usuario usuario = usuarioRepository.findByEmail(email)
 	            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
 	    // Creamos la autoridad basada en el rol de la base de datos
 	    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().name());
 
 	    return org.springframework.security.core.userdetails.User
-	            .withUsername(usuario.getUsername())
+	            .withUsername(usuario.getEmail())
 	            .password(usuario.getContrasena())
 	            .authorities(List.of(authority))
 	            .build();

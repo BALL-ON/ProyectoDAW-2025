@@ -18,8 +18,8 @@ public class UsuarioController {
     // Ver mi propio perfil (sacado del token)
     @GetMapping("/perfil")
     public ResponseEntity<Usuario> obtenerPerfil() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(usuarioService.buscarPorUsername(username));
+        String emailDelToken = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(usuarioService.buscarPorUsername(emailDelToken));
     }
 
     // Listar todos los usuarios (Solo para ADMIN)
