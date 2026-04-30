@@ -1,11 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+<main class="home-wrapper">
+
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">Sistema de reservas</div>
+      <h1 class="hero-title">
+        Tu próximo partido empieza <span class="text-blue">aquí mismo</span>
+      </h1>
+      <p class="hero-subtitle">
+        Accede a toda la red de espacios deportivos cerca de ti sin esperas. Consulta la disponibilidad en tiempo real y asegura tu pista en un par de clics.
+      </p>
+      
+      <div class="hero-actions">
+        <button class="btn-primary" routerLink="/reservas">
+          Reservar Ahora
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button class="btn-outline" routerLink="/faq">
+          Cómo Funciona
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-image-container">
+      <img src="https://images.unsplash.com/photo-1518063319789-7217e6706b04?q=80&w=1000&auto=format&fit=crop" alt="Estadio Deportivo" class="main-image">
+      
+      <div class="floating-card">
+        <div class="floating-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="floating-text">
+          <span class="floating-number">2,500+</span>
+          <span class="floating-label">Usuarios Activos</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="section-header">
+      <h2>¿Por qué elegirnos?</h2>
+      <p>Facilitamos el acceso a instalaciones deportivas de calidad con un sistema simple y eficiente</p>
+    </div>
+
+    <div class="features-grid">
+      <article class="feature-card">
+        <div class="icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3>Reserva Fácil</h3>
+        <p>Sistema intuitivo para reservar en pocos clics</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Disponibilidad 24/7</h3>
+        <p>Consulta horarios y reserva en cualquier momento</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3>Múltiples Ubicaciones</h3>
+        <p>Acceso a todos los polideportivos municipales</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3>Confirmación Instantánea</h3>
+        <p>Recibe confirmación inmediata de tu reserva</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="gallery-section">
+    <div class="section-header">
+      <h2>Deportes disponibles</h2>
+      <p>Encuentra el espacio perfecto para tu deporte favorito</p>
+    </div>
     
-</body>
-</html>
+    <div class="gallery-carousel">
+      <div class="gallery-track">
+        
+        <div class="gallery-item">
+          <img src="./assets/images/tenis_inicio.jpg" alt="Tenis">
+          <div class="gallery-overlay"><span>Tenis</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="/assets/images/baloncesto_inicio.jpg" alt="Baloncesto">
+          <div class="gallery-overlay"><span>Baloncesto</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="assets/images/padel_inicio.jpg" alt="Pádel">
+          <div class="gallery-overlay"><span>Pádel</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="/assets/images/futbol_inicio.png" alt="Fútbol">
+          <div class="gallery-overlay"><span>Fútbol 7</span></div>
+        </div>
+
+        <div class="gallery-item">
+          <img src="/assets/images/tenis_inicio.jpg" alt="Tenis">
+          <div class="gallery-overlay"><span>Tenis</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="/assets/images/baloncesto_inicio.jpg" alt="Baloncesto">
+          <div class="gallery-overlay"><span>Baloncesto</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="/assets/images/padel_inicio.jpg" alt="Pádel">
+          <div class="gallery-overlay"><span>Pádel</span></div>
+        </div>
+        <div class="gallery-item">
+          <img src="/assets/images/futbol_inicio.png" alt="Fútbol">
+          <div class="gallery-overlay"><span>Fútbol 7</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>¿Listo para empezar?</h2>
+    <p>Únete a miles de deportistas que ya disfrutan de nuestras instalaciones</p>
+    <button class="btn-black" routerLink="/reservas">
+      Reservar Pista 
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </section>
+
+</main>
