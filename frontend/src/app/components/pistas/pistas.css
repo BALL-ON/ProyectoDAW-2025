@@ -1,0 +1,301 @@
+
+:host {
+  display: block;
+  font-family: 'Barlow', sans-serif;
+  color: var(--text);
+}
+
+.pistas-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ─── Botón volver ─────────────────────────────────────────────────────── */
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: all 0.25s ease;
+}
+
+.btn-back:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
+}
+
+/* ─── Cabecera del polideportivo ───────────────────────────────────────── */
+.pistas-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 2rem 1rem;
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pistas-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+}
+
+.pistas-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.pistas-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--blue);
+  text-shadow: 0 0 20px var(--blue-glow);
+  margin-bottom: 0.5rem;
+}
+
+.pistas-meta {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ─── Filtros ──────────────────────────────────────────────────────────── */
+.pistas-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.filter-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.filter-select {
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 200px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
+}
+
+.btn-clear {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-clear:hover:not(:disabled) {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.btn-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pistas-count {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* ─── Estados ──────────────────────────────────────────────────────────── */
+.pistas-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.pistas-state-error {
+  color: var(--error);
+}
+
+/* ─── Grid de pistas ───────────────────────────────────────────────────── */
+.pistas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.pista-card {
+  position: relative;
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.pista-card:hover,
+.pista-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: var(--blue);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5),
+              0 0 0 1px var(--blue-dim),
+              0 0 30px var(--blue-glow);
+  outline: none;
+}
+
+/* ─── Top: icono + tipo ────────────────────────────────────────────────── */
+.pista-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.75rem;
+}
+
+.pista-icon {
+  font-size: 1.75rem;
+  filter: drop-shadow(0 0 12px var(--blue-glow));
+}
+
+.pista-tipo {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  background: var(--black-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+/* ─── Nombre ───────────────────────────────────────────────────────────── */
+.pista-card-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+/* ─── Specs (capacidad, precio) ────────────────────────────────────────── */
+.pista-specs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 1rem;
+  padding: 12px;
+  background: var(--black-3);
+  border-radius: 10px;
+}
+
+.spec {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.spec-icon {
+  font-size: 1rem;
+}
+
+.spec-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.spec-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ─── Badges ──────────────────────────────────────────────────────────── */
+.pista-badges {
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.badge-warn {
+  color: #ffb84d;
+  border-color: rgba(255, 184, 77, 0.4);
+  background: rgba(255, 184, 77, 0.1);
+}
+
+/* ─── Footer / CTA ─────────────────────────────────────────────────────── */
+.pista-card-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pista-cta {
+  color: var(--blue);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: transform 0.25s ease;
+}
+
+.pista-card:hover .pista-cta {
+  transform: translateX(4px);
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .pistas-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .pistas-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pistas-count {
+    margin-left: 0;
+    text-align: center;
+  }
+}

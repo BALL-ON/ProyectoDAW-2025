@@ -1,0 +1,99 @@
+<section class="pistas-page">
+
+  <!-- Botón volver y breadcrumb -->
+  <button type="button" class="btn-back" (click)="volverAlListado()">
+    ← Volver a polideportivos
+  </button>
+
+  <!-- Cabecera del polideportivo -->
+  <header class="pistas-header" *ngIf="polideportivo">
+    <p class="pistas-eyebrow">CENTRO DEPORTIVO</p>
+    <h1 class="pistas-title">{{ polideportivo.nombre }}</h1>
+    <p class="pistas-meta">
+      📍 {{ polideportivo.direccion }} · {{ polideportivo.poblacion }}
+    </p>
+  </header>
+
+  <div *ngIf="cargandoPoli && !polideportivo" class="pistas-state">
+    Cargando información del centro…
+  </div>
+
+  <!-- Filtros -->
+  <div class="pistas-filters" *ngIf="todas.length > 0">
+    <label class="filter-label">Tipo de pista:</label>
+    <select [formControl]="filtroTipo" class="filter-select">
+      <option value="">Todos los tipos</option>
+      <option *ngFor="let tipo of tiposDisponibles" [value]="tipo">
+        {{ tipo }}
+      </option>
+    </select>
+    <button
+      type="button"
+      class="btn-clear"
+      (click)="limpiarFiltros()"
+      [disabled]="!filtroTipo.value"
+    >
+      ✕ Limpiar
+    </button>
+    <span class="pistas-count">
+      {{ filtradas.length }} {{ filtradas.length === 1 ? 'pista' : 'pistas' }}
+    </span>
+  </div>
+
+  <!-- Estados -->
+  <div *ngIf="cargandoPistas" class="pistas-state">Cargando pistas…</div>
+  <div *ngIf="errorCarga" class="pistas-state pistas-state-error">{{ errorCarga }}</div>
+  <div
+    *ngIf="!cargandoPistas && !errorCarga && filtradas.length === 0 && todas.length > 0"
+    class="pistas-state"
+  >
+    Ninguna pista coincide con el filtro seleccionado.
+  </div>
+  <div
+    *ngIf="!cargandoPistas && !errorCarga && todas.length === 0"
+    class="pistas-state"
+  >
+    Este centro aún no tiene pistas disponibles.
+  </div>
+
+  <!-- Grid de pistas -->
+  <div class="pistas-grid" *ngIf="!cargandoPistas && filtradas.length > 0">
+    <article
+      *ngFor="let p of filtradas"
+      class="pista-card"
+      tabindex="0"
+      role="button"
+      (click)="reservarPista(p)"
+      (keyup.enter)="reservarPista(p)"
+    >
+      <div class="pista-card-top">
+        <span class="pista-icon">{{ iconoPorTipo(p.nombreTipoPista) }}</span>
+        <span class="pista-tipo">{{ p.nombreTipoPista }}</span>
+      </div>
+
+      <h2 class="pista-card-name">{{ p.nombrePista }}</h2>
+
+      <div class="pista-specs">
+        <div class="spec">
+          <span class="spec-icon">👥</span>
+          <span class="spec-value">{{ p.capacidad }}</span>
+          <span class="spec-label">jugadores</span>
+        </div>
+        <div class="spec">
+          <span class="spec-icon">💶</span>
+          <span class="spec-value">{{ p.precioHora | currency: 'EUR' }}</span>
+          <span class="spec-label">/ hora</span>
+        </div>
+      </div>
+
+      <div class="pista-badges" *ngIf="p.requierePagoPrevio">
+        <span class="badge badge-warn">Requiere pago previo</span>
+      </div>
+
+      <div class="pista-card-footer">
+        <span class="pista-cta">Reservar →</span>
+      </div>
+    </article>
+  </div>
+
+</section>
