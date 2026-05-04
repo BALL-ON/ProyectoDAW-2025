@@ -25,16 +25,19 @@ public class JwtService {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-	public String generateToken(String username) {
+	public String generateToken(String email, boolean remember) {
+        // Si se marca "Recordarme", le damos 30 días en milisegundos. Si no usamos el tiempo por defecto
+        long tiempoCaducidad = remember ? 1000L * 60 * 60 * 24 * 30 : expirationMs;
+
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expirationMs))
+                .expiration(new Date(System.currentTimeMillis() + tiempoCaducidad))
                 .signWith(getKey())
                 .compact();
     }
 
-	public String extractUsername(String token) {
+	public String extractEmail(String token) {
         return Jwts.parser()
                 .verifyWith(getKey())
                 .build()
@@ -45,8 +48,8 @@ public class JwtService {
 
 	public boolean isTokenValid(String token, UserDetails userDetails) {
 		try {
-			String username = extractUsername(token);
-			return username.equals(userDetails.getUsername()) && !isExpired(token);
+			String email = extractEmail(token);
+			return email.equals(userDetails.getUsername()) && !isExpired(token);
 		} catch (Exception e) {
 			return false;
 		}

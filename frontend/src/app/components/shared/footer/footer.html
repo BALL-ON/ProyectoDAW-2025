@@ -1,1 +1,104 @@
-<p>footer works!</p>
+<footer class="app-footer">
+  <div class="footer-inner">
+ 
+    <!-- TOP: Logo + descripción + columnas de enlaces -->
+    <div class="footer-top">
+ 
+      <!-- Marca -->
+      <div class="footer-brand">
+        <a class="footer-logo" href="#">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20"/>
+            </svg>
+          </div>
+          <span class="logo-text">Ballon</span>
+        </a>
+        <p class="footer-desc">
+          Gestiona tus reservas de pistas, canchas y espacios deportivos en segundos. Sin colas, sin llamadas.
+        </p>
+        <div class="footer-badge">
+          <span class="badge-dot"></span>
+          Plataforma Deportiva
+        </div>
+      </div>
+ 
+      <!-- Columnas de navegación -->
+      <div class="footer-cols">
+ 
+        <div class="footer-col">
+          <div class="col-title">Contacto</div>
+          <a class="col-link col-link--icon" href="tel:+34900123456">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.08 4.18 2 2 0 0 1 5.09 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +34 900 123 456
+          </a>
+          <a class="col-link col-link--icon" href="mailto:info@deportivaapp.es">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            info&#64;deportivaapp.es
+          </a>
+          <a class="col-link col-link--icon" href="#">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Sevilla, España
+          </a>
+        </div>
+ 
+        <div class="footer-col">
+          <div class="col-title">Síguenos</div>
+          <div class="social-grid">
+            <a class="social-btn" href="#" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a class="social-btn" href="#" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a class="social-btn" href="#" aria-label="Twitter / X">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l16 16M4 20 20 4"/></svg>
+            </a>
+          </div>
+        </div>
+ 
+        <div class="footer-col">
+          <div class="col-title">Legal</div>
+          <a class="col-link" href="#">Términos de Servicio</a>
+          <a class="col-link" href="#">Política de Privacidad</a>
+          <a class="col-link" href="#">Cookies</a>
+        </div>
+ 
+      </div>
+    </div>
+ 
+    <!-- SEPARADOR -->
+    <div class="footer-divider"></div>
+ 
+    <!-- BOTTOM: Copyright + stats -->
+    <div class="footer-bottom">
+      <p class="footer-copy">
+        &copy; {{ currentYear }} Ballon. Todos los derechos reservados.
+      </p>
+      <div class="footer-stats">
+        <div class="footer-stat">
+          <span class="stat-num">2.5K+</span>
+          <span class="stat-label">Usuarios</span>
+        </div>
+        <div class="footer-stat">
+          <span class="stat-num">99%</span>
+          <span class="stat-label">Satisfacción</span>
+        </div>
+        <div class="footer-stat">
+          <span class="stat-num">24/7</span>
+          <span class="stat-label">Disponible</span>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+</footer>
+
+<!-- COSAS QUE FALTAN EN EL FOOTER:
+ - Cambiar el logo por el SVG real de Ballon (Obviamente también hacerlo)
+ - Modificar los enlaces de contacto para que sean reales (teléfono, email, dirección)
+ - Modificar los enlaces de redes sociales para que apunten a las cuentas reales de Ballon (A lo mejor crearlos, no sé, pero poner enlaces que no lleven a ninguna parte no me gusta mucho).
+ - Modificar los enlaces legales para que apunten a las páginas reales de Términos de Servicio, Política de Privacidad, Cookies, etc. (Si esas páginas no existen, al menos hacerlas y poner algo de contenido, aunque sea genérico).
+ - 
+-->
