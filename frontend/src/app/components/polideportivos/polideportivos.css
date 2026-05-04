@@ -1,0 +1,253 @@
+:host {
+  display: block;
+  font-family: 'Barlow', sans-serif;
+  color: var(--text);
+}
+
+/* ─── Cabecera ─────────────────────────────────────────────────────────── */
+.poli-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.poli-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.poli-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--blue);
+  text-shadow: 0 0 20px var(--blue-glow);
+  margin-bottom: 0.5rem;
+}
+
+.poli-subtitle {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+}
+
+/* ─── Filtros ──────────────────────────────────────────────────────────── */
+.poli-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.filter-input {
+  display: flex;
+  align-items: center;
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0 12px;
+  flex: 1 1 240px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.filter-input:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
+}
+
+.filter-icon {
+  color: var(--text-muted);
+  margin-right: 8px;
+  font-size: 0.95rem;
+}
+
+.filter-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 12px 0;
+}
+
+.filter-input input::placeholder {
+  color: var(--text-muted);
+}
+
+.btn-clear {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-clear:hover:not(:disabled) {
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.btn-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Estados (loading / error / vacío) ────────────────────────────────── */
+.poli-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.poli-state-error {
+  color: var(--error);
+}
+
+/* ─── Grid de tarjetas ─────────────────────────────────────────────────── */
+.poli-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.poli-card {
+  position: relative;
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+/* Línea de acento superior */
+.poli-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.poli-card:hover,
+.poli-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: var(--blue);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5),
+              0 0 0 1px var(--blue-dim),
+              0 0 30px var(--blue-glow);
+  outline: none;
+}
+
+.poli-card:hover::before,
+.poli-card:focus-visible::before {
+  opacity: 1;
+}
+
+.poli-card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  filter: drop-shadow(0 0 12px var(--blue-glow));
+}
+
+.poli-card-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.poli-card-info {
+  margin-bottom: 1.25rem;
+}
+
+.poli-card-info p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.info-label {
+  flex-shrink: 0;
+  width: 18px;
+}
+
+/* ─── Footer de la tarjeta ─────────────────────────────────────────────── */
+.poli-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.chip {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.chip-online {
+  color: var(--blue);
+  border-color: var(--blue);
+  background: var(--blue-dim);
+}
+
+.chip-presencial {
+  color: var(--text-muted);
+  border-color: var(--border);
+  background: var(--black-3);
+}
+
+.chip-ambos {
+  color: #9b8bff;
+  border-color: rgba(155, 139, 255, 0.4);
+  background: rgba(155, 139, 255, 0.1);
+}
+
+.poli-cta {
+  color: var(--blue);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: transform 0.25s ease;
+}
+
+.poli-card:hover .poli-cta {
+  transform: translateX(4px);
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .poli-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .poli-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-clear {
+    width: 100%;
+  }
+}

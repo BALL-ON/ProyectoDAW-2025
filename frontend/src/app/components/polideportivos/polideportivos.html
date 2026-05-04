@@ -1,1 +1,78 @@
-<p>polideportivos works!</p>
+<section class="poli-page">
+
+  <!-- Cabecera -->
+  <header class="poli-header">
+    <h1 class="poli-title">POLIDEPORTIVOS</h1>
+    <p class="poli-subtitle">
+      Selecciona un centro para ver sus pistas y reservar
+    </p>
+  </header>
+
+  <!-- Filtros -->
+  <div class="poli-filters">
+    <div class="filter-input">
+      <span class="filter-icon">🔎</span>
+      <input
+        type="text"
+        placeholder="Buscar por nombre…"
+        [formControl]="filtroNombre"
+      />
+    </div>
+    <div class="filter-input">
+      <span class="filter-icon">📍</span>
+      <input
+        type="text"
+        placeholder="Filtrar por población…"
+        [formControl]="filtroPoblacion"
+      />
+    </div>
+    <button
+      type="button"
+      class="btn-clear"
+      (click)="limpiarFiltros()"
+      [disabled]="!filtroNombre.value && !filtroPoblacion.value"
+    >
+      ✕ Limpiar
+    </button>
+  </div>
+
+  <!-- Estados -->
+  <div *ngIf="cargando" class="poli-state">Cargando polideportivos…</div>
+  <div *ngIf="errorCarga" class="poli-state poli-state-error">{{ errorCarga }}</div>
+  <div *ngIf="!cargando && !errorCarga && filtrados.length === 0" class="poli-state">
+    No hay polideportivos que coincidan con la búsqueda.
+  </div>
+
+  <!-- Grid de tarjetas -->
+  <div class="poli-grid" *ngIf="!cargando && filtrados.length > 0">
+    <article
+      *ngFor="let p of filtrados"
+      class="poli-card"
+      tabindex="0"
+      role="button"
+      (click)="abrirPolideportivo(p)"
+      (keyup.enter)="abrirPolideportivo(p)"
+    >
+      <div class="poli-card-icon">🏟️</div>
+
+      <h2 class="poli-card-name">{{ p.nombre }}</h2>
+
+      <div class="poli-card-info">
+        <p><span class="info-label">📍</span> {{ p.direccion }}</p>
+        <p><span class="info-label">🏘️</span> {{ p.poblacion }}</p>
+      </div>
+
+      <div class="poli-card-footer">
+        <span class="chip" [ngClass]="{
+          'chip-online': p.metodoPagoPreferido === 'Online',
+          'chip-presencial': p.metodoPagoPreferido === 'Presencial',
+          'chip-ambos': p.metodoPagoPreferido === 'Ambos'
+        }">
+          {{ etiquetaMetodo(p.metodoPagoPreferido) }}
+        </span>
+        <span class="poli-cta">Ver pistas →</span>
+      </div>
+    </article>
+  </div>
+
+</section>
