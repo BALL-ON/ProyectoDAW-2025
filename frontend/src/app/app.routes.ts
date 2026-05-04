@@ -5,12 +5,16 @@ import { Login } from './components/login/login';
 import { Registro } from './components/registro/registro';
 import { Polideportivos } from './components/polideportivos/polideportivos';
 import { Contacto } from './components/contacto/contacto';
+import { Reserva } from './components/reserva/reserva';
+import { Pistas } from './components/pistas/pistas';
 
 
 export const routes: Routes = [
   { path: '', component: Inicio },
   { path: 'faq', component: Faq },
   { path: 'polideportivos', component: Polideportivos },
+  { path: 'polideportivos/:id/pistas', component: Pistas },
+  { path: 'reserva/:idPista', component: Reserva },
   { path: 'contacto', component: Contacto },
   { path: 'login', component: Login },
   { path: 'registro', component: Registro }
