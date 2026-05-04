@@ -1,1 +1,53 @@
-<div></div>
+Header.component · HTML
+Copiar
+
+<header class="app-header">
+  <div class="header-inner">
+ 
+    <!-- LOGO -->
+    <a class="header-logo" href="#">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20"/>
+        </svg>
+      </div>
+      <span class="logo-text">Ballon</span>
+    </a>
+ 
+    <!-- NAV CENTRAL -->
+    <nav class="header-nav" [class.open]="menuOpen()">
+      <a routerLink="" class="nav-link" [class.active]="activeRoute() === 'inicio'" (click)="setActive('inicio')">
+        Inicio
+      </a>
+      <a class="nav-link" [class.active]="activeRoute() === 'polideportivos'" (click)="setActive('polideportivos')">
+        Polideportivos
+      </a>
+      <a class="nav-link" [class.active]="activeRoute() === 'contacto'" (click)="setActive('contacto')">
+        Contacto
+      </a>
+      <a routerLink="/faq" class="nav-link" [class.active]="activeRoute() === 'faq'" (click)="setActive('faq')">
+        FAQ
+      </a>
+    </nav>
+ 
+    <!-- DERECHA -->
+    <div class="header-right">
+      <button class="btn-cuenta">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        Mi Cuenta
+      </button>
+ 
+      <!-- Hamburger mobile -->
+      <button class="hamburger" (click)="toggleMenu()" [class.open]="menuOpen()" aria-label="Menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+ 
+  </div>
+</header>
