@@ -32,7 +32,7 @@ body::before {
     linear-gradient(90deg, rgba(26,159,255,0.03) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1; /* Cambia a 1 */
 }
 
 body::after {
@@ -45,4 +45,21 @@ body::after {
   background: radial-gradient(circle, rgba(26,159,255,0.12) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
+}
+
+main.container {
+  position: relative;
+  z-index: 1;
+  margin-top: 64px; /* Espacio para el header fixed */
+  flex: 1;
+}
+
+app-header {
+  position: relative;
+  z-index: 100;
+}
+
+app-footer {
+  position: relative;
+  z-index: 1;
 }
