@@ -1,6 +1,3 @@
-Header.component · HTML
-Copiar
-
 <header class="app-header">
   <div class="header-inner">
  
@@ -33,13 +30,13 @@ Copiar
  
     <!-- DERECHA -->
     <div class="header-right">
-      <button class="btn-cuenta">
+      <a class="btn-cuenta" routerLink="/login">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="8" r="4"/>
           <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
         </svg>
         Mi Cuenta
-      </button>
+      </a>
  
       <!-- Hamburger mobile -->
       <button class="hamburger" (click)="toggleMenu()" [class.open]="menuOpen()" aria-label="Menú">
@@ -51,3 +48,11 @@ Copiar
  
   </div>
 </header>
+
+
+<!-- COSAS QUE FALTAN EN EL HEADER:
+ - Cambiar el logo por el SVG real de Ballon (Obviamente también hacerlo)
+ - Cambiar el icono de "Mi Cuenta" por uno de FontAwesome o similar
+ - Modificar la lógica del botón de "Mi Cuenta" para que dependiendo de si el usuario está logueado o no, muestre "Mi Cuenta" o "Iniciar Sesión", incluso a lo mejor mostrar un menú desplegable con opciones como "Perfil", "Mis Reservas", "Cerrar Sesión", etc. (Esto último es opcional, pero le daría un toque más profesional)
+ - En la versión móvil, no aparece ninguna opción de Mi Cuenta, estaría bien que apareciese únicamente el icono.
+-->
