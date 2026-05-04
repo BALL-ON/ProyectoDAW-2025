@@ -20,10 +20,10 @@ Copiar
       <a routerLink="" class="nav-link" [class.active]="activeRoute() === 'inicio'" (click)="setActive('inicio')">
         Inicio
       </a>
-      <a class="nav-link" [class.active]="activeRoute() === 'polideportivos'" (click)="setActive('polideportivos')">
+      <a routerLink="/polideportivos" class="nav-link" [class.active]="activeRoute() === 'polideportivos'" (click)="setActive('polideportivos')">
         Polideportivos
       </a>
-      <a class="nav-link" [class.active]="activeRoute() === 'contacto'" (click)="setActive('contacto')">
+      <a routerLink="/contacto" class="nav-link" [class.active]="activeRoute() === 'contacto'" (click)="setActive('contacto')">
         Contacto
       </a>
       <a routerLink="/faq" class="nav-link" [class.active]="activeRoute() === 'faq'" (click)="setActive('faq')">
