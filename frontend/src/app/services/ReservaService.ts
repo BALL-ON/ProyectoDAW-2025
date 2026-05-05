@@ -1,0 +1,53 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import {
+  OcupacionSlot,
+  ReservaRequest,
+  ReservaResponse,
+} from '../model/reserva.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ReservaService {
+  
+  private readonly apiUrl = 'http://localhost:8080/api/reservas';
+
+  constructor(private http: HttpClient) {}
+
+  /** GET /api/reservas/mis-reservas */
+  misReservas(): Observable<ReservaResponse[]> {
+    return this.http.get<ReservaResponse[]>(`${this.apiUrl}/mis-reservas`);
+  }
+
+  /** GET /api/reservas/mis-reservas/pista/{idPista} */
+  misReservasEnPista(idPista: number): Observable<ReservaResponse[]> {
+    return this.http.get<ReservaResponse[]>(
+      `${this.apiUrl}/mis-reservas/pista/${idPista}`
+    );
+  }
+
+  /**
+   * GET /api/reservas/pista/{idPista}/ocupacion?fecha=YYYY-MM-DD
+   * Devuelve sólo los rangos ocupados (sin datos personales) para pintar
+   * el grid de slots.
+   */
+  ocupacionDelDia(idPista: number, fecha: string): Observable<OcupacionSlot[]> {
+    const params = new HttpParams().set('fecha', fecha);
+    return this.http.get<OcupacionSlot[]>(
+      `${this.apiUrl}/pista/${idPista}/ocupacion`,
+      { params }
+    );
+  }
+
+  /** POST /api/reservas */
+  crearReserva(dto: ReservaRequest): Observable<ReservaResponse> {
+    return this.http.post<ReservaResponse>(this.apiUrl, dto);
+  }
+
+  /** DELETE /api/reservas/{id} */
+  cancelarReserva(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+}

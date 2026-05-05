@@ -1,12 +1,15 @@
 package com.ballon.backend.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
 public class ReservaNotFoundException extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -538802568232785412L;
+	
+	private static final long serialVersionUID = 2615381578288869112L;
 
+	
 	public ReservaNotFoundException(Long id) {
 		super("No ha sido posible encontrar una Reserva con el id " + id);
 	}
