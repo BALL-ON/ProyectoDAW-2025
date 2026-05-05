@@ -1,1 +1,76 @@
-<p>faq works!</p>
+<main class="faq-wrapper">
+
+  <section class="faq-hero">
+    <div class="hero-badge">Centro de Ayuda</div>
+    <h1 class="faq-title">¿Tienes alguna <span class="text-blue">duda?</span></h1>
+    <p class="faq-subtitle">
+      Todo lo que necesitas saber sobre reservas, pagos y acceso a polideportivos.
+    </p>
+
+    <!-- Buscador -->
+    <div class="search-wrap">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar pregunta…"
+        [(ngModel)]="textoBusqueda"
+        (keyup)="filtrarPreguntas()"
+      />
+      <button *ngIf="textoBusqueda !== ''" class="search-clear" (click)="limpiarBusqueda()">✕</button>
+    </div>
+  </section>
+
+  <section class="faq-container">
+
+    <p class="categories-label">Filtrar por categoría</p>
+    
+    <div class="faq-categories">
+      <div
+        *ngFor="let categoria of categorias"
+        class="category-card"
+        [class.active]="categoriaActiva === categoria.id"
+        (click)="seleccionarCategoria(categoria.id)"
+      >
+
+      <span class="material-symbols-outlined">{{ categoria.icono }}</span>
+      
+        {{ categoria.nombre }}
+      </div>
+    </div>
+
+    <!-- Mensaje si no hay resultados -->
+    <div *ngIf="preguntasFiltradas.length === 0" class="no-results">
+      <h3>No encontramos resultados</h3>
+      <p>Prueba con otra búsqueda o explora las categorías.</p>
+    </div>
+
+    <div class="faq-list">
+      <div *ngFor="let item of preguntasFiltradas" class="faq-item" [class.open]="item.abierta">
+        
+        <!-- Pregunta -->
+        <div class="faq-summary" (click)="abrirCerrarPregunta(item)">
+          <span class="q-text">{{ item.pregunta }}</span>
+          <span class="q-icon">{{ item.abierta ? '-' : '+' }}</span>
+        </div>
+
+        <!-- Respuesta -->
+        <div *ngIf="item.abierta" class="faq-answer">
+          <p>{{ item.respuesta }}</p>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <section class="support-section">
+    <div class="support-card">
+      <h3>¿No encontraste lo que <span class="text-blue">buscabas?</span></h3>
+      <p>Nuestro equipo de soporte te responderá lo antes posible y te ayudará con tu duda.</p>
+      <div class="support-btns">
+        <button class="btn-primary">Contactar con Soporte</button>
+      </div>
+    </div>
+  </section>
+
+</main>
