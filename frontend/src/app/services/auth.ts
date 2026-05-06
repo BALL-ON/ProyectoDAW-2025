@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
@@ -20,6 +20,8 @@ export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly ROL_KEY = 'user_rol';
 
+  // Señal que al arrancar comprueba si hay token para sabe si está logueado
+  loggedSignal = signal<boolean>(this.isLoggedIn());
 
   // Iniciar Sesión
   login(email: string, contrasena: string, remember: boolean): Observable<AuthResponse> {
@@ -27,6 +29,7 @@ export class AuthService {
       tap(response => {
         if (response.token) {
           this.guardarSesion(response.token, response.rol, remember);
+          this.loggedSignal.set(true);
         }
       })
     );

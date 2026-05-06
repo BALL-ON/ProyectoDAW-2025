@@ -1,23 +1,42 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { RouterLink, Router, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
+
 export class Header {
-activeRoute = signal<string>('inicio');
+
+  authService = inject(AuthService);
+  private router = inject(Router);
+
   menuOpen = signal<boolean>(false);
- 
-  setActive(route: string): void {
-    this.activeRoute.set(route);
-    this.menuOpen.set(false); // Cierra el menú móvil al navegar
-  }
- 
+  dropdownOpen = signal<boolean>(false);
+
   toggleMenu(): void {
     this.menuOpen.set(!this.menuOpen());
+  }
+
+  toggleDropdown(): void {
+    this.dropdownOpen.set(!this.dropdownOpen());
+  }
+
+  closeMobileMenu(): void {
+    this.menuOpen.set(false);
+  }
+
+  closeDropdown(): void {
+    this.dropdownOpen.set(false);
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.closeDropdown();
+    this.router.navigate(['/login']); // Redirige al usuario tras salir
   }
 }

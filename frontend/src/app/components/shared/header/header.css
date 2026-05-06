@@ -1,8 +1,5 @@
 /* ════════════════════════════════════════════════════════════════════════
    Ball·On — Header
-   El elemento exterior <header class="app-header"> ya es full-width
-   (position: fixed; left:0; right:0). Lo único que limitaba la anchura
-   era .header-inner con max-width: 1200px → ahora va a 100%.
    ════════════════════════════════════════════════════════════════════════ */
 
 .app-header {
@@ -19,7 +16,6 @@
 }
 
 .header-inner {
-  /* full-width; padding lateral fluido (var --page-pad del global) */
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
@@ -105,12 +101,17 @@
   border-radius: 2px;
 }
 
-/* ---- DERECHA ---- */
+/* ---- DERECHA (Usuario y Menú) ---- */
 .header-right {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
+}
+
+.user-menu-container {
+  position: relative;
+  display: inline-block;
 }
 
 .btn-cuenta {
@@ -136,6 +137,63 @@
   border-color: var(--blue);
   color: var(--blue);
   background: var(--blue-dim);
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+}
+.chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* ---- DESPLEGABLE MI CUENTA ---- */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 10px;
+  background: rgba(10, 10, 18, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Barlow', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.dropdown-item:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-item.logout {
+  color: #ff4757;
+  border-top: 1px solid var(--border);
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(255, 71, 87, 0.1);
+  color: #ff6b81;
 }
 
 /* ---- HAMBURGER (móvil) ---- */
@@ -203,6 +261,12 @@
   }
 
   .btn-cuenta {
+    padding: 8px;
+    gap: 0;
+  }
+
+  .btn-text,
+  .chevron {
     display: none;
   }
 }

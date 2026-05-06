@@ -2,7 +2,7 @@
   <div class="header-inner">
  
     <!-- LOGO -->
-    <a class="header-logo" href="#">
+    <a class="header-logo" routerLink="/" (click)="closeMobileMenu()">
       <div class="logo-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <circle cx="12" cy="12" r="10"/>
@@ -14,29 +14,61 @@
  
     <!-- NAV CENTRAL -->
     <nav class="header-nav" [class.open]="menuOpen()">
-      <a routerLink="" class="nav-link" [class.active]="activeRoute() === 'inicio'" (click)="setActive('inicio')">
+      <a routerLink="/" 
+         routerLinkActive="active" 
+         [routerLinkActiveOptions]="{exact: true}" 
+         class="nav-link" 
+         (click)="closeMobileMenu()">
         Inicio
       </a>
-      <a routerLink="/polideportivos" class="nav-link" [class.active]="activeRoute() === 'polideportivos'" (click)="setActive('polideportivos')">
+      <a routerLink="/polideportivos" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
         Polideportivos
       </a>
-      <a routerLink="/contacto" class="nav-link" [class.active]="activeRoute() === 'contacto'" (click)="setActive('contacto')">
+      <a routerLink="/contacto" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
         Contacto
       </a>
-      <a routerLink="/faq" class="nav-link" [class.active]="activeRoute() === 'faq'" (click)="setActive('faq')">
+      <a routerLink="/faq" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
         FAQ
       </a>
     </nav>
  
     <!-- DERECHA -->
     <div class="header-right">
-      <a class="btn-cuenta" routerLink="/login">
+    
+    @if (authService.loggedSignal()) {
+      
+      <div class="user-menu-container">
+        <button class="btn-cuenta" (click)="toggleDropdown()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+          <span class="btn-text">Mi Cuenta</span>
+          <svg class="chevron" [class.rotated]="dropdownOpen()" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+
+        @if (dropdownOpen()) {
+          <div class="dropdown-menu">
+            <a routerLink="/perfil" class="dropdown-item" (click)="closeDropdown()">Mi Perfil</a>
+            <a routerLink="/mis-reservas" class="dropdown-item" (click)="closeDropdown()">Mis Reservas</a>
+            <button class="dropdown-item logout" (click)="logout()">Cerrar Sesión</button>
+          </div>
+        }
+      </div>
+
+    } @else {
+      
+      <!-- Enlace al login cuando NO hay sesión -->
+      <a routerLink="/login" class="btn-cuenta login-btn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
         </svg>
-        Mi Cuenta
+        <span class="btn-text">Iniciar Sesión</span>
       </a>
+      
+    }
  
       <!-- Hamburger mobile -->
       <button class="hamburger" (click)="toggleMenu()" [class.open]="menuOpen()" aria-label="Menú">
