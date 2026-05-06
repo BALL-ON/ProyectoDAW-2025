@@ -1,17 +1,48 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Ball·On — Estilos globales
+   ════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --black: #0a0a0c;
+  /* ─── Fondos ───────────────────────────────────────────────────────── */
+  --black:   #0a0a0c;
   --black-2: #111114;
   --black-3: #1a1a1f;
-  --blue: #1a9fff;
+
+  /* ─── Acento azul ──────────────────────────────────────────────────── */
+  --blue:      #1a9fff;
   --blue-glow: rgba(26, 159, 255, 0.35);
-  --blue-dim: rgba(26, 159, 255, 0.12);
-  --text: #f0f0f5;
+  --blue-dim:  rgba(26, 159, 255, 0.12);
+
+  /* ─── Texto ────────────────────────────────────────────────────────── */
+  --text:       #f0f0f5;
   --text-muted: #6b6b80;
-  --border: rgba(255,255,255,0.07);
-  --error: #ff4d4d;
+  --border:     rgba(255, 255, 255, 0.07);
+
+  /* ─── Estados ──────────────────────────────────────────────────────── */
+  --error:    #ff4d4d;
+  --success:  #00ff82;
+  --warning:  #ffc800;
+
+  /* ─── Layout ───────────────────────────────────────────────────────── */
+  --header-height: 64px;
+
+  /* ─── Padding lateral consistente entre páginas ────────────────────── */
+  /* Lo usan las páginas Y el header/footer en su propio CSS */
+  --page-pad: clamp(16px, 3vw, 48px);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* ─── Reset ───────────────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
 
 body {
   font-family: 'Barlow', sans-serif;
@@ -20,21 +51,22 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
 }
 
+/* Grid decorativo de fondo */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(26,159,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(26,159,255,0.03) 1px, transparent 1px);
+    linear-gradient(rgba(26, 159, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 159, 255, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
-  z-index: 1; /* Cambia a 1 */
+  z-index: 0;
 }
 
+/* Halo azul en la esquina superior derecha */
 body::after {
   content: '';
   position: fixed;
@@ -42,24 +74,73 @@ body::after {
   right: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(26,159,255,0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(26, 159, 255, 0.12) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
-main.container {
+/* ════════════════════════════════════════════════════════════════════════
+   <main> — el contenedor de la página activa
+   Anula los max-width que Bootstrap aplica a .container, deja que cada
+   componente interno (inicio, polideportivos, pistas, reserva...) decida
+   su propio padding y max-width según convenga.
+   ════════════════════════════════════════════════════════════════════════ */
+main,
+main.container,
+main.container-fluid,
+main.container-lg,
+main.container-md,
+main.container-sm,
+main.container-xl,
+main.container-xxl {
   position: relative;
   z-index: 1;
-  margin-top: 64px; /* Espacio para el header fixed */
+  margin-top: var(--header-height);
   flex: 1;
+  width: 100%;
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   <app-header> y <app-footer>
+   Los componentes Angular tienen display inline por defecto → forzamos
+   block para que ocupen todo el ancho como elementos. Lo demás (layout
+   interno, padding, etc.) lo gestionan ellos en sus propios .css.
+   ──────────────────────────────────────────────────────────────────────── */
+app-header,
+app-footer {
+  display: block;
+  width: 100%;
 }
 
 app-header {
-  position: relative;
   z-index: 100;
 }
 
 app-footer {
-  position: relative;
   z-index: 1;
+}
+
+/* ─── Selección de texto con la marca ─────────────────────────────────── */
+::selection {
+  background: var(--blue-dim);
+  color: var(--text);
+}
+
+/* ─── Scroll-bar custom ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--black-3);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--blue);
 }

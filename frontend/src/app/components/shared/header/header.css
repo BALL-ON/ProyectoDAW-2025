@@ -1,3 +1,10 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Ball·On — Header
+   El elemento exterior <header class="app-header"> ya es full-width
+   (position: fixed; left:0; right:0). Lo único que limitaba la anchura
+   era .header-inner con max-width: 1200px → ahora va a 100%.
+   ════════════════════════════════════════════════════════════════════════ */
+
 .app-header {
   position: fixed;
   top: 0;
@@ -10,18 +17,20 @@
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
- 
+
 .header-inner {
-  max-width: 1200px;
+  /* full-width; padding lateral fluido (var --page-pad del global) */
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   height: 100%;
-  padding: 0 24px;
+  padding: 0 var(--page-pad);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
 }
- 
+
 /* ---- LOGO ---- */
 .header-logo {
   display: flex;
@@ -30,7 +39,7 @@
   text-decoration: none;
   flex-shrink: 0;
 }
- 
+
 .logo-icon {
   width: 36px;
   height: 36px;
@@ -41,7 +50,7 @@
   color: #fff;
   box-shadow: 0 4px 14px rgba(26, 159, 255, 0.35);
 }
- 
+
 .logo-text {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 22px;
@@ -50,7 +59,7 @@
   letter-spacing: 1px;
   color: var(--text);
 }
- 
+
 /* ---- NAV CENTRAL ---- */
 .header-nav {
   display: flex;
@@ -59,7 +68,7 @@
   flex: 1;
   justify-content: center;
 }
- 
+
 .nav-link {
   position: relative;
   padding: 8px 14px;
@@ -74,16 +83,16 @@
   transition: color 0.2s, background 0.2s;
   user-select: none;
 }
- 
+
 .nav-link:hover {
   color: var(--text);
   background: rgba(255, 255, 255, 0.05);
 }
- 
+
 .nav-link.active {
   color: var(--blue);
 }
- 
+
 .nav-link.active::after {
   content: '';
   position: absolute;
@@ -95,7 +104,7 @@
   background: var(--blue);
   border-radius: 2px;
 }
- 
+
 /* ---- DERECHA ---- */
 .header-right {
   display: flex;
@@ -103,7 +112,7 @@
   gap: 12px;
   flex-shrink: 0;
 }
- 
+
 .btn-cuenta {
   display: flex;
   align-items: center;
@@ -122,13 +131,13 @@
   transition: border-color 0.2s, color 0.2s, background 0.2s;
   text-decoration: none;
 }
- 
+
 .btn-cuenta:hover {
   border-color: var(--blue);
   color: var(--blue);
   background: var(--blue-dim);
 }
- 
+
 /* ---- HAMBURGER (móvil) ---- */
 .hamburger {
   display: none;
@@ -143,7 +152,7 @@
   border-radius: 8px;
   cursor: pointer;
 }
- 
+
 .hamburger span {
   display: block;
   height: 1.5px;
@@ -152,19 +161,19 @@
   transition: transform 0.25s, opacity 0.25s;
   transform-origin: center;
 }
- 
+
 .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
- 
-/* ================================================
-   RESPONSIVE MÓVIL
-   ================================================ */
+
+/* ════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
   }
- 
+
   .header-nav {
     display: none;
     position: absolute;
@@ -176,23 +185,23 @@
     gap: 0;
     background: rgba(10, 10, 18, 0.97);
     border-bottom: 1px solid var(--border);
-    padding: 8px 16px 16px;
+    padding: 8px var(--page-pad) 16px;
   }
- 
+
   .header-nav.open {
     display: flex;
   }
- 
+
   .nav-link {
     padding: 12px 16px;
     border-radius: 8px;
     font-size: 14px;
   }
- 
+
   .nav-link.active::after {
     display: none;
   }
- 
+
   .btn-cuenta {
     display: none;
   }
