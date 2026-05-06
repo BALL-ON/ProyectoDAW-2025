@@ -1,1 +1,97 @@
-<p>contacto works!</p>
+<main class="contact-wrapper">
+
+  <section class="contact-hero">
+    <div class="hero-badge">Contáctanos</div>
+    <h1 class="contact-title">Estamos aquí para <span class="text-blue">ayudarte</span></h1>
+    <p class="contact-subtitle">
+      Escríbenos con cualquier duda sobre reservas, pagos o instalaciones.
+    </p>
+  </section>
+
+  <section class="contact-main">
+
+    <!-- Formulario -->
+    <div class="contact-card">
+      <p class="card-title">Envíanos un mensaje</p>
+
+      <form (ngSubmit)="enviarMensaje()">
+        <div class="row-2">
+          <div class="field">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" class="inp" type="text" placeholder="Tu nombre"
+                   [(ngModel)]="form.nombre" name="nombre" />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" class="inp" type="email" placeholder="correo@ejemplo.com"
+                   [(ngModel)]="form.email" name="email" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="asunto">Asunto</label>
+          <select id="asunto" class="inp" [(ngModel)]="form.asunto" name="asunto">
+            <option value="reserva">Problema con una reserva</option>
+            <option value="pago">Consulta sobre pagos</option>
+            <option value="instalaciones">Información de instalaciones</option>
+            <option value="cuenta">Mi cuenta</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" class="inp" rows="5"
+                    placeholder="Cuéntanos en qué podemos ayudarte…"
+                    [(ngModel)]="form.mensaje" name="mensaje"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="enviando">
+          {{ enviando ? 'Enviando…' : 'Enviar mensaje' }}
+        </button>
+
+        <p *ngIf="enviado" class="success-msg">✓ Mensaje enviado. Te responderemos pronto.</p>
+      </form>
+    </div>
+
+    <!-- Info lateral -->
+    <div class="contact-info">
+      <div class="contact-card">
+        <p class="card-title">Contacto directo</p>
+
+        <div class="info-item">
+          <span class="material-symbols-outlined info-icon">call</span>
+          <div>
+            <p class="info-label">Teléfono</p>
+            <p class="info-val">+34 900 123 456</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="material-symbols-outlined info-icon">mail</span>
+          <div>
+            <p class="info-label">Email</p>
+            <p class="info-val">info&#64;deportivaapp.es</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="material-symbols-outlined info-icon">location_on</span>
+          <div>
+            <p class="info-label">Dirección</p>
+            <p class="info-val">Sevilla, España</p>
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <p class="hours-text">
+          Lun–Vie: 9:00 – 20:00<br>
+          Fines de semana: cerrado
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+</main>
