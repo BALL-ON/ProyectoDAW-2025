@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ballon.backend.dtos.UsuarioRequestDTO;
 import com.ballon.backend.dtos.UsuarioResponseDTO;
+import com.ballon.backend.dtos.UsuarioUpdateDTO;
 import com.ballon.backend.exception.UsuarioDuplicatedException;
 import com.ballon.backend.exception.UsuarioNotFoundException;
 import com.ballon.backend.mapper.UsuarioMapper;
@@ -88,6 +89,38 @@ public class UsuarioService {
     public Usuario buscarPorUsername(String username) {
         return usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el nombre: " + username));
+    }
+    
+    /*
+     * Método que obtene el perfil de un usuario usando su email por método interno para buscar la entidad
+     */
+    public UsuarioResponseDTO buscarPerfilPorEmail(String email) {
+        // Reutilizamos el método interno para buscar la entidad
+        Usuario usuario = buscarPorEmail(email);
+        return usuarioMapper.toResponse(usuario);
+    }
+
+    /*
+     * Método que obtiene el perfil de un usuario usando su username por método interno para buscar la entidad
+     */
+    public UsuarioResponseDTO buscarPerfilPorUsername(String username) {
+        Usuario usuario = buscarPorUsername(username);
+        return usuarioMapper.toResponse(usuario);
+    }
+    
+    /*
+     * Método que actualiza datos de un usuario
+     */
+    public UsuarioResponseDTO actualizarPerfil(String email, UsuarioUpdateDTO updateDTO) {
+        Usuario usuario = buscarPorEmail(email);
+        
+        usuario.setNombre(updateDTO.getNombre());
+        usuario.setApellidos(updateDTO.getApellidos());
+        usuario.setTelefono(updateDTO.getTelefono());
+        
+        Usuario usuarioActualizado = usuarioRepository.save(usuario);
+
+        return usuarioMapper.toResponse(usuarioActualizado);
     }
 
 }

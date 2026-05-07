@@ -1,0 +1,155 @@
+<div class="page-container">
+  
+  @if (usuario()) {
+    
+    <div class="page-header">
+      <h1 class="page-title">Mi Perfil</h1>
+      <p class="page-subtitle">Gestiona tu información y revisa tu estado en el sistema.</p>
+    </div>
+
+    <!-- ALERTA DE BLOQUEO -->
+    @if (isBloqueado()) {
+      <div class="alert-banner danger">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <div>
+          <strong>Cuenta Bloqueada</strong>
+          <p>Has acumulado demasiadas penalizaciones. No podrás reservar pistas hasta el 
+            <b>{{ usuario()?.bloqueadoHasta | date:'dd/MM/yyyy, HH:mm' }}</b>.
+          </p>
+        </div>
+      </div>
+    }
+
+    <div class="perfil-layout">
+      
+      <!-- COLUMNA IZQUIERDA: TARJETA DE IDENTIDAD -->
+      <aside class="perfil-sidebar">
+        <div class="glass-card identity-card">
+          
+          <div class="avatar-wrapper">
+            <div class="avatar-placeholder">{{ getIniciales() }}</div>
+          </div>
+
+          <h2 class="user-name">{{ usuario()?.nombre }} {{ usuario()?.apellidos }}</h2>
+          <span class="user-badge">{{ usuario()?.rol }}</span>
+
+          @if (usuario()?.idPolideportivoAsignado) {
+            <p class="assigned-center">Polideportivo Asignado: ID {{ usuario()?.idPolideportivoAsignado }}</p>
+          }
+
+          <div class="user-stats">
+            <div class="stat-item" [class.danger-text]="(usuario()?.puntosPenalizacion || 0) > 0">
+              <span class="stat-value">{{ usuario()?.puntosPenalizacion }}</span>
+              <span class="stat-label">Puntos Penalización</span>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- COLUMNA DERECHA: DATOS Y RESEÑAS -->
+      <main class="perfil-content">
+        
+        <!-- DATOS PERSONALES -->
+        <section class="glass-card section-card">
+            <div class="section-header">
+                <h3>Datos Personales</h3>
+                
+                <!-- CAMBIO DE BOTONES SEGÚN EL ESTADO -->
+                <div class="action-buttons">
+                @if (!editando()) {
+                    <button class="btn-action" (click)="activarEdicion()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Editar
+                    </button>
+                } @else {
+                    <button class="btn-action cancel" (click)="cancelarEdicion()">Cancelar</button>
+                    <button class="btn-action save" (click)="guardarCambios()">Guardar</button>
+                }
+                </div>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-group">
+                <label>Nombre</label>
+                @if (!editando()) {
+                    <p>{{ usuario()?.nombre }}</p>
+                } @else {
+                    <input type="text" class="edit-input" [(ngModel)]="datosEdicion().nombre">
+                }
+                </div>
+                
+                <div class="info-group">
+                <label>Apellidos</label>
+                @if (!editando()) {
+                    <p>{{ usuario()?.apellidos }}</p>
+                } @else {
+                    <input type="text" class="edit-input" [(ngModel)]="datosEdicion().apellidos">
+                }
+                </div>
+                
+                <div class="info-group">
+                <label>Correo Electrónico</label>
+                <!-- El email lo dejamos siempre bloqueado como p, no se edita aquí -->
+                <p style="opacity: 0.7;">{{ usuario()?.email }}</p>
+                </div>
+                
+                <div class="info-group">
+                <label>Teléfono</label>
+                @if (!editando()) {
+                    <p>{{ usuario()?.telefono || 'No especificado' }}</p>
+                } @else {
+                    <input type="text" class="edit-input" [(ngModel)]="datosEdicion().telefono" placeholder="Ej: 600123456">
+                }
+                </div>
+            </div>
+            </section>
+
+        <!-- RESEÑAS -->
+        <section class="glass-card section-card">
+          <div class="section-header">
+            <h3>Mis Reseñas</h3>
+          </div>
+          <div class="reviews-list">
+            @for (resena of resenas(); track resena.idResena) {
+              <div class="review-item">
+                <div class="review-header">
+                  <span class="review-place">{{ resena.nombrePista }}</span>
+                  <span class="review-date">{{ resena.fecha | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="review-stars">
+                  <!-- Bucle de 5 estrellas, pintamos de azul las que sean <= a la puntuación de la reseña -->
+                  @for (star of [1,2,3,4,5]; track star) {
+                    <svg width="14" height="14" [attr.fill]="star <= resena.puntuacion ? 'var(--blue)' : 'none'" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                  }
+                </div>
+                <p class="review-text">"{{ resena.comentario }}"</p>
+              </div>
+            } @empty {
+              <p class="empty-state">Aún no has dejado ninguna reseña.</p>
+            }
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+  } @else {
+    
+    <!-- ESTADO DE CARGA MIENTRAS SE CONECTA AL BACKEND -->
+    <div class="loading-state">
+      <svg class="spinner" width="40" height="40" viewBox="0 0 50 50">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="var(--blue, #1a9fff)" stroke-width="5"></circle>
+      </svg>
+      <p>Cargando tu perfil...</p>
+    </div>
+    
+  }
+
+</div>
