@@ -1,5 +1,5 @@
 // enum del backend (com.ballon.backend.models.enums.EstadoReserva)
-export type EstadoReserva = 'Confirmada' | 'Cancelada' | 'Finalizada';
+export type EstadoReserva = 'Confirmada' | 'Cancelada' | 'Disfrutada' | 'No_Asistido';
 
 // enum del backend (com.ballon.backend.models.enums.EstadoPago)
 export type EstadoPago = 'Pendiente' | 'Pagado' | 'Reembolsado';

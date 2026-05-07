@@ -12,7 +12,7 @@ import {
 })
 export class ReservaService {
   
-  private readonly apiUrl = 'http://localhost:8080/api/reservas';
+  private readonly apiUrl = 'http://localhost:9999/api/reservas';
 
   constructor(private http: HttpClient) {}
 
