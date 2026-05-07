@@ -5,10 +5,13 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.dtos.UsuarioResponseDTO;
+import com.ballon.backend.dtos.UsuarioUpdateDTO;
 import com.ballon.backend.mapper.UsuarioMapper;
 import com.ballon.backend.models.Usuario;
 import com.ballon.backend.services.UsuarioService;
@@ -43,5 +46,13 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
         return ResponseEntity.ok(usuarioService.listarTodos());
+    }
+    
+    @PutMapping("/perfil")
+    public ResponseEntity<UsuarioResponseDTO> actualizarPerfil(@RequestBody UsuarioUpdateDTO updateDTO) {
+        String emailDelToken = SecurityContextHolder.getContext().getAuthentication().getName();
+        UsuarioResponseDTO perfilActualizado = usuarioService.actualizarPerfil(emailDelToken, updateDTO); // llamamos al servicio para que lo actualice
+        
+        return ResponseEntity.ok(perfilActualizado);
     }
 }

@@ -7,6 +7,7 @@ import { Polideportivos } from './components/polideportivos/polideportivos';
 import { Contacto } from './components/contacto/contacto';
 import { Reserva } from './components/reserva/reserva';
 import { Pistas } from './components/pistas/pistas';
+import { Perfil } from './components/perfil/perfil';
 
 
 export const routes: Routes = [
@@ -17,5 +18,6 @@ export const routes: Routes = [
   { path: 'reserva/:idPista', component: Reserva },
   { path: 'contacto', component: Contacto },
   { path: 'login', component: Login },
-  { path: 'registro', component: Registro }
+  { path: 'registro', component: Registro },
+  { path: 'perfil', component: Perfil}
 ];

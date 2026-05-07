@@ -1,6 +1,7 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface AuthResponse {
   token: string;
@@ -12,6 +13,7 @@ export interface AuthResponse {
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);  
   
   // URL principal del backend
   private apiUrl = 'http://localhost:9999/auth';
@@ -44,23 +46,32 @@ export class AuthService {
 
   // Guarda el token y el rol
   private guardarSesion(token: string, rol: string, remember: boolean): void {
-    if (remember) {
-      localStorage.setItem(this.TOKEN_KEY, token);
-      localStorage.setItem(this.ROL_KEY, rol);
-    } else {
-      sessionStorage.setItem(this.TOKEN_KEY, token);
-      sessionStorage.setItem(this.ROL_KEY, rol);
+    // Comprobamos que estamos en el navegador para evitar errores con Angular SSR ya que sessionStorage no existe en el servidor.
+      if (isPlatformBrowser(this.platformId)) {
+      if (remember) {
+        localStorage.setItem(this.TOKEN_KEY, token);
+        localStorage.setItem(this.ROL_KEY, rol);
+      } else {
+        sessionStorage.setItem(this.TOKEN_KEY, token);
+        sessionStorage.setItem(this.ROL_KEY, rol);
+      }
     }
   }
 
   // Recupera el token para enviarlo en futuras peticiones
   getToken(): string | null {
-    return sessionStorage.getItem(this.TOKEN_KEY) || localStorage.getItem(this.TOKEN_KEY);
+    if (isPlatformBrowser(this.platformId)) {
+      return sessionStorage.getItem(this.TOKEN_KEY) || localStorage.getItem(this.TOKEN_KEY);
+    }
+    return null;
   }
 
   // Recupera el rol para saber si es Admin o Usuario
   getRol(): string | null {
-    return sessionStorage.getItem(this.ROL_KEY) || localStorage.getItem(this.ROL_KEY);
+    if (isPlatformBrowser(this.platformId)) {
+      return sessionStorage.getItem(this.ROL_KEY) || localStorage.getItem(this.ROL_KEY);
+    }
+    return null;
   }
 
   // Comprueba si el usuario está logueado
@@ -71,9 +82,11 @@ export class AuthService {
 
   // Borra todo al cerrar sesión
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.ROL_KEY);
-    sessionStorage.removeItem(this.TOKEN_KEY);
-    sessionStorage.removeItem(this.ROL_KEY);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.TOKEN_KEY);
+      localStorage.removeItem(this.ROL_KEY);
+      sessionStorage.removeItem(this.TOKEN_KEY);
+      sessionStorage.removeItem(this.ROL_KEY);
+    }
   }
 }
