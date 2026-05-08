@@ -1,1 +1,116 @@
-<p>contacto works!</p>
+<main class="contact-wrapper">
+
+  <!-- ── HERO ─────────────────────────────────────────────────────── -->
+  <section class="contact-hero">
+    <div class="hero-badge">
+      <span></span>
+      Contáctanos
+    </div>
+    <h1 class="contact-title">
+      Estamos aquí para <span class="text-blue">ayudarte</span>
+    </h1>
+    <p class="contact-subtitle">
+      Escríbenos con cualquier duda sobre reservas, pagos o instalaciones.
+    </p>
+  </section>
+
+  <!-- ── GRID PRINCIPAL ────────────────────────────────────────────── -->
+  <section class="contact-main">
+
+    <!-- Formulario -->
+    <div class="contact-card">
+      <p class="card-title">Envíanos un mensaje</p>
+
+      <form (ngSubmit)="enviarMensaje()">
+        <div class="row-2">
+          <div class="field">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" class="inp" type="text" placeholder="Tu nombre"
+                   [(ngModel)]="form.nombre" name="nombre" />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" class="inp" type="email" placeholder="correo@ejemplo.com"
+                   [(ngModel)]="form.email" name="email" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="asunto">Asunto</label>
+          <select id="asunto" class="inp" [(ngModel)]="form.asunto" name="asunto">
+            <option value="reserva">Problema con una reserva</option>
+            <option value="pago">Consulta sobre pagos</option>
+            <option value="instalaciones">Información de instalaciones</option>
+            <option value="cuenta">Mi cuenta</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" class="inp" rows="5"
+                    placeholder="Cuéntanos en qué podemos ayudarte…"
+                    [(ngModel)]="form.mensaje" name="mensaje"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="enviando">
+          {{ enviando ? 'Enviando…' : 'Enviar mensaje' }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+
+        <p *ngIf="enviado" class="success-msg">
+          ✓ Mensaje enviado. Te responderemos pronto.
+        </p>
+      </form>
+    </div>
+
+    <!-- Info lateral -->
+    <div class="contact-info">
+      <div class="contact-card">
+        <p class="card-title">Contacto directo</p>
+
+        <div class="info-item">
+          <div class="info-icon-wrap">
+            <span class="material-symbols-outlined">call</span>
+          </div>
+          <div>
+            <p class="info-label">Teléfono</p>
+            <p class="info-val">+34 900 123 456</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon-wrap">
+            <span class="material-symbols-outlined">mail</span>
+          </div>
+          <div>
+            <p class="info-label">Email</p>
+            <p class="info-val">info&#64;deportivaapp.es</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon-wrap">
+            <span class="material-symbols-outlined">location_on</span>
+          </div>
+          <div>
+            <p class="info-label">Dirección</p>
+            <p class="info-val">Sevilla, España</p>
+          </div>
+        </div>
+
+        <div class="info-divider"></div>
+
+        <p class="hours-text">
+          Lun–Vie: 9:00 – 20:00<br>
+          Fines de semana: cerrado
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+</main>
