@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -183,6 +184,60 @@ public class ReservaService {
         if (!conflictos.isEmpty()) {
             throw new BadRequestException(
                     "Ya hay una reserva confirmada que se solapa con ese horario.");
+        }
+    }
+    
+    // ─── Check-in mediante QR ────────────────────────────────────────────────
+    
+    public void realizarCheckIn(String tokenQr) {
+        Reserva reserva = reservaRepository.findByTokenQr(tokenQr)
+                .orElseThrow(() -> new BadRequestException("Código QR inválido"));
+
+        // Comprobar que sea una reserva confirmada
+        if (reserva.getEstadoReserva() != EstadoReserva.Confirmada) {
+            throw new BadRequestException("Esta reserva no está en estado Confirmada (Actual: " + reserva.getEstadoReserva() + ").");
+        }
+
+        // Comprobar que la reserva sea para hoy
+        if (!reserva.getFechaReserva().equals(LocalDate.now())) {
+            throw new BadRequestException("Esta reserva no es para hoy. Es para el " + reserva.getFechaReserva());
+        }
+
+        // Si todo va bien, se escanea el QR
+        reserva.setEstadoReserva(EstadoReserva.Disfrutada);
+        reservaRepository.save(reserva);
+    }
+    
+    
+    // ─── Tarea Automática (Control de No Asistidos) ──────────────────────────
+
+    /**
+     * Se ejecuta automáticamente cada 15 minutos (900000 milisegundos).
+     * Revisa si hay reservas que ya pasaron su margen de 30 minutos sin hacer check-in.
+     */
+    @Scheduled(fixedRate = 900000) 
+    public void procesarNoAsistidos() {
+        LocalDate hoy = LocalDate.now();
+        
+        // Calculamos la hora actual menos 30 minutos
+        LocalTime horaLimite = LocalTime.now().minusMinutes(30);
+
+        // Buscamos las de hoy que ya pasaron el límite de 30 mins
+        List<Reserva> caducadasHoy = reservaRepository.findConfirmadasCaducadasHoy(hoy, horaLimite);
+        for (Reserva r : caducadasHoy) {
+            r.setEstadoReserva(EstadoReserva.No_Asistido);
+        }
+        reservaRepository.saveAll(caducadasHoy);
+
+        // Buscamos las de días anteriores por seguridad
+        List<Reserva> colgadasAyer = reservaRepository.findConfirmadasDiasAnteriores(hoy);
+        for (Reserva r : colgadasAyer) {
+            r.setEstadoReserva(EstadoReserva.No_Asistido);
+        }
+        reservaRepository.saveAll(colgadasAyer);
+        
+        if (!caducadasHoy.isEmpty() || !colgadasAyer.isEmpty()) {
+            System.out.println("CRON: Se han marcado " + (caducadasHoy.size() + colgadasAyer.size()) + " reservas como No_Asistido.");
         }
     }
 }

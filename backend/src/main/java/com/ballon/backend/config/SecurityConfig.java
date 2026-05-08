@@ -64,6 +64,7 @@ public class SecurityConfig {
 	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
 	                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
 	                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
+	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/reservas/**").hasRole("Admin_Centro")
 
 	                .anyRequest().authenticated()
 				).exceptionHandling(ex -> ex
