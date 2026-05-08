@@ -142,6 +142,7 @@ export class MisReservas implements OnInit {
   dejarResena(idReserva: number) {
     this.reservaAValorar.set(idReserva);
     this.estrellasSeleccionadas.set(0);
+    document.documentElement.style.overflow = 'hidden'; // Bloquea el scroll de la página de fondo
   }
 
   /**
@@ -151,6 +152,7 @@ export class MisReservas implements OnInit {
     this.reservaAValorar.set(null);
     this.estrellasSeleccionadas.set(0);
     this.textoComentario.set('');
+    document.documentElement.style.overflow = 'auto';
   }
 
   /**
