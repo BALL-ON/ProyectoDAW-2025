@@ -1,13 +1,20 @@
 <main class="contact-wrapper">
 
+  <!-- ── HERO ─────────────────────────────────────────────────────── -->
   <section class="contact-hero">
-    <div class="hero-badge">Contáctanos</div>
-    <h1 class="contact-title">Estamos aquí para <span class="text-blue">ayudarte</span></h1>
+    <div class="hero-badge">
+      <span></span>
+      Contáctanos
+    </div>
+    <h1 class="contact-title">
+      Estamos aquí para <span class="text-blue">ayudarte</span>
+    </h1>
     <p class="contact-subtitle">
       Escríbenos con cualquier duda sobre reservas, pagos o instalaciones.
     </p>
   </section>
 
+  <!-- ── GRID PRINCIPAL ────────────────────────────────────────────── -->
   <section class="contact-main">
 
     <!-- Formulario -->
@@ -48,9 +55,15 @@
 
         <button type="submit" class="btn-primary" [disabled]="enviando">
           {{ enviando ? 'Enviando…' : 'Enviar mensaje' }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </button>
 
-        <p *ngIf="enviado" class="success-msg">✓ Mensaje enviado. Te responderemos pronto.</p>
+        <p *ngIf="enviado" class="success-msg">
+          ✓ Mensaje enviado. Te responderemos pronto.
+        </p>
       </form>
     </div>
 
@@ -60,7 +73,9 @@
         <p class="card-title">Contacto directo</p>
 
         <div class="info-item">
-          <span class="material-symbols-outlined info-icon">call</span>
+          <div class="info-icon-wrap">
+            <span class="material-symbols-outlined">call</span>
+          </div>
           <div>
             <p class="info-label">Teléfono</p>
             <p class="info-val">+34 900 123 456</p>
@@ -68,7 +83,9 @@
         </div>
 
         <div class="info-item">
-          <span class="material-symbols-outlined info-icon">mail</span>
+          <div class="info-icon-wrap">
+            <span class="material-symbols-outlined">mail</span>
+          </div>
           <div>
             <p class="info-label">Email</p>
             <p class="info-val">info&#64;deportivaapp.es</p>
@@ -76,7 +93,9 @@
         </div>
 
         <div class="info-item">
-          <span class="material-symbols-outlined info-icon">location_on</span>
+          <div class="info-icon-wrap">
+            <span class="material-symbols-outlined">location_on</span>
+          </div>
           <div>
             <p class="info-label">Dirección</p>
             <p class="info-val">Sevilla, España</p>
