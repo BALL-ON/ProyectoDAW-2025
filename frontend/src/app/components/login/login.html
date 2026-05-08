@@ -27,6 +27,12 @@
     </div>
 
     <div class="auth-card">
+      @if (mensajeError) {
+        <div class="error-box" style="color: #ff4757; padding: 10px; border-radius: 5px; margin-bottom: 0px; text-align: center;">
+          {{ mensajeError }}
+        </div>
+      }
+      
       <div class="card-header">
         <div class="card-title">Iniciar Sesión</div>
         <div class="card-sub">¿No tienes cuenta? <a routerLink="/registro">Regístrate aquí</a></div> 

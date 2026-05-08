@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -11,12 +11,26 @@ import { AuthService } from '../../services/auth';
   styleUrl: './login.css'
 })
 export class Login {
+
+  mensajeError: string = '';
+
   // Signal para controlar si se ve la contraseña
   protected showPassword = signal(false);
 
   // Inyeccion del servicio y el enrutador
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Comprobamos si la URL trae el parametro de expiracion de sesion
+    this.route.queryParams.subscribe(params => {
+      if (params['expirada']) {
+        this.mensajeError = 'Tu sesión ha caducado. Vuelve a entrar.';
+      }
+    });
+  }
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
