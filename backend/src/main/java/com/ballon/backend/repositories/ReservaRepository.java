@@ -3,13 +3,13 @@ package com.ballon.backend.repositories;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.ballon.backend.models.Reserva;
-import com.ballon.backend.models.enums.EstadoReserva;
 
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
@@ -65,4 +65,16 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
                                     @Param("fecha") LocalDate fecha,
                                     @Param("horaInicio") LocalTime horaInicio,
                                     @Param("horaFin") LocalTime horaFin);
+    
+    /*Para buscar la reserva cuando el admin escanea el QR*/
+    Optional<Reserva> findByTokenQr(String tokenQr);
+    
+    /* Busca reservas confirmadas de hoy cuya hora de inicio ya pasó hace más de 30 mins   */
+    @Query("SELECT r FROM Reserva r WHERE r.estadoReserva = 'Confirmada' " +
+           "AND r.fechaReserva = :hoy AND r.horaInicio < :horaLimite")
+    List<Reserva> findConfirmadasCaducadasHoy(@Param("hoy") LocalDate hoy, @Param("horaLimite") LocalTime horaLimite);
+    
+    /* Busca reservas confirmadas de días anteriores */
+    @Query("SELECT r FROM Reserva r WHERE r.estadoReserva = 'Confirmada' AND r.fechaReserva < :hoy")
+    List<Reserva> findConfirmadasDiasAnteriores(@Param("hoy") LocalDate hoy);
 }

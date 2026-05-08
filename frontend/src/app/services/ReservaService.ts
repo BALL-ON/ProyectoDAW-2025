@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   OcupacionSlot,
   ReservaRequest,
   ReservaResponse,
+  ResenaRequest
 } from '../model/reserva.model';
+import { AuthService } from './auth';
 
 @Injectable({
   providedIn: 'root',
@@ -15,10 +17,17 @@ export class ReservaService {
   private readonly apiUrl = 'http://localhost:9999/api/reservas';
 
   constructor(private http: HttpClient) {}
+  private authService = inject(AuthService);
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`
+    });
+  }
 
   /** GET /api/reservas/mis-reservas */
   misReservas(): Observable<ReservaResponse[]> {
-    return this.http.get<ReservaResponse[]>(`${this.apiUrl}/mis-reservas`);
+    return this.http.get<ReservaResponse[]>(`${this.apiUrl}/mis-reservas`, { headers: this.getHeaders() });
   }
 
   /** GET /api/reservas/mis-reservas/pista/{idPista} */
@@ -47,7 +56,11 @@ export class ReservaService {
   }
 
   /** DELETE /api/reservas/{id} */
-  cancelarReserva(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  cancelarReserva(idReserva: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${idReserva}`, { headers: this.getHeaders() });
+  }
+
+  crearResena(dto: ResenaRequest): Observable<any> {
+    return this.http.post<any>('http://localhost:9999/api/resenas', dto, { headers: this.getHeaders() });
   }
 }

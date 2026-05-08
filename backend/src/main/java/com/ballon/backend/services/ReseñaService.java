@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ballon.backend.dtos.ReseñaRequestDTO;
 import com.ballon.backend.dtos.ReseñaResponseDTO;
+import com.ballon.backend.exception.BadRequestException;
 import com.ballon.backend.mapper.ReseñaMapper;
+import com.ballon.backend.models.Reserva;
 import com.ballon.backend.models.Reseña;
 import com.ballon.backend.models.Usuario;
+import com.ballon.backend.repositories.ReservaRepository;
 import com.ballon.backend.repositories.ReseñaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,17 +25,34 @@ public class ReseñaService {
 	
 	private final ReseñaRepository reseñaRepository;
 	private final ReseñaMapper reseñaMapper;
+	private final ReservaRepository reservaRepository;
 
 	/*
 	 * Método para publicar una reseña, antes de publicarla se valida que el usuario ha reservado esa pista
 	 */
-    public ReseñaResponseDTO publicarReseña(ReseñaRequestDTO request, Usuario usuario) {
+	@Transactional
+	public ReseñaResponseDTO publicarReseña(ReseñaRequestDTO request, Usuario usuario) {
         
-        Reseña reseña = reseñaMapper.toReseñaEntity(request);
-        reseña.setUsuario(usuario);
-        Reseña reseñaGuardada = reseñaRepository.save(reseña);
+        Reserva reserva = reservaRepository.findById(request.getIdReserva())
+            .orElseThrow(() -> new RuntimeException("No se encontró la reserva con ID: " + request.getIdReserva()));
+
+        if (reserva.getReseña() != null) {
+            throw new BadRequestException("Esta reserva ya ha sido valorada. No puedes valorarla de nuevo.");
+        }
         
-        return reseñaMapper.toReseñaResponse(reseñaGuardada);
+        Reseña nuevaReseña = new Reseña();
+        
+        // Asignamos todo lo necesario
+        nuevaReseña.setPista(reserva.getPista()); 
+        nuevaReseña.setUsuario(usuario);
+        nuevaReseña.setReserva(reserva);
+        nuevaReseña.setPuntuacion(request.getPuntuacion());
+        nuevaReseña.setComentario(request.getComentario());
+
+        // Guardamos en la base de datos
+        Reseña guardada = reseñaRepository.save(nuevaReseña);
+        
+        return reseñaMapper.toReseñaResponse(guardada);
     }
     
     /*

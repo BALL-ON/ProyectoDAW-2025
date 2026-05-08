@@ -36,5 +36,5 @@ public class ReservaResponseDTO {
     private String tokenQr;
     
     // Indicador si tiene reseña (para no devolver el objeto entero si no es necesario)
-    private boolean tieneReseña; 
+    private boolean tieneResena; 
 }

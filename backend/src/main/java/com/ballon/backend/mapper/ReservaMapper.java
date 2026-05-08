@@ -29,7 +29,7 @@ public interface ReservaMapper {
     @Mapping(source = "pista.idPista", target = "idPista")
     @Mapping(source = "pista.nombrePista", target = "nombrePista")
     @Mapping(source = "pista.polideportivo.nombre", target = "nombrePolideportivo")
-    @Mapping(target = "tieneReseña", expression = "java(reserva.getReseña() != null)")
+    @Mapping(target = "tieneResena", expression = "java(reserva.getReseña() != null)")
     ReservaResponseDTO toResponse(Reserva reserva);
 
     List<ReservaResponseDTO> toResponseList(List<Reserva> reservas);
