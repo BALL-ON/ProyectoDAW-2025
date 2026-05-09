@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody; // ← OJO: este es el correcto (Spring), no el de Swagger
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +30,6 @@ public class PolideportivoController {
 
     private final PolideportivoService polideportivoService;
 
-    /** Listado público de polideportivos (lo consume la home/listado del frontend). */
     @GetMapping
     public ResponseEntity<List<PolideportivoResponseDTO>> listarTodos() {
         return ResponseEntity.ok(polideportivoService.listarTodos());
@@ -42,7 +41,7 @@ public class PolideportivoController {
         return ResponseEntity.ok(polideportivoService.buscarPorId(id));
     }
 
-    /** Crear un polideportivo nuevo (sólo ADMIN según SecurityConfig). */
+    /** Crear un polideportivo nuevo (sólo ADMIN). */
     @PostMapping
     public ResponseEntity<PolideportivoResponseDTO> crear(
             @Valid @RequestBody PolideportivoRequestDTO dto) {
