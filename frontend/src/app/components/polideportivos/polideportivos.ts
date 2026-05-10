@@ -84,8 +84,8 @@ export class Polideportivos implements OnInit {
         return 'Pago online';
       case 'Presencial':
         return 'Pago presencial';
-      case 'Ambos':
-        return 'Online y presencial';
+      case 'Gratis':
+        return 'Gratis';
       default:
         return metodo;
     }
