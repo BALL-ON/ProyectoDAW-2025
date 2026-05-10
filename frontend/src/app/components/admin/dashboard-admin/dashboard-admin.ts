@@ -2,10 +2,11 @@ import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminGlobalService } from '../../../services/admin-global-service';
+import { crearReserva } from '../../admin-centro/crear-reserva/crear-reserva';
 
 @Component({
   selector: 'app-dashboard-admin',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, crearReserva],
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css',
 })
@@ -20,6 +21,7 @@ export class DashboardAdmin {
   cargandoPoli: boolean = true;
   private cdRef = inject(ChangeDetectorRef);
   private adminGlobalService = inject(AdminGlobalService);
+  vistaCentroActiva: 'resumen' | 'crear-reserva' = 'resumen';
 
   paginaActual: number = 0;
   tamanoPagina: number = 5;

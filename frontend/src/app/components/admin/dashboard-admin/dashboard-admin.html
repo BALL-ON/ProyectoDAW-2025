@@ -338,18 +338,40 @@
       </div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <h3>Reservas Hoy</h3>
-        <span class="stat-number">15</span>
-        <button class="btn-primary-outline">Ver todas</button>
+    <!-- resumen -->
+    @if (vistaCentroActiva === 'resumen') {
+      
+      <div class="actions-bar" style="margin-bottom: 24px;">
+        <button class="btn-primary" (click)="vistaCentroActiva = 'crear-reserva'">
+          Nueva Reserva
+        </button>
       </div>
-      <div class="stat-card">
-        <h3>Pistas Activas</h3>
-        <span class="stat-number">4/5</span>
-        <button class="btn-primary-outline">Gestionar</button>
-      </div>
-    </div>
-  }
 
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Reservas Hoy</h3>
+          <span class="stat-number">15</span>
+          <button class="btn-primary-outline">Ver todas</button>
+        </div>
+        <div class="stat-card">
+          <h3>Pistas Activas</h3>
+          <span class="stat-number">4/5</span>
+          <button class="btn-primary-outline">Gestionar</button>
+        </div>
+      </div>
+    }
+
+    <!-- formulario reactivo de crear reserva -->
+    @if (vistaCentroActiva === 'crear-reserva') {
+      
+      <!-- Botón para volver atrás -->
+      <div style="margin-bottom: 20px;">
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
+          ← Volver al Resumen
+        </button>
+      </div>
+
+      <app-crear-reserva (reservaCompletada)="vistaCentroActiva = 'resumen'"> </app-crear-reserva>
+    }
+  }
 </div>
