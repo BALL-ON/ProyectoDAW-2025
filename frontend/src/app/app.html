@@ -6,6 +6,6 @@
   <router-outlet></router-outlet>
 </main>
 
-@if (!isAuthPage()) {
+@if (!isAuthPage() && (!router.url.includes('/admin'))) {
 <app-footer></app-footer>
 }

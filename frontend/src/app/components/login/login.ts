@@ -45,21 +45,33 @@ export class Login {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      // Se usa el operador ?? para decirle: "Si es null o undefined, usa '' o false"
       const email = this.loginForm.value.email ?? '';
       const contrasena = this.loginForm.value.contrasena ?? '';
       const remember = this.loginForm.value.remember ?? false;
 
       this.authService.login(email, contrasena, remember).subscribe({
         next: (respuesta) => {
-          //console.log('¡Login correcto! Token recibido:', respuesta.token);
+          sessionStorage.setItem('token', respuesta.token);
+          sessionStorage.setItem('user_rol', respuesta.rol);
           
-          // Redirigimos al usuario a la página principal
-          this.router.navigate(['/']); 
+          this.authService.loggedSignal.set(true); 
+
+          if (respuesta.rol === 'ROLE_Admin_Centro' || respuesta.rol === 'ROLE_Admin_Global') {
+            // Si es admin, redirige a panel de gestion
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            // Si es un cliente redirige a la pantalla de inicio
+            this.router.navigate(['/']);
+          }
         },
         error: (err) => {
-          console.error('Error en el login', err);
-          alert('El usuario o la contraseña no son correctos.');
+          if (err.status === 403 && err.error?.mensaje) {
+            alert(err.error.mensaje);
+          }  else if (err.status === 401) {
+            alert('El usuario o la contraseña no son correctos.');
+          } else {
+            alert('Ocurrió un error inesperado al intentar iniciar sesión.');
+          }
         }
       });
     }

@@ -1,5 +1,10 @@
 package com.ballon.backend.controllers;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +19,8 @@ import com.ballon.backend.dtos.AuthResponseDTO;
 import com.ballon.backend.dtos.LoginRequestDTO;
 import com.ballon.backend.dtos.UsuarioRequestDTO;
 import com.ballon.backend.dtos.UsuarioResponseDTO;
-import com.ballon.backend.models.enums.Rol;
+import com.ballon.backend.models.Usuario;
+import com.ballon.backend.repositories.UsuarioRepository;
 import com.ballon.backend.services.JwtService;
 import com.ballon.backend.services.UsuarioService;
 
@@ -40,6 +46,11 @@ public class AuthController {
      * Inyeccion de servicio que crea, firma y lee tokens JWT
      */
     private final JwtService jwtService; 
+    
+    /*
+     * Inyeccion de UsuarioRepository
+     */
+    private final UsuarioRepository usuarioRepository; 
 
     
     /**
@@ -48,14 +59,9 @@ public class AuthController {
      */
     @PostMapping("/register")
     public ResponseEntity<UsuarioResponseDTO> register(@RequestBody UsuarioRequestDTO request) {
-        //  Forzamos el rol por seguridad
-        request.setRol(Rol.Usuario);
-        
-        //Guardamos y recogemos el usuario convertido a DTO
         UsuarioResponseDTO nuevoUsuario = usuarioService.guardarUsuario(request);
-        
-        // Devolvemos el DTO
         return ResponseEntity.ok(nuevoUsuario);
+        
     }
 
     /**
@@ -65,6 +71,22 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
     	try {
+    		// Se comprueba que el usuario no está bloqueado
+    		Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(request.getEmail());
+            
+            if (usuarioOpt.isPresent()) {
+                Usuario usuario = usuarioOpt.get();
+                
+                // Si tiene fecha de bloqueo y aún no ha pasado esa fecha
+                if (usuario.getBloqueadoHasta() != null && usuario.getBloqueadoHasta().isAfter(LocalDateTime.now())) {
+                    
+                    Map<String, String> errorResponse = new HashMap<>();
+                    errorResponse.put("mensaje", "Su cuenta está bloqueada temporalmente. Contacte con el administrador.");
+                    
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+                }
+            }
+            
             // Spring Security comprueba las credenciales y nos devuelve el objeto de autenticación
             var authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getContrasena())
@@ -80,7 +102,7 @@ public class AuthController {
             return ResponseEntity.ok(new AuthResponseDTO(token, rol));
 
         } catch (Exception e) { 
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("mensaje", "Credenciales inválidas"));
         }
     }
 }
