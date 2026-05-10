@@ -63,6 +63,7 @@ public class SecurityConfig {
 
 	                // NIVEL ADMIN (Admin_Centro)
 	                .requestMatchers("/api/admin/**").hasRole("Admin_Centro")
+	                .requestMatchers("/api/admin-centro/**").hasRole("Admin_Centro")
 	                .requestMatchers("/api/usuarios").hasRole("Admin_Centro")
 	                .requestMatchers("/api/contacto/**").hasRole("Admin_Centro")
 	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/polideportivos/**", "/api/pistas/**").hasAnyRole("Admin_Global", "Admin_Centro")
