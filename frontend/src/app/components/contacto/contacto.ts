@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MensajeContacto } from '../../services/mensaje-contacto';
 import { AuthService } from '../../services/auth';
 import { Usuario } from '../../services/usuario';
@@ -32,7 +32,7 @@ export class Contacto {
     email: '',
     telefono: '',
     asunto:  'reserva',
-    mensaje: '',
+    mensaje: ['', [Validators.required, Validators.minLength(10) ]],
     fecha_envio: this.obtenerFechaActual(),
     leido: false
   });
