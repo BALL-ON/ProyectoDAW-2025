@@ -1,5 +1,5 @@
 // Espejo del enum del backend (com.ballon.backend.models.enums.MetodoPago)
-export type MetodoPago = 'Presencial' | 'Online' | 'Ambos';
+export type MetodoPago = 'Gratis' | 'Presencial' | 'Online';
 
 /**
  * Espejo de PolideportivoResponseDTO.java

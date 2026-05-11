@@ -1,5 +1,5 @@
 // enum del backend (com.ballon.backend.models.enums.EstadoReserva)
-export type EstadoReserva = 'Confirmada' | 'Cancelada' | 'Finalizada';
+export type EstadoReserva = 'Confirmada' | 'Cancelada' | 'Disfrutada' | 'No_Asistido';
 
 // enum del backend (com.ballon.backend.models.enums.EstadoPago)
 export type EstadoPago = 'Pendiente' | 'Pagado' | 'Reembolsado';
@@ -39,7 +39,7 @@ export interface ReservaResponse {
   estadoReserva: EstadoReserva;
   estadoPago: EstadoPago;
   tokenQr?: string;
-  tieneReseña: boolean;
+  tieneResena: boolean;
 }
 
 /**
@@ -60,4 +60,13 @@ export interface SlotHorario {
   label: string;  // "08:00 - 09:00"
   start: string;  // "08:00"
   end: string;    // "09:00"
+}
+
+/**
+ * Modelo para reseñas
+ */
+export interface ResenaRequest {
+  idReserva: number;
+  puntuacion: number;
+  comentario: string;
 }

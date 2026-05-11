@@ -10,8 +10,8 @@ import {
   providedIn: 'root',
 })
 export class PolideportivoService {
-  // Ajusta el host/puerto si tu Spring Boot corre en otro sitio.
-  private readonly apiUrl = 'http://localhost:8080/api/polideportivos';
+  
+  private readonly apiUrl = 'http://localhost:9999/api/polideportivos';
 
   constructor(private http: HttpClient) {}
 

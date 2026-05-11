@@ -7,7 +7,7 @@ import { PistaRequest, PistaResponse } from '../model/pista.model';
   providedIn: 'root',
 })
 export class PistaService {
-  private readonly apiUrl = 'http://localhost:8080/api/pistas';
+  private readonly apiUrl = 'http://localhost:9999/api/pistas';
 
   constructor(private http: HttpClient) {}
 

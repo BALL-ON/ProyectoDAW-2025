@@ -11,5 +11,6 @@ import com.ballon.backend.models.Reseña;
 public interface ReseñaRepository extends JpaRepository<Reseña, Long> {
 
     List<Reseña> findByPistaIdPista(Long pistaId);
+    List<Reseña> findByUsuarioIdUsuario(Long usuarioId);
 	
 }

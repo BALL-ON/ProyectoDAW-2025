@@ -2,8 +2,10 @@ package com.ballon.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling    // Necesario para controlar los estados de las reservas
 public class BackendApplication {
 
 	public static void main(String[] args) {
