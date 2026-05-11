@@ -2,6 +2,7 @@ package com.ballon.backend.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioRequestDTO {
+public class AdminCentroRequestDTO {
 
 	@NotBlank(message = "El nombre es obligatorio")
     private String nombre;
@@ -27,5 +28,9 @@ public class UsuarioRequestDTO {
     private String contrasena;
 
     private String telefono;
+    
+    // El ID del polideportivo que va a gestionar
+    @NotNull(message = "Debe asignar un polideportivo")
+    private Long idPolideportivo; 
     
 }
