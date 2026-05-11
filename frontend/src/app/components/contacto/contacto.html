@@ -22,18 +22,6 @@
       <p class="card-title">Envíanos un mensaje</p>
 
       <form (ngSubmit)="enviarMensaje()" [formGroup]="form">
-        <div class="row-2">
-          <div class="field">
-            <label for="nombre">Nombre</label>
-            <input id="nombre" class="inp" type="text" placeholder="Tu nombre"
-                   formControlName="nombre" />
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" class="inp" type="email" placeholder="correo@ejemplo.com"
-                   formControlName="email" />
-          </div>
-        </div>
 
         <div class="field">
           <label for="asunto">Asunto</label>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MensajeContacto } from '../../services/mensaje-contacto';
 import { AuthService } from '../../services/auth';
+import { Usuario } from '../../services/usuario';
 
 @Component({
   selector: 'app-contacto',
@@ -14,6 +15,7 @@ import { AuthService } from '../../services/auth';
 export class Contacto {
 
   private contactoServicio = inject(MensajeContacto);
+  private usuarioServicio = inject(Usuario);
   authService = inject(AuthService);
 
   enviando = false;
@@ -21,11 +23,13 @@ export class Contacto {
 
   form: any;
   
+  email = '';
+  telefono = '';
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
     nombre:  '',
-    email:   '',
+    email: '',
     telefono: '',
     asunto:  'reserva',
     mensaje: '',
@@ -36,6 +40,15 @@ export class Contacto {
 
   enviarMensaje() {
     this.enviando = true;
+
+    this.usuarioServicio.obtenerMiPerfil().subscribe(perfil => {
+      this.form.patchValue({ nombre: perfil.nombre });
+      this.form.patchValue({ email: perfil.email });
+      this.form.patchValue({ telefono: perfil.telefono });
+      console.log('Perfil obtenido:', perfil);
+      console.log('email: ', this.form.value.email);
+      console.log('telefono: ', this.form.value.telefono);
+    });
 
     this.contactoServicio.enviar(this.form.value).subscribe({
       next: () => {
