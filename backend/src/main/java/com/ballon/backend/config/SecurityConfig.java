@@ -50,12 +50,14 @@ public class SecurityConfig {
 	                        "/api/pistas/**", 
 	                        "/api/tipos-pista/**",
 	                        "/api/resenas/**",
-	                        "/api/horarios/**").permitAll()
+	                        "/api/horarios/**",
+	                        "/api/contacto/**").permitAll()
 	                
 	                // NIVEL USUARIO: Solo usuarios logueado (Usuarios y Admins)
 	                .requestMatchers("/api/usuarios/perfil").authenticated()
 	                .requestMatchers("/api/reservas/**").hasAnyRole("Admin_Centro", "Usuario")
-	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/resenas").authenticated()
+	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/resenas",
+	                		"/api/contacto/**").authenticated()
 
 	                // NIVEL ADMIN (Admin_Centro)
 	                .requestMatchers("/api/admin/**").hasRole("Admin_Centro")

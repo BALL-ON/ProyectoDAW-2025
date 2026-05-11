@@ -1,8 +1,9 @@
 export interface MensajeDTO {
-    asunto:string,
+    nombre: string,
     email: string,
-    fecha_envio: string,
-    leido: boolean,
+    telefono: string,
+    asunto:string,
     mensaje: string,
-    nombre: string
+    fecha_envio: string,
+    leido: boolean
 }

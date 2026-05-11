@@ -21,23 +21,23 @@
     <div class="contact-card">
       <p class="card-title">Envíanos un mensaje</p>
 
-      <form (ngSubmit)="enviarMensaje()">
+      <form (ngSubmit)="enviarMensaje()" [formGroup]="form">
         <div class="row-2">
           <div class="field">
             <label for="nombre">Nombre</label>
             <input id="nombre" class="inp" type="text" placeholder="Tu nombre"
-                   [(ngModel)]="form.nombre" name="nombre" />
+                   formControlName="nombre" />
           </div>
           <div class="field">
             <label for="email">Email</label>
             <input id="email" class="inp" type="email" placeholder="correo@ejemplo.com"
-                   [(ngModel)]="form.email" name="email" />
+                   formControlName="email" />
           </div>
         </div>
 
         <div class="field">
           <label for="asunto">Asunto</label>
-          <select id="asunto" class="inp" [(ngModel)]="form.asunto" name="asunto">
+          <select id="asunto" class="inp" formControlName="asunto">
             <option value="reserva">Problema con una reserva</option>
             <option value="pago">Consulta sobre pagos</option>
             <option value="instalaciones">Información de instalaciones</option>
@@ -50,10 +50,10 @@
           <label for="mensaje">Mensaje</label>
           <textarea id="mensaje" class="inp" rows="5"
                     placeholder="Cuéntanos en qué podemos ayudarte…"
-                    [(ngModel)]="form.mensaje" name="mensaje"></textarea>
+                    formControlName="mensaje"></textarea>
         </div>
 
-        <button type="submit" class="btn-primary" [disabled]="enviando">
+        <button type="submit" class="btn-primary" [disabled]="enviando || !isLoggedIn()">
           {{ enviando ? 'Enviando…' : 'Enviar mensaje' }}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5">
