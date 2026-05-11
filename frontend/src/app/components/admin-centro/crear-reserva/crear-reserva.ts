@@ -37,11 +37,15 @@ export class crearReserva implements OnInit {
   }
 
   cargarPistas() {
-    // ⚠️ ATENCIÓN AQUÍ: Necesitas el ID del polideportivo del Admin actual.
-    // Si lo tienes en el AuthService o localStorage, sácalo de ahí.
-    // Ejemplo: const idPolideportivo = this.authService.getUsuarioActual().idPolideportivo;
+    const idStr = sessionStorage.getItem('idPolideportivo');
     
-    const idPolideportivo = 1; // Sustituye este '1' por la variable real de tu usuario logueado
+    if (!idStr) {
+      this.mensajeError = 'No se encontró el polideportivo asignado. Prueba a iniciar sesión de nuevo.';
+      this.cargandoPistas = false;
+      return;
+    }
+
+    const idPolideportivo = Number(idStr);
 
     this.pistaService.listarActivasPorPolideportivo(idPolideportivo).subscribe({
       next: (data) => {

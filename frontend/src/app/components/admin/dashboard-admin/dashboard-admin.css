@@ -228,6 +228,72 @@
   line-height: 1;
 }
 
+/* Contenedor del Grid */
+.dashboard-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Diseño individual de cada Tarjeta */
+.dash-card {
+  background-color: #1e293b; /* Fondo oscuro */
+  border: 1px solid #334155; /* Borde sutil */
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: all 0.3s ease; /* Animación suave */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Tarjeta destacada (Nueva Reserva) con borde azul */
+.dash-card.primary {
+  border-left: 4px solid #3b82f6; 
+}
+
+/* Efecto al pasar el ratón (Hover) */
+.dash-card:hover {
+  transform: translateY(-5px); /* Se eleva un poco */
+  border-color: #3b82f6; /* Se ilumina el borde */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  background-color: rgba(30, 41, 59, 0.8);
+}
+
+/* Contenedor del icono */
+.card-icon {
+  font-size: 1.8rem;
+  background: rgba(59, 130, 246, 0.1); /* Fondo azul semitransparente */
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Textos de la tarjeta */
+.card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-info h3 {
+  margin: 0 0 6px 0;
+  color: #f8fafc;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.card-info p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
 /* ESTILOS DE LA TABLA */
 
 .table-responsive {

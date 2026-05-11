@@ -326,7 +326,7 @@
   } @else if (rolUsuario === 'ROLE_Admin_Centro') {
     <div class="dashboard-header">
       <div class="header-content">
-        <h1>Mi Polideportivo</h1>
+        <h1>Panel de Gestión de Centro Deportivo</h1>
         <p>Resumen de actividad diaria y gestión de pistas</p>
       </div>
       <div class="header-icon">
@@ -345,20 +345,20 @@
         <button class="btn-primary" (click)="vistaCentroActiva = 'crear-reserva'">
           Nueva Reserva
         </button>
+
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'ver-reservas'">
+          Ver Todas las Reservas
+        </button>
+
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'gestion-pistas'">
+          Gestionar Pistas
+        </button>
+
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'gestion-resenas'">
+          Ver y Gestionar Reseñas
+        </button>
       </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Reservas Hoy</h3>
-          <span class="stat-number">15</span>
-          <button class="btn-primary-outline">Ver todas</button>
-        </div>
-        <div class="stat-card">
-          <h3>Pistas Activas</h3>
-          <span class="stat-number">4/5</span>
-          <button class="btn-primary-outline">Gestionar</button>
-        </div>
-      </div>
     }
 
     <!-- formulario reactivo de crear reserva -->
@@ -372,6 +372,36 @@
       </div>
 
       <app-crear-reserva (reservaCompletada)="vistaCentroActiva = 'resumen'"> </app-crear-reserva>
+    }
+
+    @if (vistaCentroActiva === 'ver-reservas') {
+      <div style="margin-bottom: 20px;">
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
+          ← Volver al Resumen
+        </button>
+      </div>
+
+      <app-lista-reservas></app-lista-reservas>
+    }
+
+    @if (vistaCentroActiva === 'gestion-pistas') {
+      <div style="margin-bottom: 20px;">
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
+          ← Volver al Resumen
+        </button>
+      </div>
+
+      <app-gestion-pistas></app-gestion-pistas>
+    }
+
+    @if (vistaCentroActiva === 'gestion-resenas') {
+      <div style="margin-bottom: 20px;">
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
+          ← Volver al Resumen
+        </button>
+      </div>
+
+      <app-gestion-resenas></app-gestion-resenas>
     }
   }
 </div>

@@ -77,4 +77,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     /* Busca reservas confirmadas de días anteriores */
     @Query("SELECT r FROM Reserva r WHERE r.estadoReserva = 'Confirmada' AND r.fechaReserva < :hoy")
     List<Reserva> findConfirmadasDiasAnteriores(@Param("hoy") LocalDate hoy);
+    
+    // Busca todas las reservas donde la pista pertenezca al polideportivo indicado
+    // Las traemos ordenadas por fecha (las más recientes primero)
+    @Query("SELECT r FROM Reserva r WHERE r.pista.polideportivo.idPolideportivo = :idPolideportivo ORDER BY r.fechaReserva DESC, r.horaInicio DESC")
+    List<Reserva> findReservasByPolideportivo(@Param("idPolideportivo") Long idPolideportivo);
 }

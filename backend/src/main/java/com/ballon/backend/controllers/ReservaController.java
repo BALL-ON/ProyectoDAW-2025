@@ -102,4 +102,13 @@ public class ReservaController {
         return ResponseEntity.ok("Check-in realizado correctamente. Reserva Disfrutada.");
     }
     
+    /**
+     * Endpoint para acceder a todas las reservas de un polideprotivo específico
+     */
+    @GetMapping("/polideportivo/{idPolideportivo}/reservas")
+    public ResponseEntity<List<ReservaResponseDTO>> listarReservasDelCentro(@PathVariable Long idPolideportivo) {
+        List<ReservaResponseDTO> reservas = reservaService.listarReservasPorPolideportivo(idPolideportivo);
+        return ResponseEntity.ok(reservas);
+    }
+    
 }

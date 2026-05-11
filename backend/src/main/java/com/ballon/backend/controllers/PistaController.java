@@ -32,6 +32,14 @@ public class PistaController {
             @PathVariable Long idPolideportivo) {
         return ResponseEntity.ok(pistaService.listarActivasPorPolideportivo(idPolideportivo));
     }
+    
+    /** Todas las pistas del polideportivo, indepndientemente de su estado*/
+    @GetMapping("/polideportivo/{idPolideportivo}/todas")
+    public ResponseEntity<List<PistaResponseDTO>> listarTodasPorPolideportivo(
+            @PathVariable Long idPolideportivo) {
+        return ResponseEntity.ok(pistaService.listarTodasPorPolideportivo(idPolideportivo));
+    }
+  
 
     /** Detalle de una pista. */
     @GetMapping("/{id}")

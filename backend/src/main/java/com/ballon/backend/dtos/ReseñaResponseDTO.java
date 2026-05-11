@@ -20,4 +20,5 @@ public class ReseñaResponseDTO {
     private Integer puntuacion;
     private String comentario;
     private LocalDateTime fecha;
+    private boolean visible;
 }

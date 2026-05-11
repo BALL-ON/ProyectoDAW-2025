@@ -43,6 +43,11 @@ public class PistaService {
         return pistaMapper.toResponseList(
                 pistaRepository.findByPolideportivoIdPolideportivoAndActivaTrue(idPolideportivo));
     }
+    
+    public List<PistaResponseDTO> listarTodasPorPolideportivo(Long idPolideportivo) {
+    	return pistaMapper.toResponseList(
+                pistaRepository.findByPolideportivoIdPolideportivo(idPolideportivo));
+    }
 
     @Transactional(readOnly = true)
     public PistaResponseDTO buscarPorId(Long id) {

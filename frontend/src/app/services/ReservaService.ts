@@ -63,4 +63,8 @@ export class ReservaService {
   crearResena(dto: ResenaRequest): Observable<any> {
     return this.http.post<any>('http://localhost:9999/api/resenas', dto, { headers: this.getHeaders() });
   }
+
+  obtenerReservasPorPolideportivo(idPolideportivo: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/polideportivo/${idPolideportivo}/reservas`);
+  }
 }
