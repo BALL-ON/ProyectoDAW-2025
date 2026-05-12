@@ -32,9 +32,11 @@ export class ReservaService {
 
   /** GET /api/reservas/mis-reservas/pista/{idPista} */
   misReservasEnPista(idPista: number): Observable<ReservaResponse[]> {
-    return this.http.get<ReservaResponse[]>(
-      `${this.apiUrl}/mis-reservas/pista/${idPista}`
-    );
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<ReservaResponse[]>(`${this.apiUrl}/mis-reservas/pista/${idPista}` , { headers });
+
   }
 
   /**
