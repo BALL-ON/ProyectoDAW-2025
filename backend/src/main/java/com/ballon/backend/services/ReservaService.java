@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
  *  - El precio se calcula y persiste en el momento de la reserva
  *    (RI_03: el precio_total debe persistir para evitar cambios de tarifa).
  *  - El usuario sólo puede cancelar reservas propias y con 24h de antelación.
+ *  - Tras confirmar o cancelar, se envía email transaccional al usuario.
  */
 @Service
 @RequiredArgsConstructor
@@ -51,6 +52,7 @@ public class ReservaService {
     private final UsuarioRepository usuarioRepository;
     private final PistaRepository pistaRepository;
     private final ReservaMapper reservaMapper;
+    private final EmailService emailService;
 
     // ─── Lecturas ────────────────────────────────────────────────────────────
 
@@ -109,6 +111,12 @@ public class ReservaService {
         reserva.setTokenQr(UUID.randomUUID().toString());
 
         Reserva guardada = reservaRepository.save(reserva);
+
+        // 5. Notificación por email (async, fire-and-forget).
+        // Va al final: si fallara antes algún paso, no habríamos confirmado
+        // por email algo que no llegó a guardarse.
+        emailService.enviarConfirmacionReserva(guardada);
+
         return reservaMapper.toResponse(guardada);
     }
 
@@ -146,7 +154,11 @@ public class ReservaService {
             reserva.setEstadoPago(EstadoPago.Reembolsado);
         }
 
-        reservaRepository.save(reserva);
+        Reserva cancelada = reservaRepository.save(reserva);
+
+        // Notificación por email. El EmailService detecta si el estadoPago es
+        // Reembolsado e incluye el aviso de reembolso en el cuerpo del mensaje.
+        emailService.enviarCancelacionReserva(cancelada);
     }
 
     // ─── Validaciones privadas ───────────────────────────────────────────────
@@ -186,9 +198,9 @@ public class ReservaService {
                     "Ya hay una reserva confirmada que se solapa con ese horario.");
         }
     }
-    
+
     // ─── Check-in mediante QR ────────────────────────────────────────────────
-    
+
     public void realizarCheckIn(String tokenQr) {
         Reserva reserva = reservaRepository.findByTokenQr(tokenQr)
                 .orElseThrow(() -> new BadRequestException("Código QR inválido"));
@@ -207,18 +219,18 @@ public class ReservaService {
         reserva.setEstadoReserva(EstadoReserva.Disfrutada);
         reservaRepository.save(reserva);
     }
-    
-    
+
+
     // ─── Tarea Automática (Control de No Asistidos) ──────────────────────────
 
     /**
      * Se ejecuta automáticamente cada 15 minutos (900000 milisegundos).
      * Revisa si hay reservas que ya pasaron su margen de 30 minutos sin hacer check-in.
      */
-    @Scheduled(fixedRate = 900000) 
+    @Scheduled(fixedRate = 900000)
     public void procesarNoAsistidos() {
         LocalDate hoy = LocalDate.now();
-        
+
         // Calculamos la hora actual menos 30 minutos
         LocalTime horaLimite = LocalTime.now().minusMinutes(30);
 
@@ -235,7 +247,7 @@ public class ReservaService {
             r.setEstadoReserva(EstadoReserva.No_Asistido);
         }
         reservaRepository.saveAll(colgadasAyer);
-        
+
         if (!caducadasHoy.isEmpty() || !colgadasAyer.isEmpty()) {
             System.out.println("CRON: Se han marcado " + (caducadasHoy.size() + colgadasAyer.size()) + " reservas como No_Asistido.");
         }
