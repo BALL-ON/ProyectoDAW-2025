@@ -1,4 +1,5 @@
-import { HttpClient } from '@angular/common/http';
+import { AuthService } from './auth';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MensajeDTO } from '../interfaces/mensaje-dto';
@@ -17,13 +18,18 @@ import { MensajeDTO } from '../interfaces/mensaje-dto';
 export class MensajeContacto {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:9999/api/contacto';
+  private authService = inject(AuthService);
 
   /**
    * POST /api/contacto — Público.
    * Envía un mensaje desde el formulario de contacto.
    */
   enviar(mensaje: MensajeDTO): Observable<MensajeDTO> {
-    return this.http.post<MensajeDTO>(this.apiUrl, mensaje);
+
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.post<MensajeDTO>(this.apiUrl, mensaje, { headers });
   }
 
   /**

@@ -52,8 +52,8 @@
           </svg>
         </button>
 
-        <p *ngIf="enviado" class="success-msg">
-          ✓ Mensaje enviado. Te responderemos pronto.
+        <p *ngIf="showSuccessMessage" class="success-msg">
+          {{ successMessage }}
         </p>
       </form>
     </div>
