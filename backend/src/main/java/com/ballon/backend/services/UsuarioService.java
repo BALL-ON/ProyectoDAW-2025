@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ballon.backend.dtos.AdminCentroRequestDTO;
 import com.ballon.backend.dtos.UsuarioRequestDTO;
@@ -59,28 +60,35 @@ public class UsuarioService {
      * Método que guarda/regista un usuario, revisando que no existen duplicados
      * y encriptando la contraseña antes de guardarla para que sea ilegible en la bbdd
      */
-    public UsuarioResponseDTO guardarUsuario(UsuarioRequestDTO usuarioRequest) {
+    public UsuarioResponseDTO guardarUsuario(UsuarioRequestDTO usuarioRequest, MultipartFile foto) {
     	
         if (usuarioRepository.existsByEmail(usuarioRequest.getEmail())) {
             throw new UsuarioDuplicatedException(usuarioRequest);
         }
         
-        Usuario usuario = usuarioMapper.toEntity(usuarioRequest);
-
-        // Copiamos el email en el campo username para cumplir con la base de datos (el username es el email)
-        usuario.setUsername(usuarioRequest.getEmail());
-
-        // Encriptamos la contraseña en la entidad
-        usuario.setContrasena(passwordEncoder.encode(usuarioRequest.getContrasena()));
+        try {
+            Usuario usuario = usuarioMapper.toEntity(usuarioRequest);
+    
+            // Copiamos el email en el campo username
+            usuario.setUsername(usuarioRequest.getEmail());
+    
+            // Encriptamos la contraseña en la entidad
+            usuario.setContrasena(passwordEncoder.encode(usuarioRequest.getContrasena()));
+            
+            // Forzamos a que todo nuevo registro sea de tipo Usuario normal.
+            usuario.setRol(Rol.Usuario);
+            
+            // Sacamos los bytes de la foto
+            usuario.setFotoPerfil(foto.getBytes());
+            
+            Usuario usuarioGuardado = usuarioRepository.save(usuario);
+            
+            // Devolvemos la entidad traducida a ResponseDTO
+            return usuarioMapper.toResponse(usuarioGuardado);
         
-        // Forzamos a que todo nuevo registro sea de tipo Usuario normal.
-        usuario.setRol(Rol.Usuario);
-        
-        // Guardamos en Base de Datos
-        Usuario usuarioGuardado = usuarioRepository.save(usuario);
-        
-        //Devolvemos la entidad traducida a ResponseDTO
-        return usuarioMapper.toResponse(usuarioGuardado);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al procesar la foto o guardar el usuario", e);
+        }
     }
     
     /**

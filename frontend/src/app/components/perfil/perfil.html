@@ -31,7 +31,15 @@
         <div class="glass-card identity-card">
           
           <div class="avatar-wrapper">
-            <div class="avatar-placeholder">{{ getIniciales() }}</div>
+            <img [src]="fotoUrl()" alt="Foto de Perfil" class="profile-img">
+            
+            <input type="file" id="fotoUpdate" accept="image/*" style="display: none;" (change)="onCambiarFoto($event)">
+            <button class="btn-edit-photo" onclick="document.getElementById('fotoUpdate').click()" title="Cambiar foto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </button>
           </div>
 
           <h2 class="user-name">{{ usuario()?.nombre }} {{ usuario()?.apellidos }}</h2>

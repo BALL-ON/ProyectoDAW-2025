@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ballon.backend.dtos.AuthResponseDTO;
 import com.ballon.backend.dtos.LoginRequestDTO;
 import com.ballon.backend.dtos.UsuarioRequestDTO;
 import com.ballon.backend.dtos.UsuarioResponseDTO;
+import com.ballon.backend.exception.UsuarioDuplicatedException;
 import com.ballon.backend.models.Usuario;
 import com.ballon.backend.repositories.UsuarioRepository;
 import com.ballon.backend.services.JwtService;
@@ -57,11 +61,19 @@ public class AuthController {
      * Endpoint para registrar nuevos usuarios
      * @param request El objeto DTO mapeado automaticamente desde el JSON que envia el frontend.
      */
-    @PostMapping("/register")
-    public ResponseEntity<UsuarioResponseDTO> register(@RequestBody UsuarioRequestDTO request) {
-        UsuarioResponseDTO nuevoUsuario = usuarioService.guardarUsuario(request);
-        return ResponseEntity.ok(nuevoUsuario);
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> register(@RequestPart("usuario") UsuarioRequestDTO request, @RequestPart("foto") MultipartFile foto) {
         
+        try {
+        	UsuarioResponseDTO nuevoUsuario = usuarioService.guardarUsuario(request, foto);
+            return ResponseEntity.ok(nuevoUsuario);
+
+        } catch (UsuarioDuplicatedException e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", "El email ya está registrado"));
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", "Error al registrar el usuario"));
+        }
     }
 
     /**

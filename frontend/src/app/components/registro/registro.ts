@@ -14,15 +14,17 @@ export class Registro {
   
   private authService = inject(AuthService);
 
-  // ESTADOS: Ahora solo tenemos paso 1 (Formulario) y paso 2 (Éxito)
+  // ESTADOS
   protected step = signal<1 | 2>(1);
   protected showPassword = signal(false);
   protected showConfirm = signal(false);
   protected termsChecked = signal(false);
   protected passwordValue = signal('');
   protected nombreUsuario = signal('');
+  protected archivoSeleccionado = signal<File | null>(null);
+  protected fotoPrevisualizacion = signal<string | null>(null);
 
-  // FORMULARIO SIMPLIFICADO
+  // FORMULARIO
   registroForm = new FormGroup({
     nombre: new FormControl('', [Validators.required, Validators.minLength(2)]),
     apellidos: new FormControl('', [Validators.required, Validators.minLength(2)]),
@@ -75,9 +77,21 @@ export class Registro {
     this.termsChecked.update(v => !v);
   }
 
+  onFotoSeleccionada(event: any) {
+    const archivo = event.target.files[0];
+    if (archivo) {
+      this.archivoSeleccionado.set(archivo); // Guardamos el File real
+
+      // Creamos la previsualización
+      const reader = new FileReader();
+      reader.onload = (e: any) => this.fotoPrevisualizacion.set(e.target.result);
+      reader.readAsDataURL(archivo);
+    }
+  }
+
   onSubmit() {
     // Validamos formulario Y que los términos estén marcados
-    if (this.registroForm.valid && this.termsChecked()) {
+    if (this.registroForm.valid && this.termsChecked() && this.archivoSeleccionado() !== null) {
       const formDatos = this.registroForm.value;
       
       const datosFinales = {
@@ -90,7 +104,7 @@ export class Registro {
 
       console.log('Enviando a backend:', datosFinales);
       
-      this.authService.registro(datosFinales).subscribe({
+      this.authService.registro(datosFinales, this.archivoSeleccionado()!).subscribe({
         next: (respuestaBackend) => {
           console.log('Respuesta del servidor:', respuestaBackend);
           this.nombreUsuario.set(formDatos.nombre ?? '');
@@ -98,13 +112,16 @@ export class Registro {
         },
         error: (error) => {
           console.error('Error al registrar:', error);
+          const mensajeError = error.error?.mensaje || 'Hubo un error al crear la cuenta.';
           alert('Hubo un error al crear la cuenta.');
         }
       });
 
     } else {
       this.registroForm.markAllAsTouched();
-      if (!this.termsChecked()) {
+      if (!this.archivoSeleccionado()) {
+        alert('Debes subir una foto de perfil obligatoriamente.');
+      } else if (!this.termsChecked()) {
         alert('Debes aceptar los términos y condiciones.');
       }
     }

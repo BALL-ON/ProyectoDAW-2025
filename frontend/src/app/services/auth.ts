@@ -39,9 +39,13 @@ export class AuthService {
   }
 
   // Registrar Usuario
-  registro(datosRegistro: any): Observable<any> {
-    // Hace un POST al endpoint /auth/register
-    return this.http.post(`${this.apiUrl}/register`, datosRegistro);
+  registro(datosRegistro: any, archivoFoto: File): Observable<any> {
+
+    const formData = new FormData();
+    formData.append('foto', archivoFoto);
+    formData.append('usuario', new Blob([JSON.stringify(datosRegistro)], { type: 'application/json' }))
+    
+    return this.http.post(`${this.apiUrl}/register`, formData);
   }
 
 

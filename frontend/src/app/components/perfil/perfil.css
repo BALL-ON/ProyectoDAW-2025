@@ -417,6 +417,54 @@
   transform: none;
 }
 
+/* Contenedor de la foto */
+.avatar-wrapper {
+  position: relative; 
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px auto;
+}
+
+/* La imagen de perfil */
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover; 
+  border: 4px solid var(--blue);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Botoncito para cambiar foto */
+.btn-edit-photo {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--blue);
+  color: white;
+  border: 2px solid var(--black-2);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(26,159,255,0.4);
+}
+
+.btn-edit-photo:hover {
+  transform: scale(1.1);
+  background: #1085dd; /* Un azul un pelín más oscuro */
+}
+
+/* Para que el icono SVG cuadre bien */
+.btn-edit-photo svg {
+  width: 16px;
+  height: 16px;
+}
+
 /*RESPONSIVE */
 @media (max-width: 768px) {
   .perfil-layout {
