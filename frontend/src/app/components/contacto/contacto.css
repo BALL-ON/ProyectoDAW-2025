@@ -356,3 +356,29 @@ select.inp {
   color: #ef4444;
   flex-shrink: 0;
 }
+
+.fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+.field-half {
+  width: 100%;
+}
+
+/* Responsive: En móviles, vuelven a estar uno debajo del otro */
+@media (max-width: 768px) {
+  .fields-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fields-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
