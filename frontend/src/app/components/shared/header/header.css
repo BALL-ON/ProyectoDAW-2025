@@ -36,15 +36,19 @@
   flex-shrink: 0;
 }
 
+.img-logo-real {
+  width: 120px;
+  height: auto;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+
 .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--blue);
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(26, 159, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
 }
 
 .logo-text {
