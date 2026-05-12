@@ -3,6 +3,9 @@ package com.ballon.backend.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,5 +102,14 @@ public class ReseñaService {
         return resenas.stream()
                 .map(reseñaMapper::toReseñaResponse)
                 .collect(Collectors.toList());
+    }
+    
+    public Page<ReseñaResponseDTO> obtenerMisResenasPaginadas(String email, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        
+        Page<Reseña> paginaResenas = reseñaRepository.findByUsuarioEmailPaginado(email, pageable);
+ 
+        return paginaResenas.map(reseñaMapper::toReseñaResponse);
     }
 }

@@ -2,8 +2,10 @@ package com.ballon.backend.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -71,5 +73,25 @@ public class ReseñaController {
     public ResponseEntity<List<ReseñaResponseDTO>> obtenerResenasDelCentro(@PathVariable Long idPolideportivo) {
         // Llama al servicio que use el repositorio de arriba y devuelva la lista
         return ResponseEntity.ok(reseñaService.obtenerPorPolideportivo(idPolideportivo));
+    }
+    
+    /**
+     * Endpoint para obtener todas las reseñas paginadas
+     * @param authentication
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/mis-resenas/page")
+    public ResponseEntity<Page<ReseñaResponseDTO>> obtenerMisResenasPaginadas(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        
+        String email = authentication.getName(); 
+        
+        Page<ReseñaResponseDTO> resenasPage = reseñaService.obtenerMisResenasPaginadas(email, page, size);
+        
+        return ResponseEntity.ok(resenasPage);
     }
 }
