@@ -53,6 +53,10 @@ export class Login {
         next: (respuesta) => {
           sessionStorage.setItem('token', respuesta.token);
           sessionStorage.setItem('user_rol', respuesta.rol);
+
+          if (respuesta.idPolideportivo) {
+            sessionStorage.setItem('idPolideportivo', respuesta.idPolideportivo.toString());
+          }
           
           this.authService.loggedSignal.set(true); 
 

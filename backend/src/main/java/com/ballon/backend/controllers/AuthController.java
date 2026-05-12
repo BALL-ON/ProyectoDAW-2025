@@ -71,13 +71,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
     	try {
-    		// Se comprueba que el usuario no está bloqueado
+            Long idPolideportivo = null; 
+
     		Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(request.getEmail());
             
             if (usuarioOpt.isPresent()) {
                 Usuario usuario = usuarioOpt.get();
                 
-                // Si tiene fecha de bloqueo y aún no ha pasado esa fecha
                 if (usuario.getBloqueadoHasta() != null && usuario.getBloqueadoHasta().isAfter(LocalDateTime.now())) {
                     
                     Map<String, String> errorResponse = new HashMap<>();
@@ -85,21 +85,24 @@ public class AuthController {
                     
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
                 }
+
+                if (usuario.getPolideportivoAsignado() != null) {
+                    idPolideportivo = usuario.getPolideportivoAsignado().getIdPolideportivo();
+                }
             }
             
-            // Spring Security comprueba las credenciales y nos devuelve el objeto de autenticación
             var authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getContrasena())
             );
 
-            // Extraemos el rol (Spring le añade el prefijo "ROLE_" que está en UserDetailsServiceImpl)
+            // Extraemos el rol
             String rol = authentication.getAuthorities().iterator().next().getAuthority();
 
             // Generamos el token
             String token = jwtService.generateToken(request.getEmail(), request.isRemember());
             
-            // Devolvemos AMBAS cosas al frontend
-            return ResponseEntity.ok(new AuthResponseDTO(token, rol));
+            // Devolvemos las 3 cosas al frontend
+            return ResponseEntity.ok(new AuthResponseDTO(token, rol, idPolideportivo));
 
         } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("mensaje", "Credenciales inválidas"));
