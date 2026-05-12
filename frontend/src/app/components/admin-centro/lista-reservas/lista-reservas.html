@@ -73,5 +73,28 @@
         }
       </tbody>
     </table>
+    
+      @if (totalElementos > 0) {
+        <div class="pagination-container">
+          <button 
+            class="btn-page" 
+            [disabled]="paginaActual === 0" 
+            (click)="cambiarPagina(paginaActual - 1)">
+            ← Anterior
+          </button>
+          
+          <span class="page-info">
+            Página <strong>{{ paginaActual + 1 }}</strong> de <strong>{{ totalPaginas }}</strong> 
+            <small>({{ totalElementos }} reservas totales)</small>
+          </span>
+
+          <button 
+            class="btn-page" 
+            [disabled]="paginaActual === totalPaginas - 1" 
+            (click)="cambiarPagina(paginaActual + 1)">
+            Siguiente →
+          </button>
+        </div>
+      }
   </div>
 </div>

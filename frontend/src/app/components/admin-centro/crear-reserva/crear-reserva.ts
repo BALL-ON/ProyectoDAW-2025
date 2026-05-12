@@ -83,8 +83,15 @@ export class crearReserva implements OnInit {
         }, 2000);
       },
       error: (err) => {
-        this.cargando = false;
-        this.mensajeError = err.error?.message || err.error || 'Error al crear la reserva';
+        if (err.error && err.error.mensaje) {
+          this.mensajeError = err.error.mensaje;
+        } 
+        else if (typeof err.error === 'string') {
+          this.mensajeError = err.error;
+        } 
+        else {
+          this.mensajeError = 'Ocurrió un error inesperado al intentar crear la reserva.';
+        }
       }
     });
   }

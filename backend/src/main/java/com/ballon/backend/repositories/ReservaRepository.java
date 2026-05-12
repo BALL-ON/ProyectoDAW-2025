@@ -5,6 +5,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -82,4 +84,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     // Las traemos ordenadas por fecha (las más recientes primero)
     @Query("SELECT r FROM Reserva r WHERE r.pista.polideportivo.idPolideportivo = :idPolideportivo ORDER BY r.fechaReserva DESC, r.horaInicio DESC")
     List<Reserva> findReservasByPolideportivo(@Param("idPolideportivo") Long idPolideportivo);
+    
+    @Query("SELECT r FROM Reserva r WHERE r.pista.polideportivo.idPolideportivo = :idPolideportivo AND r.fechaReserva >= CURRENT_DATE ORDER BY r.fechaReserva ASC, r.horaInicio ASC")
+    Page<Reserva> findByPolideportivoIdPaginado(@Param("idPolideportivo") Long idPolideportivo, Pageable pageable);
+    
+    
 }

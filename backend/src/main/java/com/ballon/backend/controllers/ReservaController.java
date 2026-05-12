@@ -3,6 +3,7 @@ package com.ballon.backend.controllers;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,6 +109,23 @@ public class ReservaController {
     @GetMapping("/polideportivo/{idPolideportivo}/reservas")
     public ResponseEntity<List<ReservaResponseDTO>> listarReservasDelCentro(@PathVariable Long idPolideportivo) {
         List<ReservaResponseDTO> reservas = reservaService.listarReservasPorPolideportivo(idPolideportivo);
+        return ResponseEntity.ok(reservas);
+    }
+    
+    /**
+     * Endpoint para obtener las reservas de forma paginada 
+     * @param idPolideportivo
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/polideportivo/{idPolideportivo}/page")
+    public ResponseEntity<Page<ReservaResponseDTO>> obtenerReservasPaginadas(
+            @PathVariable Long idPolideportivo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        
+        Page<ReservaResponseDTO> reservas = reservaService.obtenerReservasPaginadas(idPolideportivo, page, size);
         return ResponseEntity.ok(reservas);
     }
     

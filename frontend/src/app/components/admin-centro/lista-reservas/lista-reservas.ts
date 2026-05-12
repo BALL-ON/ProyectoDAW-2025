@@ -18,6 +18,12 @@ export class ListaReservas implements OnInit {
   reservas: any[] = [];
   cargando: boolean = true;
   mensajeError: string = '';
+
+  /* variables de paginacion */
+  paginaActual: number = 0;
+  pageSize: number = 5;
+  totalPaginas: number = 0;
+  totalElementos: number = 0;
   
   // Guardamos la fecha de hoy en formato YYYY-MM-DD para comparar facilmente
   hoyStr: string = new Date().toISOString().split('T')[0]; 
@@ -29,6 +35,7 @@ export class ListaReservas implements OnInit {
   }
 
   cargarReservas() {
+    this.cargando = true;
     const idPolideportivoString = sessionStorage.getItem('idPolideportivo');
 
     if (!idPolideportivoString) {
@@ -39,40 +46,26 @@ export class ListaReservas implements OnInit {
 
     const idPolideportivo = Number(idPolideportivoString);
 
-    this.reservaService.obtenerReservasPorPolideportivo(idPolideportivo).subscribe({
+    this.reservaService.obtenerReservasPaginadas(idPolideportivo, this.paginaActual, this.pageSize).subscribe({
       next: (data) => {
-        this.procesarYOrdenarReservas(data);
+        this.reservas = data.content; 
+        
+        this.totalPaginas = data.totalPages;
+        this.totalElementos = data.totalElements;
         this.cargando = false;
       },
       error: (err) => {
-        console.error('Error cargando reservas', err);
-        this.mensajeError = 'No se pudieron cargar las reservas del centro.';
+        console.error('Error al cargar reservas paginadas', err);
         this.cargando = false;
       }
     });
   }
 
-  procesarYOrdenarReservas(data: any[]) {
-    // Las de hoy (ordenadas por hora de más pronto a más tarde)
-    const reservasHoy = data.filter(r => r.fechaReserva === this.hoyStr)
-      .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
-
-    // Las futuras (ordenadas por fecha más cercana y luego por hora)
-    const reservasFuturas = data.filter(r => r.fechaReserva > this.hoyStr)
-      .sort((a, b) => {
-        if (a.fechaReserva === b.fechaReserva) return a.horaInicio.localeCompare(b.horaInicio);
-        return a.fechaReserva.localeCompare(b.fechaReserva);
-      });
-
-    //  Las pasadas (Historial: ordenadas por fecha más reciente)
-    const reservasPasadas = data.filter(r => r.fechaReserva < this.hoyStr)
-      .sort((a, b) => {
-        if (a.fechaReserva === b.fechaReserva) return b.horaInicio.localeCompare(a.horaInicio);
-        return b.fechaReserva.localeCompare(a.fechaReserva);
-      });
-
-    // Juntamos todo en el array final
-    this.reservas = [...reservasHoy, ...reservasFuturas, ...reservasPasadas];
+  cambiarPagina(nuevaPagina: number) {
+    if (nuevaPagina >= 0 && nuevaPagina < this.totalPaginas) {
+      this.paginaActual = nuevaPagina;
+      this.cargarReservas();
+    }
   }
 
   esHoy(fecha: string): boolean {
