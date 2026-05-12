@@ -44,26 +44,24 @@ export class Perfil implements OnInit {
   editando = signal<boolean>(false); // Señal que controla si estamos en modo edicion
   datosEdicion = signal<UsuarioUpdateDTO>({nombre: '', apellidos: '', telefono: '' }); // Guardamos copia temportal de los datos mientras edita
 
+  // PARA PAGINACIÓN
+  paginaActual = signal<number>(0);
+  pageSize = signal<number>(5);
+  totalPaginas = signal<number>(0);
+  totalElementos = signal<number>(0);
+
   ngOnInit() {
-
-    // Intentamos obtener el token
     const token = this.authService.getToken();
-
-    // Si no hay token cancelamos la ejecución con un 'return' para evitar Error 401.
-    if (!token) {
-      return; 
-    }
+    if (!token) return; 
     
-    // forkJoin ejecuta ambas peticiones a la vez y espera a que las dos terminen
-    forkJoin({
-      perfil: this.usuarioService.obtenerMiPerfil(),
-      misResenas: this.usuarioService.obtenerMisResenas()
-    }).subscribe({
-      next: (resultados) => {
-        // Guardamos los resultados en las señales que usa tu HTML
-        this.usuario.set(resultados.perfil);
-        this.resenas.set(resultados.misResenas);
-      },
+    this.cargarPerfil();
+    this.cargarResenas(this.paginaActual());
+  }
+
+  // Carga solo los datos del usuario
+  cargarPerfil() {
+    this.usuarioService.obtenerMiPerfil().subscribe({
+      next: (perfil) => this.usuario.set(perfil),
       error: (err) => {
         console.error('Error cargando el perfil', err);
         if (err.status === 401 || err.status === 403) {
@@ -71,6 +69,25 @@ export class Perfil implements OnInit {
         }
       }
     });
+  }
+
+  cargarResenas(page: number) {
+    this.usuarioService.obtenerMisResenasPaginadas(page, this.pageSize()).subscribe({
+      next: (data) => {
+        this.resenas.set(data.content);
+        this.paginaActual.set(page);
+        this.totalPaginas.set(data.totalPages);
+        this.totalElementos.set(data.totalElements);
+      },
+      error: (err) => console.error('Error cargando las reseñas', err)
+    });
+  }
+
+  // Método para los botones de Siguiente / Anterior
+  cambiarPagina(nuevaPagina: number) {
+    if (nuevaPagina >= 0 && nuevaPagina < this.totalPaginas()) {
+      this.cargarResenas(nuevaPagina);
+    }
   }
 
 // Metodo que saca las iniciales del usuario por si no tiene foto de perfil

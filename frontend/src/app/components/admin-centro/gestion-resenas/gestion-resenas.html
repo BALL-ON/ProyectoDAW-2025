@@ -1,0 +1,53 @@
+<div class="admin-card">
+  <div class="card-header" style="margin-bottom: 24px;">
+    <h3>Moderación de Reseñas</h3>
+    <p class="card-description">Revisa el feedback de tus clientes. Puedes ocultar comentarios ofensivos o inapropiados.</p>
+  </div>
+
+  @if (cargando) {
+    <p style="color: #94a3b8;">Cargando reseñas...</p>
+  } @else {
+    
+    <div class="reviews-grid">
+      @for (resena of resenas; track resena.idResena) {
+        
+        <div class="review-card" [class.censored]="!resena.visible">
+          
+          <div class="review-header">
+            <div>
+              <strong>{{ resena.nombreUsuario }}</strong>
+              <span class="pista-name">en {{ resena.nombrePista }}</span>
+            </div>
+            <div class="date">{{ resena.fecha | date:'dd/MM/yyyy' }}</div>
+          </div>
+
+          <!-- Estrellas  -->
+          <div class="stars-container">
+            @for (star of estrellas; track star) {
+              <span class="star" [class.filled]="star <= resena.puntuacion">★</span>
+            }
+          </div>
+
+          <p class="review-text">"{{ resena.comentario || 'Sin comentario escrito.' }}"</p>
+
+          <div class="review-actions">
+            @if (resena.visible) {
+              <button class="btn-hide" [disabled]="resena.procesando" (click)="toggleVisibilidad(resena)">
+                Ocultar al público
+              </button>
+            } @else {
+              <div class="censored-badge">⚠️ Oculta por moderación</div>
+              <button class="btn-restore" [disabled]="resena.procesando" (click)="toggleVisibilidad(resena)">
+                Volver a mostrar
+              </button>
+            }
+          </div>
+
+        </div>
+
+      } @empty {
+        <p style="color: #94a3b8;">Aún no hay reseñas en tu centro deportivo.</p>
+      }
+    </div>
+  }
+</div>

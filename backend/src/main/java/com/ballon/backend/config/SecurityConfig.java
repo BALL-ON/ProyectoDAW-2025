@@ -58,14 +58,20 @@ public class SecurityConfig {
 	                .requestMatchers("/api/reservas/**").hasAnyRole("Admin_Centro", "Usuario")
 	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/resenas",
 	                		"/api/contacto/**").authenticated()
+	                
+	                // NIVEL ADMIN GLOBAL
+	                .requestMatchers("/api/admin/director/**", "/api/admin/directores").hasRole("Admin_Global")
+	                
 
 	                // NIVEL ADMIN (Admin_Centro)
 	                .requestMatchers("/api/admin/**").hasRole("Admin_Centro")
+	                .requestMatchers("/api/admin-centro/**").hasRole("Admin_Centro")
 	                .requestMatchers("/api/usuarios").hasRole("Admin_Centro")
 	                .requestMatchers("/api/contacto/**").hasRole("Admin_Centro")
-	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
-	                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
-	                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/polideportivos/**", "/api/pistas/**").hasRole("Admin_Centro")
+	                .requestMatchers("/api/resenas/**").hasRole("Admin_Centro")
+	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/polideportivos/**", "/api/pistas/**").hasAnyRole("Admin_Global", "Admin_Centro")
+	                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/polideportivos/**", "/api/pistas/**").hasAnyRole("Admin_Global", "Admin_Centro")
+	                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/polideportivos/**", "/api/pistas/**").hasAnyRole("Admin_Global", "Admin_Centro")
 	                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/reservas/**").hasRole("Admin_Centro")
 
 	                .anyRequest().authenticated()
@@ -103,7 +109,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 	    CorsConfiguration configuration = new CorsConfiguration();
 	    configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-	    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 	    configuration.setAllowedHeaders(List.of("*"));
 	    
 	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -11,4 +11,5 @@ public class AuthResponseDTO {
     // Propiedad que Angular leerá como response.token
     private String token;
     private String rol;
+    private Long idPolideportivo;
 }

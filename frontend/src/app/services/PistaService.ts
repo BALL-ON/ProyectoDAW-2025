@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PistaRequest, PistaResponse } from '../model/pista.model';
@@ -22,6 +22,11 @@ export class PistaService {
       `${this.apiUrl}/polideportivo/${idPolideportivo}`
     );
   }
+ 
+  /** GET /api/pistas/polideportivo/{idPolideportivo}/todas */
+  obtenerTodasPistasPorPolideportivo(idPolideportivo: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/polideportivo/${idPolideportivo}/todas`);
+  }
 
   /** GET /api/pistas/{id} */
   obtenerPorId(id: number): Observable<PistaResponse> {
@@ -39,9 +44,17 @@ export class PistaService {
   }
 
   /** PATCH /api/pistas/{id}/estado?activa=true (ADMIN, mantenimiento) */
-  cambiarEstado(id: number, activa: boolean): Observable<PistaResponse> {
+  cambiarEstado(id: number, activa: boolean): Observable<any> {
     const params = new HttpParams().set('activa', activa);
-    return this.http.patch<PistaResponse>(`${this.apiUrl}/${id}/estado`, null, { params });
+    
+    // Sacamos el token del sessionStorage y creamos la cabecera
+    const token = sessionStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    // Añadimos los headers a la petición
+    return this.http.patch<any>(`${this.apiUrl}/${id}/estado`, null, { headers, params });
   }
 
   /** DELETE /api/pistas/{id} (ADMIN) */

@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReservaRequestDTO {
 
-	@NotNull
-    private Long idUsuario; // En un entorno real, esto se suele sacar del Token de sesión, pero opcional aquí.
+    private Long idUsuario; //esto se saca del Token de sesión
 
     @NotNull
     private Long idPista;

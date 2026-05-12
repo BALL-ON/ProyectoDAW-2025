@@ -1,7 +1,5 @@
 package com.ballon.backend.dtos;
 
-import com.ballon.backend.models.enums.Rol;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -30,6 +28,4 @@ public class UsuarioRequestDTO {
 
     private String telefono;
     
-    // Opcional: Para asignar rol o polideportivo desde el inicio (si es admin)
-    private Rol rol;
 }
