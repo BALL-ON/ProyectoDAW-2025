@@ -2,6 +2,9 @@ package com.ballon.backend.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,10 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody; // ← OJO: este es el correcto (Spring), no el de Swagger
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.dtos.PolideportivoRequestDTO;
 import com.ballon.backend.dtos.PolideportivoResponseDTO;
+import com.ballon.backend.models.Polideportivo;
+import com.ballon.backend.repositories.PolideportivoRepository;
 import com.ballon.backend.services.PolideportivoService;
 
 import jakarta.validation.Valid;
@@ -29,11 +35,37 @@ import lombok.RequiredArgsConstructor;
 public class PolideportivoController {
 
     private final PolideportivoService polideportivoService;
+    private final PolideportivoRepository polideportivoRepository;
 
     /** Listado público de polideportivos (lo consume la home/listado del frontend). */
     @GetMapping
     public ResponseEntity<List<PolideportivoResponseDTO>> listarTodos() {
         return ResponseEntity.ok(polideportivoService.listarTodos());
+    }
+    
+    /** Listado de polideportivos con paginacion*/
+    @GetMapping("/paginados")
+    public ResponseEntity<Page<PolideportivoResponseDTO>> listarPolideportivosPaginados(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String poblacion,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        
+        Pageable pageable = PageRequest.of(page, size);
+        
+        Page<Polideportivo> paginaPoli = polideportivoRepository.buscarPolideportivosPaginadosYFiltrados(nombre, poblacion, pageable);
+        
+        Page<PolideportivoResponseDTO> paginaDTOs = paginaPoli.map(p -> 
+            PolideportivoResponseDTO.builder()
+                .idPolideportivo(p.getIdPolideportivo())
+                .nombre(p.getNombre())
+                .direccion(p.getDireccion())
+                .poblacion(p.getPoblacion())
+                .metodoPagoPreferido(p.getMetodoPagoPreferido())
+                .build()
+        );
+
+        return ResponseEntity.ok(paginaDTOs);
     }
 
     /** Detalle de un polideportivo. */

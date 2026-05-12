@@ -63,4 +63,16 @@ export class ReservaService {
   crearResena(dto: ResenaRequest): Observable<any> {
     return this.http.post<any>('http://localhost:9999/api/resenas', dto, { headers: this.getHeaders() });
   }
+
+  obtenerReservasPorPolideportivo(idPolideportivo: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/polideportivo/${idPolideportivo}/reservas`);
+  }
+
+  obtenerReservasPaginadas(idPolideportivo: number, page: number, size: number): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+      
+    return this.http.get<any>(`${this.apiUrl}/polideportivo/${idPolideportivo}/page`, { headers: this.getHeaders(), params });
+  }
 }

@@ -9,6 +9,9 @@ import { Reserva } from './components/reserva/reserva';
 import { Pistas } from './components/pistas/pistas';
 import { Perfil } from './components/perfil/perfil';
 import { MisReservas } from './components/mis-reservas/mis-reservas';
+import { DashboardAdmin } from './components/admin/dashboard-admin/dashboard-admin';
+import { adminGuard } from './core/guards/admin-guard';
+import { EscanerQr } from './components/admin-centro/escaner-qr/escaner-qr';
 
 
 export const routes: Routes = [
@@ -21,5 +24,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'registro', component: Registro },
   { path: 'perfil', component: Perfil},
-  { path: 'mis-reservas', component: MisReservas }
+  { path: 'mis-reservas', component: MisReservas },
+  { path: 'admin/dashboard', component: DashboardAdmin, canActivate: [adminGuard] },
+  { path: 'admin/escanear-qr', component: EscanerQr }
 ];

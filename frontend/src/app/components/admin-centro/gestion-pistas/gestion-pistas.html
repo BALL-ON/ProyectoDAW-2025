@@ -1,0 +1,59 @@
+<div class="admin-card">
+  <div class="card-header" style="margin-bottom: 20px;">
+    <h3>Gestión de Instalaciones</h3>
+    <p class="card-description">Activa o desactiva pistas por mantenimiento u otras incidencias.</p>
+  </div>
+
+  @if (mensajeExito) {
+    <div class="alert alert-success" style="margin-bottom: 15px;">{{ mensajeExito }}</div>
+  }
+  @if (mensajeError) {
+    <div class="alert alert-danger" style="margin-bottom: 15px;">{{ mensajeError }}</div>
+  }
+
+  <div class="table-responsive">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Pista</th>
+          <th>Deporte</th>
+          <th>Estado Actual</th>
+          <th>Acción (Mantenimiento)</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (pista of pistas; track pista.idPista) {
+          <tr>
+            <td><strong>{{ pista.nombrePista }}</strong></td>
+            <td>{{ pista.tipoDeporte || 'Multideporte' }}</td>
+            
+            <td>
+              <!-- Etiqueta visual de estado -->
+              @if (pista.activa) {
+                <span class="status-badge active">Operativa</span>
+              } @else {
+                <span class="status-badge suspended">En Mantenimiento</span>
+              }
+            </td>
+            
+            <td>
+              <label class="toggle-switch" [class.disabled]="pista.procesando">
+                <input type="checkbox" 
+                       [checked]="pista.activa" 
+                       [disabled]="pista.procesando"
+                       (change)="toggleEstado(pista)">
+                <span class="slider"></span>
+              </label>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 30px; color: #94a3b8;">
+              {{ cargando ? 'Cargando instalaciones...' : 'No hay pistas registradas.' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

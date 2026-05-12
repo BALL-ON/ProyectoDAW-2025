@@ -77,4 +77,27 @@ public class ReseñaService {
                 .map(reseñaMapper::toReseñaResponse)
                 .collect(Collectors.toList());
     }
+    
+    /**
+     * Método para hacer visible o no una reseña (por control de comentarios ofensivos)
+     * @param idResena
+     * @param visible
+     * @return
+     */
+    public ReseñaResponseDTO cambiarVisibilidad(Long idResena, boolean visible) {
+        Reseña resena = reseñaRepository.findById(idResena)
+            .orElseThrow(() -> new RuntimeException("Reseña no encontrada"));
+            
+        resena.setVisible(visible);
+        Reseña guardada = reseñaRepository.save(resena);
+        
+        return reseñaMapper.toReseñaResponse(guardada);
+    }
+
+    public List<ReseñaResponseDTO> obtenerPorPolideportivo(Long idPolideportivo) {
+        List<Reseña> resenas = reseñaRepository.findByPolideportivoId(idPolideportivo);
+        return resenas.stream()
+                .map(reseñaMapper::toReseñaResponse)
+                .collect(Collectors.toList());
+    }
 }

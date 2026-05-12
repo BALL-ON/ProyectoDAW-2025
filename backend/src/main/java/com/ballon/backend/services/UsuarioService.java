@@ -1,18 +1,23 @@
 package com.ballon.backend.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ballon.backend.dtos.AdminCentroRequestDTO;
 import com.ballon.backend.dtos.UsuarioRequestDTO;
 import com.ballon.backend.dtos.UsuarioResponseDTO;
 import com.ballon.backend.dtos.UsuarioUpdateDTO;
 import com.ballon.backend.exception.UsuarioDuplicatedException;
 import com.ballon.backend.exception.UsuarioNotFoundException;
 import com.ballon.backend.mapper.UsuarioMapper;
+import com.ballon.backend.models.Polideportivo;
 import com.ballon.backend.models.Usuario;
 import com.ballon.backend.models.enums.Rol;
+import com.ballon.backend.repositories.PolideportivoRepository;
 import com.ballon.backend.repositories.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +30,11 @@ public class UsuarioService {
 	 * Inyeccion de UsuarioRepository
 	 */
 	private final UsuarioRepository usuarioRepository;
+	
+	/*
+	 * Inyeccion de PolideportivoRepository
+	 */
+	private final PolideportivoRepository polideportivoRepository;
 	
 	/*
 	 * Inyeccion codificador de contraseñas
@@ -63,16 +73,45 @@ public class UsuarioService {
         // Encriptamos la contraseña en la entidad
         usuario.setContrasena(passwordEncoder.encode(usuarioRequest.getContrasena()));
         
-        // Si no viene rol, forzamos que sea Usuario
-        if (usuarioRequest.getRol() == null) {
-        	usuarioRequest.setRol(Rol.Usuario);
-        }
+        // Forzamos a que todo nuevo registro sea de tipo Usuario normal.
+        usuario.setRol(Rol.Usuario);
         
         // Guardamos en Base de Datos
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
         
         //Devolvemos la entidad traducida a ResponseDTO
         return usuarioMapper.toResponse(usuarioGuardado);
+    }
+    
+    /**
+     * Método para registrar un adminCentro
+     * @param dto
+     */
+    public UsuarioResponseDTO crearAdminCentro(AdminCentroRequestDTO dto) {
+        
+        Usuario nuevoAdmin = new Usuario();
+        nuevoAdmin.setNombre(dto.getNombre());
+        nuevoAdmin.setApellidos(dto.getApellidos());
+        nuevoAdmin.setEmail(dto.getEmail());
+        nuevoAdmin.setUsername(dto.getEmail());      
+        nuevoAdmin.setTelefono(dto.getTelefono());
+        nuevoAdmin.setContrasena(passwordEncoder.encode(dto.getContrasena()));
+        nuevoAdmin.setRol(Rol.Admin_Centro); 
+        
+        Polideportivo p = polideportivoRepository.findById(dto.getIdPolideportivo())
+            .orElseThrow(() -> new RuntimeException("Polideportivo no encontrado"));
+        nuevoAdmin.setPolideportivoAsignado(p);
+        
+        Usuario adminGuardado = usuarioRepository.save(nuevoAdmin);
+        
+        UsuarioResponseDTO response = new UsuarioResponseDTO();
+        response.setIdUsuario(adminGuardado.getIdUsuario());
+        response.setNombre(adminGuardado.getNombre());
+        response.setApellidos(adminGuardado.getApellidos());
+        response.setEmail(adminGuardado.getEmail());
+        response.setRol(adminGuardado.getRol());
+        
+        return response;
     }
 
     /*
@@ -122,6 +161,68 @@ public class UsuarioService {
 
         return usuarioMapper.toResponse(usuarioActualizado);
     }
+    
+    public List<UsuarioResponseDTO> listarDirectoresCentro() {
+
+        List<Usuario> directores = usuarioRepository.findByRol(Rol.Admin_Centro);
+
+        return directores.stream().map(admin -> {
+            UsuarioResponseDTO dto = new UsuarioResponseDTO();
+            dto.setIdUsuario(admin.getIdUsuario());
+            dto.setNombre(admin.getNombre());
+            dto.setApellidos(admin.getApellidos());
+            dto.setEmail(admin.getEmail());
+            dto.setTelefono(admin.getTelefono());
+            dto.setRol(admin.getRol());
+            dto.setPuntosPenalizacion(admin.getPuntosPenalizacion());
+            dto.setBloqueadoHasta(admin.getBloqueadoHasta());
+
+            if (admin.getPolideportivoAsignado() != null) {
+                dto.setIdPolideportivoAsignado(admin.getPolideportivoAsignado().getIdPolideportivo());
+            }
+            
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    
+    /**
+     * Metodo para suspender / activar a un admin_centro
+     * Bloquea el usuario poniendole una fecha lejana y lo activa quitando su bloqueo.
+     * @param idUsuario
+     * @param suspender
+     * @return
+     */
+	public UsuarioResponseDTO cambiarEstadoDirector(Long idUsuario, boolean suspender) {
+	
+	        Usuario admin = usuarioRepository.findById(idUsuario)
+	            .orElseThrow(() -> new RuntimeException("Director no encontrado con ID: " + idUsuario));
+	
+	        if (suspender) {
+	            // Si lo suspendemos le ponemos una fecha de bloqueo lejana (100 años)
+	            admin.setBloqueadoHasta(LocalDateTime.now().plusYears(100));
+	        } else {
+	            // Si lo reactivamos le quitamos el bloqueo
+	            admin.setBloqueadoHasta(null);
+	        }
+	
+	        Usuario adminActualizado = usuarioRepository.save(admin);
+	
+	        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+	        dto.setIdUsuario(adminActualizado.getIdUsuario());
+	        dto.setNombre(adminActualizado.getNombre());
+	        dto.setApellidos(adminActualizado.getApellidos());
+	        dto.setEmail(adminActualizado.getEmail());
+	        dto.setTelefono(adminActualizado.getTelefono());
+	        dto.setRol(adminActualizado.getRol());
+	        dto.setPuntosPenalizacion(adminActualizado.getPuntosPenalizacion());
+	        dto.setBloqueadoHasta(adminActualizado.getBloqueadoHasta());
+	        
+	        if (adminActualizado.getPolideportivoAsignado() != null) {
+	            dto.setIdPolideportivoAsignado(adminActualizado.getPolideportivoAsignado().getIdPolideportivo());
+	        }
+	
+	        return dto;
+	    }
 
 }
 

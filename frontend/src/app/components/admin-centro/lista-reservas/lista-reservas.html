@@ -1,0 +1,100 @@
+<div class="admin-card">
+  <div class="card-header" style="margin-bottom: 20px;">
+    <h3>Registro de Reservas</h3>
+    <p class="card-description">Listado completo de reservas de tu polideportivo.</p>
+  </div>
+
+  @if (mensajeError) {
+    <div class="alert alert-danger" style="color: #ef4444; margin-bottom: 15px;">{{ mensajeError }}</div>
+  }
+
+  <div class="table-responsive">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Fecha y Hora</th>
+          <th>Pista</th>
+          <th>Cliente</th>
+          <th>Precio</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (reserva of reservas; track reserva.idReserva) {
+            <!-- estilo distinto para marcar que es de hoy -->
+          <tr [style.background]="esHoy(reserva.fechaReserva) ? 'rgba(59, 130, 246, 0.05)' : 'transparent'">
+            
+            <td>
+              <div style="display: flex; flex-direction: column;">
+                <span style="font-weight: 500; color: #f8fafc;">
+                  {{ reserva.fechaReserva | date:'dd/MM/yyyy' }}
+                  @if (esHoy(reserva.fechaReserva)) {
+                    <span style="background: #3b82f6; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 8px; font-weight: bold;">HOY</span>
+                  }
+                </span>
+                <span style="color: #94a3b8; font-size: 0.9rem;">
+                  {{ reserva.horaInicio }} - {{ reserva.horaFin }}
+                </span>
+              </div>
+            </td>
+            
+            <td>{{ reserva.nombrePista }}</td>
+            
+            <td>
+              <!-- Si tiene nombre de invitado mostramos eso, si no, el nombre del usuario -->
+              {{ reserva.nombreUsuarioCompleto || 'Cliente Mostrador' }}
+            </td>
+            
+            <td>{{ reserva.precioTotal }}€</td>
+            
+            <td>
+              <div style="display: flex; gap: 5px; flex-direction: column; align-items: flex-start;">
+                <!-- Etiqueta de Pago -->
+                <span class="status-badge" 
+                      [class.active]="reserva.estadoPago === 'Pagado'" 
+                      [class.suspended]="reserva.estadoPago === 'Pendiente'"
+                      style="font-size: 0.75rem;">
+                  {{ reserva.estadoPago }}
+                </span>
+              </div>
+            </td>
+
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">
+              @if (cargando) {
+                Cargando reservas...
+              } @else {
+                No hay reservas registradas en este polideportivo.
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    
+      @if (totalElementos > 0) {
+        <div class="pagination-container">
+          <button 
+            class="btn-page" 
+            [disabled]="paginaActual === 0" 
+            (click)="cambiarPagina(paginaActual - 1)">
+            ← Anterior
+          </button>
+          
+          <span class="page-info">
+            Página <strong>{{ paginaActual + 1 }}</strong> de <strong>{{ totalPaginas }}</strong> 
+            <small>({{ totalElementos }} reservas totales)</small>
+          </span>
+
+          <button 
+            class="btn-page" 
+            [disabled]="paginaActual === totalPaginas - 1" 
+            (click)="cambiarPagina(paginaActual + 1)">
+            Siguiente →
+          </button>
+        </div>
+      }
+  </div>
+</div>

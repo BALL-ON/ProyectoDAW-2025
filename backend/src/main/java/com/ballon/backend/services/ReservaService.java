@@ -6,7 +6,11 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -239,5 +243,30 @@ public class ReservaService {
         if (!caducadasHoy.isEmpty() || !colgadasAyer.isEmpty()) {
             System.out.println("CRON: Se han marcado " + (caducadasHoy.size() + colgadasAyer.size()) + " reservas como No_Asistido.");
         }
+    }
+    
+    /*
+     * Método que busca todas las reservas de pistas de un polideportivo y las ordena por fecha y hora
+     */
+    public List<ReservaResponseDTO> listarReservasPorPolideportivo(Long idPolideportivo) {
+        List<Reserva> reservas = reservaRepository.findReservasByPolideportivo(idPolideportivo);
+        return reservas.stream()
+                .map(reservaMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Método para obtener reservas paginadas
+     * @param idPolideportivo
+     * @param page
+     * @param size
+     * @return
+     */
+    public Page<ReservaResponseDTO> obtenerReservasPaginadas(Long idPolideportivo, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        
+        Page<Reserva> paginaReservas = reservaRepository.findByPolideportivoIdPaginado(idPolideportivo, pageable);
+        
+        return paginaReservas.map(reservaMapper::toResponse);
     }
 }

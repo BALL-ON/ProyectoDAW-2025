@@ -1,4 +1,5 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink, Router, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth';
 
@@ -17,6 +18,16 @@ export class Header {
 
   menuOpen = signal<boolean>(false);
   dropdownOpen = signal<boolean>(false);
+
+  rolUsuario: string | null = null;
+
+  private platformId = inject(PLATFORM_ID);
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.rolUsuario = sessionStorage.getItem('user_rol');
+    }
+  }
 
   toggleMenu(): void {
     this.menuOpen.set(!this.menuOpen());
