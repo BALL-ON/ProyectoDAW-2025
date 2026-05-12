@@ -6,10 +6,11 @@ import { crearReserva } from '../../admin-centro/crear-reserva/crear-reserva';
 import { ListaReservas } from '../../admin-centro/lista-reservas/lista-reservas';
 import { GestionPistas } from '../../admin-centro/gestion-pistas/gestion-pistas';
 import { GestionResenas } from '../../admin-centro/gestion-resenas/gestion-resenas';
+import { MensajesContacto } from '../../admin-centro/mensajes-contacto/mensajes-contacto';
 
 @Component({
   selector: 'app-dashboard-admin',
-  imports: [ReactiveFormsModule, crearReserva, ListaReservas, GestionPistas, GestionResenas],
+  imports: [ReactiveFormsModule, crearReserva, ListaReservas, GestionPistas, GestionResenas, MensajesContacto],
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css',
 })

@@ -37,7 +37,9 @@ export class MensajeContacto {
    * Devuelve todos los mensajes recibidos (leídos y pendientes).
    */
   listarTodos(): Observable<MensajeDTO[]> {
-    return this.http.get<MensajeDTO[]>(this.apiUrl);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<MensajeDTO[]>(this.apiUrl, { headers });
   }
 
   /**
@@ -45,7 +47,9 @@ export class MensajeContacto {
    * Devuelve sólo los mensajes que aún no han sido marcados como leídos.
    */
   listarPendientes(): Observable<MensajeDTO[]> {
-    return this.http.get<MensajeDTO[]>(`${this.apiUrl}/pendientes`);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<MensajeDTO[]>(`${this.apiUrl}/pendientes`, { headers });
   }
 
   /**
@@ -53,7 +57,9 @@ export class MensajeContacto {
    * Marca un mensaje como leído. El backend no devuelve cuerpo.
    */
   marcarLeido(idMensaje: number): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${idMensaje}/leido`, {});
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.patch<void>(`${this.apiUrl}/${idMensaje}/leido`, {}, { headers });
   }
 
   /**
@@ -61,6 +67,8 @@ export class MensajeContacto {
    * Elimina permanentemente un mensaje.
    */
   eliminar(idMensaje: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${idMensaje}`);
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<void>(`${this.apiUrl}/${idMensaje}`, { headers });
   }
 }

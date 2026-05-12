@@ -1,0 +1,207 @@
+<div class="mensajes-wrapper">
+  
+  <!-- ── HEADER ──────────────────────────────────── -->
+  <div class="mensajes-header">
+    <div>
+      <h1 class="titulo-principal">Mensajes de Contacto</h1>
+      <p class="subtitulo">Gestiona y responde a los mensajes recibidos</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-box">
+        <span class="stat-numero">{{ mensajes.length }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-box pendiente">
+        <span class="stat-numero">{{ totalPendientes }}</span>
+        <span class="stat-label">Pendientes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONTROLES ──────────────────────────────── -->
+  <div class="controles">
+    <div class="filtros">
+      <button 
+        class="btn-filtro" 
+        [class.activo]="filtro === 'todos'"
+        (click)="cambiarFiltro('todos')">
+        <span class="material-symbols-outlined">inbox</span>
+        Todos
+      </button>
+      <button 
+        class="btn-filtro" 
+        [class.activo]="filtro === 'pendientes'"
+        (click)="cambiarFiltro('pendientes')">
+        <span class="material-symbols-outlined">mail_outline</span>
+        Pendientes
+      </button>
+    </div>
+
+    <div class="busqueda">
+      <span class="material-symbols-outlined">search</span>
+      <input 
+        type="text" 
+        placeholder="Buscar por nombre, email, asunto..."
+        [(ngModel)]="busqueda"
+        class="input-busqueda">
+    </div>
+  </div>
+
+  <!-- ── TABLA DE MENSAJES ───────────────────────── -->
+  <div class="tabla-contenedor">
+    <div *ngIf="cargando" class="cargando">
+      <div class="spinner"></div>
+      <p>Cargando mensajes...</p>
+    </div>
+
+    <div *ngIf="!cargando && mensajesFiltrados.length === 0" class="sin-resultados">
+      <span class="material-symbols-outlined">mail_outline</span>
+      <p>No hay mensajes para mostrar</p>
+    </div>
+
+    <table *ngIf="!cargando && mensajesFiltrados.length > 0" class="tabla-mensajes">
+      <thead>
+        <tr>
+          <th>Estado</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Asunto</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr 
+          *ngFor="let mensaje of mensajesFiltrados"
+          [class.no-leido]="!mensaje.leido"
+          class="fila-mensaje">
+          <td class="celda-estado">
+            <span 
+              class="badge"
+              [class.pendiente]="!mensaje.leido"
+              [class.leido]="mensaje.leido">
+              {{ mensaje.leido ? '✓ Leído' : '● Pendiente' }}
+            </span>
+          </td>
+          <td class="celda-nombre">{{ mensaje.nombre }}</td>
+          <td class="celda-email">{{ mensaje.email }}</td>
+          <td class="celda-asunto">
+            <span class="asunto-tag">{{ mensaje.asunto }}</span>
+          </td>
+          <td class="celda-fecha">{{ formatearFecha(mensaje.fecha_envio) }}</td>
+          <td class="celda-acciones">
+            <button 
+              class="btn-icono ver"
+              (click)="seleccionarMensaje(mensaje)"
+              title="Ver detalles">
+              <span class="material-symbols-outlined">visibility</span>
+            </button>
+            <button 
+              *ngIf="!mensaje.leido"
+              class="btn-icono marcar"
+              (click)="marcarComoLeido(mensaje)"
+              title="Marcar como leído">
+              <span class="material-symbols-outlined">done_all</span>
+            </button>
+            <button 
+              class="btn-icono eliminar"
+              (click)="abrirConfirmacionEliminar(mensaje)"
+              title="Eliminar">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── MODAL DETALLE ──────────────────────────── -->
+  <div *ngIf="mensajeSeleccionado" class="modal-overlay" (click)="cerrarDetalle()">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Detalle del Mensaje</h2>
+        <button class="btn-cerrar" (click)="cerrarDetalle()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="info-fila">
+          <label>Estado:</label>
+          <span 
+            class="badge"
+            [class.pendiente]="!mensajeSeleccionado.leido"
+            [class.leido]="mensajeSeleccionado.leido">
+            {{ mensajeSeleccionado.leido ? '✓ Leído' : '● Pendiente' }}
+          </span>
+        </div>
+
+        <div class="info-fila">
+          <label>Nombre:</label>
+          <p>{{ mensajeSeleccionado.nombre }}</p>
+        </div>
+
+        <div class="info-fila">
+          <label>Email:</label>
+          <p>
+            <a [href]="'mailto:' + mensajeSeleccionado.email">
+              {{ mensajeSeleccionado.email }}
+            </a>
+          </p>
+        </div>
+
+        <div class="info-fila">
+          <label>Teléfono:</label>
+          <p>{{ mensajeSeleccionado.telefono || '--' }}</p>
+        </div>
+
+        <div class="info-fila">
+          <label>Asunto:</label>
+          <span class="asunto-tag">{{ mensajeSeleccionado.asunto }}</span>
+        </div>
+
+        <div class="info-fila">
+          <label>Fecha de envío:</label>
+          <p>{{ formatearFecha(mensajeSeleccionado.fecha_envio) }}</p>
+        </div>
+
+        <div class="info-fila mensaje-cuerpo">
+          <label>Mensaje:</label>
+          <div class="mensaje-texto">
+            {{ mensajeSeleccionado.mensaje }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button 
+          *ngIf="!mensajeSeleccionado.leido"
+          class="btn-secondary"
+          (click)="marcarComoLeido(mensajeSeleccionado); cerrarDetalle()">
+          <span class="material-symbols-outlined">done_all</span>
+          Marcar como leído
+        </button>
+        <button 
+          class="btn-danger"
+          (click)="abrirConfirmacionEliminar(mensajeSeleccionado); cerrarDetalle()">
+          <span class="material-symbols-outlined">delete</span>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL CONFIRMACIÓN ───────────────────────── -->
+  <div *ngIf="mostrarConfirmacion" class="modal-overlay" (click)="cancelarEliminacion()">
+    <div class="modal-confirmacion" (click)="$event.stopPropagation()">
+      <span class="material-symbols-outlined icono-warning">warning</span>
+      <h3>¿Eliminar mensaje?</h3>
+      <p>Esta acción no se puede deshacer.</p>
+      <div class="botones-confirmacion">
+        <button class="btn-secondary" (click)="cancelarEliminacion()">Cancelar</button>
+        <button class="btn-danger" (click)="confirmarEliminacion()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
