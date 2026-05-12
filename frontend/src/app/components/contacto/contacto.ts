@@ -31,9 +31,9 @@ export class Contacto {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      nombre: '',
-      email: '',
-      telefono: '',
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      telefono: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
       asunto: 'reserva',
       mensaje: ['', [Validators.required, Validators.minLength(10)]],
       fecha_envio: this.obtenerFechaActual(),
@@ -48,12 +48,11 @@ export class Contacto {
       .obtenerMiPerfil()
       .pipe(
         switchMap((perfil) => {
-          this.form.patchValue({ nombre: perfil.nombre });
-          this.form.patchValue({ email: perfil.email });
-          this.form.patchValue({ telefono: perfil.telefono });
-          console.log('Perfil obtenido:', perfil);
-          console.log('email: ', this.form.value.email);
-          console.log('telefono: ', this.form.value.telefono);
+          if (this.isLoggedIn()) {
+            this.form.patchValue({ nombre: perfil.nombre });
+            this.form.patchValue({ email: perfil.email });
+            this.form.patchValue({ telefono: perfil.telefono });
+          }
 
           return this.contactoServicio.enviar(this.form.value);
         }),
