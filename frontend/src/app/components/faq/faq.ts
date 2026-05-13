@@ -45,21 +45,21 @@ export class Faq {
       id: 3,
       categoria: 'reservas',
       pregunta: '¿Cómo realizo una reserva de pista?',
-      respuesta: 'Ve a la sección Reservas, selecciona el deporte, elige fecha y hora. Al confirmar recibirás un código QR.',
+      respuesta: 'Ve a la sección Polideportivos, elige el más cercano a ti o el que más te guste, mira sus pistas y elige fecha y hora. Al confirmar recibirás un código QR que te permitirá acceder a la pista.',
       abierta: false
     },
     {
       id: 4,
       categoria: 'reservas',
       pregunta: '¿Puedo cancelar una reserva ya pagada?',
-      respuesta: 'Sí, puedes cancelar desde tu perfil hasta 24 horas antes para recibir el reembolso.',
+      respuesta: 'Sí, puedes cancelar tu reserva hasta 24 horas antes para recibir el reembolso.',
       abierta: false
     },
     {
       id: 5,
       categoria: 'pagos',
       pregunta: '¿Qué métodos de pago aceptáis?',
-      respuesta: 'Aceptamos Tarjeta de crédito/débito, Google Pay, Apple Pay y Bizum.',
+      respuesta: 'Aceptamos Tarjeta de crédito/débito, Apple Pay y Bizum.',
       abierta: false
     },
     {
