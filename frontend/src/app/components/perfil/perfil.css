@@ -464,6 +464,99 @@
   width: 16px;
   height: 16px;
 }
+/* Contenedor principal */
+.simple-password-section {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra el botón y el formulario */
+}
+
+/* El botón inicial */
+.btn-change-pass {
+  background: #ffffff;
+  color: #1085dd;
+  border: 1px solid #a3a3a3;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-change-pass:hover {
+  background: #cfcfcf;
+  border-color: #666666;
+  color: #0971c0;
+}
+
+.btn-change-pass.active {
+  color: #ef4444;
+  border-color: #ef4444;
+  background: transparent;
+}
+
+/* El formulario compacto */
+.minimal-password-form {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espacio muy pequeño entre los inputs */
+  width: 100%;
+  max-width: 280px; /* Muy estrecho */
+}
+
+/* Inputs pequeños */
+.mini-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  outline: none;
+}
+
+.mini-input:focus {
+  border-color: var(--blue);
+}
+
+/* Botón de guardar pequeñito */
+.btn-save-mini {
+  margin-top: 4px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-save-mini:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Error diminuto */
+.mini-error {
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: -6px;
+  margin-left: 4px;
+}
+
+/* Animación */
+.slide-down {
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /*RESPONSIVE */
 @media (max-width: 768px) {

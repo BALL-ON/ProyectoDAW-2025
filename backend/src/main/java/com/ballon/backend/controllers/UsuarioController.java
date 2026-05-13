@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ballon.backend.dtos.CambiarPasswordDTO;
 import com.ballon.backend.dtos.UsuarioResponseDTO;
 import com.ballon.backend.dtos.UsuarioUpdateDTO;
 import com.ballon.backend.mapper.UsuarioMapper;
@@ -110,6 +111,28 @@ public class UsuarioController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(Map.of("mensaje", "Error al guardar la nueva foto"));
+        }
+    }
+    
+    /**
+     * Endpoint para cambiar la contraseña
+     * @param request
+     * @param authentication
+     * @return
+     */
+    @PutMapping("/cambiar-password")
+    public ResponseEntity<?> cambiarPassword(@RequestBody CambiarPasswordDTO request, Authentication authentication) {
+        
+        try {
+            String email = authentication.getName();
+            usuarioService.cambiarPassword(email, request);
+            return ResponseEntity.ok(Map.of("mensaje", "Contraseña actualizada con éxito"));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", e.getMessage()));
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", "Error interno al cambiar la contraseña"));
         }
     }
 }

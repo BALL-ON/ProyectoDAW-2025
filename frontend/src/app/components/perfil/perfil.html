@@ -57,6 +57,34 @@
           </div>
 
         </div>
+
+        <div class="simple-password-section">
+          <button type="button" class="btn-change-pass" [class.active]="mostrarFormPassword" (click)="toggleFormPassword()">
+            {{ mostrarFormPassword ? '✖ Cancelar' : 'Cambiar Contraseña' }}
+          </button>
+
+          @if (mostrarFormPassword) {
+            <form [formGroup]="passwordForm" (ngSubmit)="onActualizarPassword()" class="minimal-password-form slide-down">
+              
+              <input type="password" formControlName="actual" class="mini-input" placeholder="Contraseña actual">
+              
+              <input type="password" formControlName="nueva" class="mini-input" placeholder="Nueva contraseña (Mín. 6, 1 mayús, 1 núm)">
+              @if (passwordForm.get('nueva')?.touched && passwordForm.get('nueva')?.invalid) {
+                <span class="mini-error">Formato de contraseña inválido.</span>
+              }
+
+              <input type="password" formControlName="confirmar" class="mini-input" placeholder="Repite la nueva contraseña">
+              @if (passwordForm.hasError('passwordsMismatch') && passwordForm.get('confirmar')?.touched) {
+                <span class="mini-error">Las contraseñas no coinciden.</span>
+              }
+
+              <button type="submit" class="btn-save-mini" [disabled]="passwordForm.invalid">
+                Guardar
+              </button>
+
+            </form>
+          }
+        </div>
       </aside>
 
       <!-- COLUMNA DERECHA: DATOS Y RESEÑAS -->
