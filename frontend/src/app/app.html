@@ -1,4 +1,4 @@
-@if (!isAuthPage()) {
+@if (!isAuthPage() && !router.url.includes('/terminos-servicio') && !router.url.includes('/politica-privacidad') && !router.url.includes('/cookies')) {
 <app-header></app-header>
 }
 
@@ -6,6 +6,6 @@
   <router-outlet></router-outlet>
 </main>
 
-@if (!isAuthPage() && (!router.url.includes('/admin'))) {
+@if (!isAuthPage() && (!router.url.includes('/admin')) && !router.url.includes('/terminos-servicio') && !router.url.includes('/politica-privacidad') && !router.url.includes('/cookies')) {
 <app-footer></app-footer>
 }
