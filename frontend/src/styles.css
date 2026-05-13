@@ -144,3 +144,13 @@ app-footer {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--blue);
 }
+
+div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm {
+  background-color: var(--blue) !important;
+  border-radius: 8px !important; 
+}
+
+/* Opcional: efecto hover para que brille un poco al pasar el ratón */
+div:where(.swal2-container) button:where(.swal2-styled).swal2-confirm:hover {
+  background-color: #0084eb !important; 
+}

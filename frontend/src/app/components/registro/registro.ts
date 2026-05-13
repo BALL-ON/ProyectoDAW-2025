@@ -2,6 +2,7 @@ import { Component, signal, computed, inject } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
@@ -113,16 +114,16 @@ export class Registro {
         error: (error) => {
           console.error('Error al registrar:', error);
           const mensajeError = error.error?.mensaje || 'Hubo un error al crear la cuenta.';
-          alert('Hubo un error al crear la cuenta.');
+          Swal.fire('Hubo un error al crear la cuenta.');
         }
       });
 
     } else {
       this.registroForm.markAllAsTouched();
       if (!this.archivoSeleccionado()) {
-        alert('Debes subir una foto de perfil obligatoriamente.');
+        Swal.fire('Debes subir una foto de perfil obligatoriamente.');
       } else if (!this.termsChecked()) {
-        alert('Debes aceptar los términos y condiciones.');
+        Swal.fire('Debes aceptar los términos y condiciones.');
       }
     }
   }

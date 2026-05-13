@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth';
 import { Usuario, UsuarioUpdateDTO } from '../../services/usuario';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ValidationErrors, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 export interface UsuarioResponseDTO {
   idUsuario: number;
@@ -148,11 +149,11 @@ export class Perfil implements OnInit {
             const objectUrl = URL.createObjectURL(archivo);
             this.fotoUrl.set(objectUrl);
             
-            alert('¡Foto de perfil actualizada con éxito!');
+            Swal.fire('¡Foto de perfil actualizada con éxito!');
           },
           error: (err: any) => {
             console.error('Error al actualizar la foto:', err);
-            alert('Hubo un error al subir la nueva foto.');
+            Swal.fire('Hubo un error al subir la nueva foto.');
           }
         });
     }
@@ -190,7 +191,7 @@ export class Perfil implements OnInit {
       },
       error: (err) => {
         console.error('Error al actualizar el perfil', err);
-        alert('Hubo un error al guardar los cambios.');
+        Swal.fire('Hubo un error al guardar los cambios.');
       }
     });
   }
@@ -213,13 +214,13 @@ export class Perfil implements OnInit {
 
       this.usuarioService.cambiarPassword(datos).subscribe({
         next: (res) => {
-          alert('¡Contraseña actualizada correctamente!');
+          Swal.fire('¡Contraseña actualizada correctamente!');
           this.toggleFormPassword();
           this.passwordForm.reset();
         },
         error: (err) => {
           const mensaje = err.error?.mensaje || 'Error al cambiar la contraseña';
-          alert(mensaje);
+          Swal.fire(mensaje);
         }
       });
     } else {

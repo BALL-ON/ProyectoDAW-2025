@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -70,11 +71,11 @@ export class Login {
         },
         error: (err) => {
           if (err.status === 403 && err.error?.mensaje) {
-            alert(err.error.mensaje);
+            Swal.fire(err.error.mensaje);
           }  else if (err.status === 401) {
-            alert('El usuario o la contraseña no son correctos.');
+            Swal.fire('El usuario o la contraseña no son correctos.');
           } else {
-            alert('Ocurrió un error inesperado al intentar iniciar sesión.');
+            Swal.fire('Ocurrió un error inesperado al intentar iniciar sesión.');
           }
         }
       });
