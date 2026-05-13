@@ -48,6 +48,15 @@
             <small class="text-white-50 d-block mt-1">
               Debes reservar con al menos 1 día de antelación.
             </small>
+
+            <!-- Horario del día seleccionado -->
+            <small
+              *ngIf="horarioDelDiaTexto && !diaCerrado"
+              class="d-block mt-1"
+              style="color: var(--blue);"
+            >
+              🕘 Horario de la pista este día: <strong>{{ horarioDelDiaTexto }}</strong>
+            </small>
           </div>
 
           <!-- 2. Slots horarios -->
@@ -56,11 +65,21 @@
               🕒 2. Selecciona horario <span class="text-white-50">(máx. 3h consecutivas)</span>
             </label>
 
-            <div *ngIf="cargandoOcupacion" class="text-center py-3 text-white-50">
+            <!-- Día sin horario configurado: pista cerrada -->
+            <div *ngIf="diaCerrado" class="alert-error mt-2">
+              ⚠ La pista no abre este día. Selecciona otra fecha.
+            </div>
+
+            <!-- Cargando ocupación -->
+            <div
+              *ngIf="!diaCerrado && cargandoOcupacion"
+              class="text-center py-3 text-white-50"
+            >
               Cargando disponibilidad…
             </div>
 
-            <div class="time-grid" *ngIf="!cargandoOcupacion">
+            <!-- Grid de slots -->
+            <div class="time-grid" *ngIf="!diaCerrado && !cargandoOcupacion">
               <button
                 type="button"
                 *ngFor="let slot of timeSlots"
@@ -75,7 +94,10 @@
             </div>
 
             <!-- Resumen de la selección -->
-            <div *ngIf="startSlot" class="selection-summary mt-3 d-flex align-items-center">
+            <div
+              *ngIf="startSlot && !diaCerrado"
+              class="selection-summary mt-3 d-flex align-items-center"
+            >
               <div class="flex-grow-1">
                 Seleccionado: <span>{{ resumenRango() }}</span>
                 <small class="d-block text-white-50">
@@ -99,7 +121,7 @@
           <!-- Botón confirmar -->
           <button
             type="submit"
-            [disabled]="reservaForm.invalid || !startSlot || enviando"
+            [disabled]="reservaForm.invalid || !startSlot || enviando || diaCerrado"
             class="btn btn-neon-confirm w-100 mt-3"
           >
             {{ enviando ? 'PROCESANDO…' : 'CONFIRMAR RESERVA' }}
@@ -140,9 +162,10 @@
               <span class="badge" [ngClass]="{
                 'badge-confirmada': res.estadoReserva === 'Confirmada',
                 'badge-disfrutada': res.estadoReserva === 'Disfrutada',
-                'badge-cancelada': res.estadoReserva === 'Cancelada'
+                'badge-cancelada': res.estadoReserva === 'Cancelada',
+                'badge-noasistido': res.estadoReserva === 'No_Asistido'
               }">
-                {{ res.estadoReserva }}
+                {{ res.estadoReserva === 'No_Asistido' ? 'No asistido' : res.estadoReserva }}
               </span>
             </td>
             <td>

@@ -337,6 +337,11 @@
   border: 1px solid var(--border);
 }
 
+.badge-noasistido {
+  background: var(--warning);
+  color: var(--black);
+}
+
 /* ─── Botón cancelar ────────────────────────────────────────────────────── */
 .btn-outline-danger {
   border-color: var(--error);
