@@ -66,5 +66,11 @@ export class GestionPistas implements OnInit {
         this.mensajeError = `Error al cambiar el estado de la pista "${pista.nombrePista}".`;
       }
     });
+
+    //Confuguración para que la notificación desaparezca a los 10 segundos
+    setTimeout(() => {
+      this.mensajeExito = '';
+      this.mensajeError = '';
+    }, 10000);
   }
 }
