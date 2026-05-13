@@ -2,7 +2,7 @@ import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth';
 import { Usuario, UsuarioUpdateDTO } from '../../services/usuario';
-import { FormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ValidationErrors, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 export interface UsuarioResponseDTO {
@@ -31,7 +31,7 @@ export interface ResenaResponseDTO {
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './perfil.html',
   styleUrl: './perfil.css'
 })
@@ -46,12 +46,26 @@ export class Perfil implements OnInit {
   editando = signal<boolean>(false); // Señal que controla si estamos en modo edicion
   datosEdicion = signal<UsuarioUpdateDTO>({nombre: '', apellidos: '', telefono: '' }); // Guardamos copia temportal de los datos mientras edita
   fotoUrl = signal<string>('../../../assets/images/default-avatar.png');
+  mostrarFormPassword = false;
 
   // PARA PAGINACIÓN
   paginaActual = signal<number>(0);
   pageSize = signal<number>(5);
   totalPaginas = signal<number>(0);
   totalElementos = signal<number>(0);
+
+  passwordForm = new FormGroup({
+    actual: new FormControl('', [Validators.required]),
+    nueva: new FormControl('', [Validators.required, Validators.minLength(6), Validators.pattern(/(?=.*[A-Z])(?=.*\d)/)]),
+    confirmar: new FormControl('', [Validators.required])
+  }, { validators: this.matchPasswords });
+
+  // Validador personalizado para comprobar que la nueva y la confirmación son iguales
+  matchPasswords(group: AbstractControl): ValidationErrors | null {
+    const pass = group.get('nueva')?.value;
+    const confirm = group.get('confirmar')?.value;
+    return pass === confirm ? null : { passwordsMismatch: true };
+  }
 
   getIniciales(): string {
     const user = this.usuario();
@@ -179,6 +193,38 @@ export class Perfil implements OnInit {
         alert('Hubo un error al guardar los cambios.');
       }
     });
+  }
+
+  toggleFormPassword() {
+    this.mostrarFormPassword = !this.mostrarFormPassword;
+    
+    if (!this.mostrarFormPassword) {
+      this.passwordForm.reset();
+    }
+  }
+
+  // metodo que se ejecuta al darle al boton "Guardar Contraseña"
+  onActualizarPassword() {
+    if (this.passwordForm.valid) {
+      const datos = {
+        contrasenaActual: this.passwordForm.value.actual,
+        nuevaContrasena: this.passwordForm.value.nueva
+      };
+
+      this.usuarioService.cambiarPassword(datos).subscribe({
+        next: (res) => {
+          alert('¡Contraseña actualizada correctamente!');
+          this.toggleFormPassword();
+          this.passwordForm.reset();
+        },
+        error: (err) => {
+          const mensaje = err.error?.mensaje || 'Error al cambiar la contraseña';
+          alert(mensaje);
+        }
+      });
+    } else {
+      this.passwordForm.markAllAsTouched();
+    }
   }
 
 }

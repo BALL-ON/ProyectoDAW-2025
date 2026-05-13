@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ballon.backend.dtos.AdminCentroRequestDTO;
+import com.ballon.backend.dtos.CambiarPasswordDTO;
 import com.ballon.backend.dtos.UsuarioRequestDTO;
 import com.ballon.backend.dtos.UsuarioResponseDTO;
 import com.ballon.backend.dtos.UsuarioUpdateDTO;
@@ -231,6 +232,18 @@ public class UsuarioService {
 	
 	        return dto;
 	    }
+
+	public void cambiarPassword(String email, CambiarPasswordDTO request) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(request.getContrasenaActual(), usuario.getContrasena())) {
+            throw new IllegalArgumentException("La contraseña actual es incorrecta");
+        }
+
+        usuario.setContrasena(passwordEncoder.encode(request.getNuevaContrasena()));
+        usuarioRepository.save(usuario);
+    }
 
 }
 

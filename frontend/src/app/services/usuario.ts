@@ -46,4 +46,11 @@ export class Usuario{
   actualizarPerfil(datos: UsuarioUpdateDTO): Observable<UsuarioResponseDTO> {
     return this.http.put<UsuarioResponseDTO>(`${this.apiUrlUsuarios}/perfil`, datos, { headers: this.getHeaders() });
   }
+
+  cambiarPassword(datos: any): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.put(`${this.apiUrlUsuarios}/cambiar-password`, datos, { headers });
+  }
 }
