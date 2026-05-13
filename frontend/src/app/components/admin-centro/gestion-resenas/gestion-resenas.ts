@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResenaService } from '../../../services/ResenaService';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-gestion-resenas',
@@ -51,7 +52,7 @@ export class GestionResenas implements OnInit {
         resena.procesando = false;
       },
       error: () => {
-        alert('Error al cambiar la visibilidad de la reseña.');
+        Swal.fire('Error al cambiar la visibilidad de la reseña.');
         resena.procesando = false;
       }
     });

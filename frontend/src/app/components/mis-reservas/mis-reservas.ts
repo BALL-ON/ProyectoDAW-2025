@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReservaResponse } from '../../model/reserva.model';
 import { AuthService } from '../../services/auth';
 import { ReservaService } from '../../services/ReservaService';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mis-reservas',
@@ -126,11 +127,11 @@ export class MisReservas implements OnInit {
     if(confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
       this.reservaService.cancelarReserva(id).subscribe({
         next: () => {
-          alert('Reserva cancelada correctamente.');
+          Swal.fire('Reserva cancelada correctamente.');
           this.cargarReservas(); 
         },
         error: (err) => {
-          alert(err.error?.message || 'Error al cancelar la reserva.');
+          Swal.fire(err.error?.message || 'Error al cancelar la reserva.');
         }
       });
     }
@@ -192,14 +193,14 @@ export class MisReservas implements OnInit {
     this.reservaService.crearResena(payload).subscribe({
       next: (respuesta) => {
         console.log('4. ✅ ¡ÉXITO! El backend ha respondido bien:', respuesta);
-        alert('¡Gracias por valorar la pista!');
+        Swal.fire('¡Gracias por valorar la pista!');
         this.cerrarModalResena();
         this.cargarReservas();
       },
       error: (err) => {
         console.error('4. ❌ ERROR: El backend ha devuelto un fallo:', err);
         const mensajeError = err.error?.message || 'Hubo un error al enviar tu reseña.';
-        alert(mensajeError);
+        Swal.fire(mensajeError);
       }
     });
   }

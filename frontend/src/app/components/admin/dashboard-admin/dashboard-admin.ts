@@ -6,6 +6,7 @@ import { crearReserva } from '../../admin-centro/crear-reserva/crear-reserva';
 import { ListaReservas } from '../../admin-centro/lista-reservas/lista-reservas';
 import { GestionPistas } from '../../admin-centro/gestion-pistas/gestion-pistas';
 import { GestionResenas } from '../../admin-centro/gestion-resenas/gestion-resenas';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -127,7 +128,7 @@ export class DashboardAdmin {
       
       this.adminGlobalService.registrarDirector(this.registroAdminForm.value).subscribe({
         next: (respuesta) => {
-          alert('Director de centro creado correctamente.');
+          Swal.fire('Director de centro creado correctamente.');
           this.registroAdminForm.reset(); // Vaciamos el formulario
           this.registroAdminForm.get('idPolideportivo')?.setValue(''); //Volvemos a poner el select vacío por defecto
         },
@@ -135,7 +136,7 @@ export class DashboardAdmin {
           console.error('Error del servidor:', err);
          
           const mensajeError = err.error?.mensaje || 'Hubo un error al crear el administrador.';
-          alert(mensajeError);
+          Swal.fire(mensajeError);
         }
       });
 
@@ -160,7 +161,7 @@ export class DashboardAdmin {
         },
         error: (err) => {
           console.error(`Error al intentar ${accion} al director`, err);
-          alert(`Hubo un problema al intentar ${accion} al director. Revisa la consola.`);
+          Swal.fire(`Hubo un problema al intentar ${accion} al director. Revisa la consola.`);
         }
       });
       
@@ -173,14 +174,14 @@ export class DashboardAdmin {
       
       this.adminGlobalService.crearPolideportivo(this.registroPolideportivoForm.value).subscribe({
         next: (respuesta) => {
-          alert('¡Polideportivo creado con éxito!');
+          Swal.fire('¡Polideportivo creado con éxito!');
           
           this.registroPolideportivoForm.reset({ metodoPagoPreferido: 'Presencial' }); 
           
         },
         error: (err) => {
           console.error('Error al crear el polideportivo:', err);
-          alert('Hubo un error al crear el polideportivo. Revisa la consola.');
+          Swal.fire('Hubo un error al crear el polideportivo. Revisa la consola.');
         }
       });
 
