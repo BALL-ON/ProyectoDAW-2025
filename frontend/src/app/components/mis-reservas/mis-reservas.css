@@ -261,6 +261,76 @@
   text-shadow: 0 0 15px rgba(241, 196, 15, 0.6); /* Brillo resplandeciente */
 }
 
+/* ── Botón Ver QR ─────────────────────────────────────────────────── */
+.btn-qr {
+  background: rgba(26, 159, 255, 0.12);
+  border: 1px solid var(--blue, #1a9fff);
+  color: var(--blue, #1a9fff);
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.btn-qr:hover:not(:disabled) {
+  background: rgba(26, 159, 255, 0.22);
+  box-shadow: 0 0 12px rgba(26, 159, 255, 0.35);
+}
+.btn-qr:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Botón Pagar Ahora ────────────────────────────────────────────── */
+.btn-pagar-ahora {
+  background: var(--blue, #1a9fff);
+  border: none;
+  color: #0a0a0c;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(26, 159, 255, 0.35);
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+.btn-pagar-ahora:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(26, 159, 255, 0.55);
+}
+
+/* ── Modal del QR ─────────────────────────────────────────────────── */
+.qr-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.qr-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.qr-img {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  display: block;
+}
+
 @keyframes modalIn {
   from { opacity: 0; transform: translateY(20px) scale(0.95); }
   to { opacity: 1; transform: translateY(0) scale(1); }

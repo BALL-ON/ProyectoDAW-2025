@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.dtos.OcupacionSlotDTO;
 import com.ballon.backend.dtos.PagoRequestDTO;
+import com.ballon.backend.dtos.QrReservaDTO;
 import com.ballon.backend.dtos.ReservaRequestDTO;
 import com.ballon.backend.dtos.ReservaResponseDTO;
 import com.ballon.backend.dtos.TokenQrDTO;
@@ -150,6 +151,17 @@ public class ReservaController {
             @Valid @RequestBody PagoRequestDTO dto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(reservaService.procesarPago(id, dto, username));
+    }
+    
+    /**
+     * Devuelve el código QR de una reserva como imagen base64.
+     * Sólo el dueño puede pedirlo, y la reserva debe estar Confirmada (y Pagada
+     * si la pista lo requiere).
+     */
+    @GetMapping("/{id}/qr")
+    public ResponseEntity<QrReservaDTO> obtenerQr(@PathVariable Long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(reservaService.obtenerQr(id, username));
     }
     
 }

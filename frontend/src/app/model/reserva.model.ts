@@ -85,3 +85,8 @@ export interface ResenaRequest {
   puntuacion: number;
   comentario: string;
 }
+
+export interface QrReserva {
+  imagenBase64: string;
+  tokenQr: string;
+}

@@ -6,7 +6,8 @@ import {
   ReservaRequest,
   ReservaResponse,
   ResenaRequest,
-  PagoRequest
+  PagoRequest,
+  QrReserva
 } from '../model/reserva.model';
 import { AuthService } from './auth';
 
@@ -84,4 +85,8 @@ export class ReservaService {
   pagar(idReserva: number, dto: PagoRequest): Observable<ReservaResponse> {
     return this.http.post<ReservaResponse>(`${this.apiUrl}/${idReserva}/pagar`, dto);
   }
+
+  obtenerQr(idReserva: number): Observable<QrReserva> {
+  return this.http.get<QrReserva>(`${this.apiUrl}/${idReserva}/qr`);
+}
 }

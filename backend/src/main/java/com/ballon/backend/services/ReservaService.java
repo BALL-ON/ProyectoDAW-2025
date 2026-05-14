@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Base64;
+import com.ballon.backend.dtos.QrReservaDTO;
 
 import com.ballon.backend.dtos.OcupacionSlotDTO;
 import com.ballon.backend.dtos.PagoRequestDTO;
@@ -49,19 +51,38 @@ public class ReservaService {
     private final PistaRepository pistaRepository;
     private final ReservaMapper reservaMapper;
     private final EmailService emailService;
+    private final QrCodeService qrCodeService;
 
     // ─── Lecturas ────────────────────────────────────────────────────────────
 
     @Transactional(readOnly = true)
     public List<ReservaResponseDTO> listarPorUsuario(Long idUsuario) {
-        return reservaMapper.toResponseList(
-                reservaRepository.findByUsuarioIdUsuario(idUsuario));
+        List<Reserva> reservas = reservaRepository.findByUsuarioIdUsuario(idUsuario);
+        List<ReservaResponseDTO> lista = reservaMapper.toResponseList(reservas);
+        return enriquecerConRequierePago(lista, reservas);
     }
 
     @Transactional(readOnly = true)
     public List<ReservaResponseDTO> listarPorUsuarioYPista(Long idUsuario, Long idPista) {
-        return reservaMapper.toResponseList(
-                reservaRepository.findByUsuarioIdUsuarioAndPistaIdPista(idUsuario, idPista));
+        List<Reserva> reservas = reservaRepository.findByUsuarioIdUsuarioAndPistaIdPista(idUsuario, idPista);
+        List<ReservaResponseDTO> lista = reservaMapper.toResponseList(reservas);
+        return enriquecerConRequierePago(lista, reservas);
+    }
+    
+    /**
+     * Setea el campo requierePago en cada DTO recorriendo las entidades en paralelo.
+     * Es necesario porque MapStruct no puede calcular ese flag (depende de la pista
+     * y polideportivo asociados, no de un campo directo de Reserva).
+     */
+    private List<ReservaResponseDTO> enriquecerConRequierePago(
+            List<ReservaResponseDTO> dtos, List<Reserva> reservas) {
+        for (int i = 0; i < dtos.size(); i++) {
+            ReservaResponseDTO dto = dtos.get(i);
+            Reserva r = reservas.get(i);
+            dto.setRequierePago(requierePagoOnline(r.getPista())
+                    && r.getEstadoPago() == EstadoPago.Pendiente);
+        }
+        return dtos;
     }
 
     @Transactional(readOnly = true)
@@ -87,6 +108,44 @@ public class ReservaService {
         dto.setRequierePago(requierePagoOnline(reserva.getPista())
                 && reserva.getEstadoPago() == EstadoPago.Pendiente);
         return dto;
+    }
+    
+    /**
+     * Devuelve el código QR de una reserva 
+     *
+     * Validaciones:
+     *  - La reserva debe pertenecer al usuario autenticado.
+     *  - Debe estar en estado Confirmada.
+     *  - Si la pista exige pago online, sólo se entrega si está Pagada.
+     */
+    @Transactional(readOnly = true)
+    public QrReservaDTO obtenerQr(Long idReserva, String username) {
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new ReservaNotFoundException(idReserva));
+
+        if (!reserva.getUsuario().getUsername().equals(username)) {
+            throw new BadRequestException("No tienes acceso a esta reserva.");
+        }
+
+        if (reserva.getEstadoReserva() != EstadoReserva.Confirmada) {
+            throw new BadRequestException(
+                    "Esta reserva no está en estado Confirmada (Actual: "
+                            + reserva.getEstadoReserva() + ").");
+        }
+
+        if (requierePagoOnline(reserva.getPista())
+                && reserva.getEstadoPago() != EstadoPago.Pagado) {
+            throw new BadRequestException(
+                    "Debes pagar la reserva antes de obtener el código QR.");
+        }
+
+        try {
+            byte[] png = qrCodeService.generarPng(reserva.getTokenQr());
+            String base64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(png);
+            return new QrReservaDTO(base64, reserva.getTokenQr());
+        } catch (Exception e) {
+            throw new BadRequestException("No se pudo generar el código QR.");
+        }
     }
 
     // ─── Crear (CU-02) ───────────────────────────────────────────────────────
