@@ -1,7 +1,8 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminGlobalService } from '../../../services/admin-global-service';
+import { TipoPistaService } from '../../../services/tipo-pista-service';
 import { crearReserva } from '../../admin-centro/crear-reserva/crear-reserva';
 import { ListaReservas } from '../../admin-centro/lista-reservas/lista-reservas';
 import { GestionPistas } from '../../admin-centro/gestion-pistas/gestion-pistas';
@@ -10,7 +11,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard-admin',
-  imports: [ReactiveFormsModule, crearReserva, ListaReservas, GestionPistas, GestionResenas],
+  imports: [ReactiveFormsModule, NgClass, crearReserva, ListaReservas, GestionPistas, GestionResenas],
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css',
 })
@@ -25,6 +26,7 @@ export class DashboardAdmin {
   cargandoPoli: boolean = true;
   private cdRef = inject(ChangeDetectorRef);
   private adminGlobalService = inject(AdminGlobalService);
+  private tipoPistaService = inject(TipoPistaService);
   vistaCentroActiva: 'resumen' | 'crear-reserva' | 'ver-reservas' | 'gestion-pistas' | 'gestion-resenas' = 'resumen';
 
   paginaActual: number = 0;
@@ -64,7 +66,13 @@ export class DashboardAdmin {
     nombre: ['', [Validators.required, Validators.minLength(3)]],
     direccion: ['', [Validators.required]],
     poblacion: ['', [Validators.required]],
-    metodoPagoPreferido: ['Presencial', [Validators.required]] // Valor por defecto
+    metodoPagoPreferido: ['Presencial', [Validators.required]]
+  });
+
+  // formulario reactivo crear tipo de pista
+  registroTipoPistaForm: FormGroup = this.fb.group({
+    nombreTipo: ['', [Validators.required, Validators.minLength(3)]],
+    descripcion: ['']
   });
 
   ngOnInit() {
@@ -105,7 +113,7 @@ export class DashboardAdmin {
 
   // Métodos extra para los botones del HTML
   buscarConFiltros() {
-    this.cargarDirectores(0); // Al buscar, volvemos siempre a la página 0
+    this.cargarDirectores(0);
   }
 
   limpiarFiltros() {
@@ -129,8 +137,8 @@ export class DashboardAdmin {
       this.adminGlobalService.registrarDirector(this.registroAdminForm.value).subscribe({
         next: (respuesta) => {
           Swal.fire('Director de centro creado correctamente.');
-          this.registroAdminForm.reset(); // Vaciamos el formulario
-          this.registroAdminForm.get('idPolideportivo')?.setValue(''); //Volvemos a poner el select vacío por defecto
+          this.registroAdminForm.reset();
+          this.registroAdminForm.get('idPolideportivo')?.setValue('');
         },
         error: (err) => {
           console.error('Error del servidor:', err);
@@ -148,7 +156,6 @@ export class DashboardAdmin {
   // Método para activar / desactivar admin centro
   cambiarEstadoDirector(idUsuario: number, estaSuspendido: boolean) {
     const accion = estaSuspendido ? 'reactivar' : 'suspender';
-    // Invertimos el estado actual
     const suspender = !estaSuspendido; 
     
     if (confirm(`¿Estás seguro de que deseas ${accion} a este director?`)) {
@@ -175,9 +182,7 @@ export class DashboardAdmin {
       this.adminGlobalService.crearPolideportivo(this.registroPolideportivoForm.value).subscribe({
         next: (respuesta) => {
           Swal.fire('¡Polideportivo creado con éxito!');
-          
           this.registroPolideportivoForm.reset({ metodoPagoPreferido: 'Presencial' }); 
-          
         },
         error: (err) => {
           console.error('Error al crear el polideportivo:', err);
@@ -187,6 +192,25 @@ export class DashboardAdmin {
 
     } else {
       this.registroPolideportivoForm.markAllAsTouched(); 
+    }
+  }
+
+  // Método para crear un tipo de pista
+  crearTipoPista() {
+    if (this.registroTipoPistaForm.valid) {
+      this.tipoPistaService.crear(this.registroTipoPistaForm.value).subscribe({
+        next: () => {
+          Swal.fire('¡Tipo de pista creado con éxito!');
+          this.registroTipoPistaForm.reset();
+        },
+        error: (err) => {
+          console.error('Error al crear el tipo de pista:', err);
+          const mensajeError = err.error?.mensaje || 'Hubo un error al crear el tipo de pista.';
+          Swal.fire(mensajeError);
+        }
+      });
+    } else {
+      this.registroTipoPistaForm.markAllAsTouched();
     }
   }
 
