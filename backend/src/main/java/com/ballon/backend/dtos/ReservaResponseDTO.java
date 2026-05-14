@@ -37,4 +37,6 @@ public class ReservaResponseDTO {
     
     // Indicador si tiene reseña (para no devolver el objeto entero si no es necesario)
     private boolean tieneResena; 
+    
+    private boolean requierePago;
 }

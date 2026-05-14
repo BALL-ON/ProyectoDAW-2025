@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.dtos.OcupacionSlotDTO;
+import com.ballon.backend.dtos.PagoRequestDTO;
 import com.ballon.backend.dtos.ReservaRequestDTO;
 import com.ballon.backend.dtos.ReservaResponseDTO;
 import com.ballon.backend.dtos.TokenQrDTO;
@@ -127,6 +128,28 @@ public class ReservaController {
         
         Page<ReservaResponseDTO> reservas = reservaService.obtenerReservasPaginadas(idPolideportivo, page, size);
         return ResponseEntity.ok(reservas);
+    }
+    
+    /**
+     * Devuelve una reserva concreta (sólo si pertenece al usuario autenticado).
+     * Usado por la pantalla de pago al refrescar.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservaResponseDTO> obtenerPorId(@PathVariable Long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(reservaService.obtenerPorId(id, username));
+    }
+
+    /**
+     * Procesa el pago simulado de una reserva. Sólo el dueño puede pagarla.
+     * Devuelve la reserva actualizada (estadoPago=Pagado) o 400 con el motivo.
+     */
+    @PostMapping("/{id}/pagar")
+    public ResponseEntity<ReservaResponseDTO> pagar(
+            @PathVariable Long id,
+            @Valid @RequestBody PagoRequestDTO dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(reservaService.procesarPago(id, dto, username));
     }
     
 }

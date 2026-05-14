@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReservaService } from '../../services/ReservaService';
 import { HorarioService } from '../../services/HorarioService';
 import {
@@ -30,6 +30,7 @@ export class Reserva implements OnInit {
   private readonly horarioService = inject(HorarioService);
   private readonly route = inject(ActivatedRoute);
   private readonly cd = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   // Pista que estamos reservando (viene como ruta /reserva/:idPista)
   idPista!: number;
@@ -303,6 +304,10 @@ export class Reserva implements OnInit {
     this.service.crearReserva(dto).subscribe({
       next: (creada) => {
         this.enviando = false;
+        if (creada.requierePago) {
+          this.router.navigate(['/pago', creada.idReserva]);
+          return;
+        }
         this.mensajeOk = `Reserva confirmada el ${creada.fechaReserva} de ${creada.horaInicio.substring(0, 5)} a ${creada.horaFin.substring(0, 5)}.`;
         this.limpiarSeleccion();
         this.cargarOcupacion(fecha);
