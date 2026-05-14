@@ -5,7 +5,8 @@ import {
   OcupacionSlot,
   ReservaRequest,
   ReservaResponse,
-  ResenaRequest
+  ResenaRequest,
+  PagoRequest
 } from '../model/reserva.model';
 import { AuthService } from './auth';
 
@@ -74,5 +75,13 @@ export class ReservaService {
       .set('size', size.toString());
       
     return this.http.get<any>(`${this.apiUrl}/polideportivo/${idPolideportivo}/page`, { headers: this.getHeaders(), params });
+  }
+
+  obtenerPorId(idReserva: number): Observable<ReservaResponse> {
+  return this.http.get<ReservaResponse>(`${this.apiUrl}/${idReserva}`);
+  }
+
+  pagar(idReserva: number, dto: PagoRequest): Observable<ReservaResponse> {
+    return this.http.post<ReservaResponse>(`${this.apiUrl}/${idReserva}/pagar`, dto);
   }
 }

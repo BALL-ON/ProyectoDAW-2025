@@ -15,6 +15,7 @@ import { EscanerQr } from './components/admin-centro/escaner-qr/escaner-qr';
 import { TerminosServicio } from './components/shared/enlaces-footer/terminos-servicio/terminos-servicio';
 import { PoliticaPrivacidad } from './components/shared/enlaces-footer/politica-privacidad/politica-privacidad';
 import { Cookies } from './components/shared/enlaces-footer/cookies/cookies';
+import { Pago } from './components/pago/pago';
 
 
 export const routes: Routes = [
@@ -32,5 +33,6 @@ export const routes: Routes = [
   { path: 'politica-privacidad', component: PoliticaPrivacidad },
   { path: 'cookies', component: Cookies },
   { path: 'admin/dashboard', component: DashboardAdmin, canActivate: [adminGuard] },
-  { path: 'admin/escanear-qr', component: EscanerQr }
+  { path: 'admin/escanear-qr', component: EscanerQr },
+  { path: 'pago/:idReserva', component: Pago }
 ];

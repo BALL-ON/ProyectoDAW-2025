@@ -1,0 +1,164 @@
+<div class="pago-page">
+  <div class="pago-wrap">
+
+    <!-- Cargando -->
+    <div *ngIf="cargando" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando datos de la reserva…</p>
+    </div>
+
+    <!-- Error de carga -->
+    <div *ngIf="!cargando && !reserva" class="error-state">
+      <h2>No se pudo cargar la reserva</h2>
+      <p>{{ mensajeError }}</p>
+      <button routerLink="/mis-reservas" class="btn-secondary" class="btn-secondary">
+        Volver a mis reservas
+      </button>
+    </div>
+
+    <!-- Contenido principal -->
+    <div *ngIf="!cargando && reserva" class="pago-grid">
+
+      <!-- ── COLUMNA IZQUIERDA: resumen ── -->
+      <aside class="resumen-card">
+        <h3 class="card-title">RESUMEN DE LA RESERVA</h3>
+
+        <div class="resumen-row">
+          <span class="label">Polideportivo</span>
+          <span class="value">{{ reserva.nombrePolideportivo }}</span>
+        </div>
+        <div class="resumen-row">
+          <span class="label">Pista</span>
+          <span class="value">{{ reserva.nombrePista }}</span>
+        </div>
+        <div class="resumen-row">
+          <span class="label">Fecha</span>
+          <span class="value">{{ reserva.fechaReserva | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="resumen-row">
+          <span class="label">Horario</span>
+          <span class="value">
+            {{ reserva.horaInicio.substring(0,5) }} - {{ reserva.horaFin.substring(0,5) }}
+          </span>
+        </div>
+
+        <div class="total-block">
+          <span class="total-label">Total a pagar</span>
+          <span class="total-value">{{ formatearPrecio(reserva.precioTotal) }}</span>
+        </div>
+
+        <div class="info-tarjetas">
+          <p class="info-titulo">Tarjetas de prueba (simulación):</p>
+          <button type="button" class="tarjeta-test ok" (click)="rellenarTarjetaPrueba('4242424242424242')">
+            <strong>4242 4242 4242 4242</strong>
+            <small>Pago correcto</small>
+          </button>
+          <button type="button" class="tarjeta-test ko" (click)="rellenarTarjetaPrueba('4000000000000002')">
+            <strong>4000 0000 0000 0002</strong>
+            <small>Rechazada</small>
+          </button>
+          <button type="button" class="tarjeta-test ko" (click)="rellenarTarjetaPrueba('4000000000009995')">
+            <strong>4000 0000 0000 9995</strong>
+            <small>Fondos insuficientes</small>
+          </button>
+        </div>
+      </aside>
+
+      <!-- ── COLUMNA DERECHA: formulario ── -->
+      <section class="form-card">
+        <h2 class="form-title">PAGO SEGURO</h2>
+        <p class="form-sub">Introduce los datos de tu tarjeta para confirmar la reserva.</p>
+
+        <form [formGroup]="pagoForm" (ngSubmit)="pagar()" class="pago-form" autocomplete="off">
+
+          <label class="campo">
+            <span class="campo-label">Titular de la tarjeta</span>
+            <input
+              type="text"
+              formControlName="titular"
+              placeholder="NOMBRE APELLIDOS"
+              class="input"
+              [class.invalido]="pagoForm.get('titular')?.invalid && pagoForm.get('titular')?.touched"
+              maxlength="60"
+            />
+          </label>
+
+          <label class="campo">
+            <span class="campo-label">Número de tarjeta</span>
+            <input
+              type="text"
+              formControlName="numeroTarjeta"
+              placeholder="4242 4242 4242 4242"
+              class="input mono"
+              [class.invalido]="pagoForm.get('numeroTarjeta')?.invalid && pagoForm.get('numeroTarjeta')?.touched"
+              inputmode="numeric"
+              maxlength="23"
+            />
+          </label>
+
+          <div class="row-2">
+            <label class="campo">
+              <span class="campo-label">Mes</span>
+              <select formControlName="mesExp" class="input">
+                <option [ngValue]="null" disabled>MM</option>
+                <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [ngValue]="m">
+                  {{ m < 10 ? '0' + m : m }}
+                </option>
+              </select>
+            </label>
+
+            <label class="campo">
+              <span class="campo-label">Año</span>
+              <select formControlName="anioExp" class="input">
+                <option [ngValue]="null" disabled>AAAA</option>
+                <option *ngFor="let a of aniosDisponibles" [ngValue]="a">{{ a }}</option>
+              </select>
+            </label>
+
+            <label class="campo">
+              <span class="campo-label">CVV</span>
+              <input
+                type="text"
+                formControlName="cvv"
+                placeholder="123"
+                class="input mono"
+                [class.invalido]="pagoForm.get('cvv')?.invalid && pagoForm.get('cvv')?.touched"
+                inputmode="numeric"
+                maxlength="4"
+              />
+            </label>
+          </div>
+
+          <div *ngIf="mensajeError" class="alert-error">
+            ⚠ {{ mensajeError }}
+          </div>
+
+          <button
+            type="submit"
+            class="btn-pagar"
+            [disabled]="pagoForm.invalid || procesando"
+          >
+            <span *ngIf="!procesando">
+              PAGAR {{ formatearPrecio(reserva.precioTotal) }}
+            </span>
+            <span *ngIf="procesando">PROCESANDO…</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn-cancelar"
+            (click)="cancelarPago()"
+            [disabled]="procesando"
+          >
+            Cancelar pago y eliminar reserva
+          </button>
+
+          <p class="seguridad">
+            🔒 Pago simulado · Entorno de pruebas
+          </p>
+        </form>
+      </section>
+
+    </div>
+  </div>
+</div>
