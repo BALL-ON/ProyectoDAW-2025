@@ -38,7 +38,7 @@
         <form [formGroup]="reservaForm" (ngSubmit)="enviar()">
           <!-- 1. Fecha -->
           <div class="mb-4">
-            <label class="form-label text-white-50">📅 1. Selecciona el día</label>
+            <label class="form-label text-white-50"> 1. Selecciona el día</label>
             <input
               type="date"
               class="form-control custom-input"
@@ -55,14 +55,14 @@
               class="d-block mt-1"
               style="color: var(--blue);"
             >
-              🕘 Horario de la pista este día: <strong>{{ horarioDelDiaTexto }}</strong>
+              *Horario de la pista este día: <strong>{{ horarioDelDiaTexto }}</strong>
             </small>
           </div>
 
           <!-- 2. Slots horarios -->
           <div class="mb-3" *ngIf="reservaForm.get('fecha')?.value">
             <label class="form-label text-white-50">
-              🕒 2. Selecciona horario <span class="text-white-50">(máx. 3h consecutivas)</span>
+              2. Selecciona horario <span class="text-white-50">(máx. 3h consecutivas)</span>
             </label>
 
             <!-- Día sin horario configurado: pista cerrada -->
