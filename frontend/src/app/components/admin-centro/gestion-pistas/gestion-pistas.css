@@ -15,6 +15,12 @@
 .alert-success { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; }
 .alert-danger { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; }
 
+.contenedor-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Esto separará las tarjetas en todos los dispositivos */
+}
+
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -231,6 +237,15 @@ input:checked + .slider:before {
   .admin-card {
     padding: 16px;
   }
+  .admin-card + .admin-card {
+    margin-top: 20px; /* Ajusta los píxeles según el espacio que desees */
+}
+
+.contenedor-principal{
+  display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
   .modern-table th,
   .modern-table td {

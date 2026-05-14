@@ -1,3 +1,4 @@
+<div class="contenedor-principal">
 <div class="admin-card">
   <div class="card-header" style="margin-bottom: 20px;">
     <h3>Gestión de Instalaciones</h3>
@@ -16,7 +17,7 @@
       <thead>
         <tr>
           <th>Pista</th>
-          <th>Deporte</th>
+          <th>Tipo de Pista</th>
           <th>Estado Actual</th>
           <th>Acción (Mantenimiento)</th>
         </tr>
@@ -25,7 +26,7 @@
         @for (pista of pistas; track pista.idPista) {
           <tr>
             <td><strong>{{ pista.nombrePista }}</strong></td>
-            <td>{{ pista.tipoDeporte || 'Multideporte' }}</td>
+            <td>{{ pista.nombreTipoPista || 'Multideporte' }}</td>
             
             <td>
               <!-- Etiqueta visual de estado -->
@@ -89,15 +90,15 @@
       </div>
 
       <div class="form-group">
-        <label for="idTipoPista">Tipo de Deporte *</label>
+        <label for="idTipoPista">Tipo de Pista *</label>
         <select 
           id="idTipoPista"
           formControlName="idTipoPista"
           class="form-input"
           [class.error]="formularioPista.get('idTipoPista')?.invalid && formularioPista.get('idTipoPista')?.touched">
-          <option value="">Selecciona un deporte</option>
-          @for (tipo of tiposDeporte; track tipo.id) {
-            <option [value]="tipo.id">{{ tipo.nombre }}</option>
+          <option value="">Selecciona un tipo de pista</option>
+          @for (tipo of tiposPista; track tipo.idTipoPista) {
+            <option [value]="tipo.idTipoPista">{{ tipo.nombreTipo }}</option>
           }
         </select>
         @if (formularioPista.get('idTipoPista')?.invalid && formularioPista.get('idTipoPista')?.touched) {
@@ -178,7 +179,6 @@
       </div>
     </div>
 
-    <!-- Botones de acción -->
     <div class="form-actions">
       <button 
         type="submit" 
@@ -199,4 +199,5 @@
       </button>
     </div>
   </form>
+</div>
 </div>

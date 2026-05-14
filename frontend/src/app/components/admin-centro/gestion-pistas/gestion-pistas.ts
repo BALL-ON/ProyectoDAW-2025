@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PistaService } from '../../../services/PistaService';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TipoPistaService } from '../../../services/tipo-pista-service';
+import { PistaRequest } from '../../../model/pista.model';
 
 @Component({
   selector: 'app-gestion-pistas',
@@ -22,20 +24,13 @@ export class GestionPistas implements OnInit {
   mensajeExitoCrear: string = '';
   mensajeErrorCrear: string = '';
 
-  // Tipos de deporte disponibles
-  tiposDeporte = [
-    { id: 1, nombre: 'Tenis' },
-    { id: 2, nombre: 'Pádel' },
-    { id: 3, nombre: 'Fútbol' },
-    { id: 4, nombre: 'Baloncesto' },
-    { id: 5, nombre: 'Bádminton' },
-    { id: 6, nombre: 'Voleibol' },
-    { id: 7, nombre: 'Multideporte' },
-  ];
+  // Tipos de pista disponibles
+  tiposPista: any[] = [];
 
   constructor(
     private pistaService: PistaService,
     private fb: FormBuilder,
+    private tipoPistaService: TipoPistaService
   ) {
     this.formularioPista = this.fb.group({
       nombrePista: ['', [Validators.required, Validators.minLength(3)]],
@@ -50,6 +45,7 @@ export class GestionPistas implements OnInit {
 
   ngOnInit(): void {
     this.cargarPistas();
+    this.cargarTiposPista();
   }
 
   cargarPistas() {
@@ -69,6 +65,17 @@ export class GestionPistas implements OnInit {
       error: (err) => {
         this.mensajeError = 'Error al cargar las pistas.';
         this.cargando = false;
+      },
+    });
+  }
+
+  cargarTiposPista() {
+    this.tipoPistaService.listarTodos().subscribe({
+      next: (tipos) => {
+        this.tiposPista = tipos;
+      },
+      error: (err) => {
+        this.mensajeError = 'Error al cargar los tipos de pista.';
       },
     });
   }
@@ -119,8 +126,16 @@ export class GestionPistas implements OnInit {
     this.mensajeExitoCrear = '';
     this.mensajeErrorCrear = '';
 
-    const nuevaPista: any = new Object(this.formularioPista.value);
-    nuevaPista.idPolideportivo = Number(idStr);
+    const nuevaPista: PistaRequest = {
+      idPolideportivo: Number(idStr),
+      idTipoPista: this.formularioPista.value.idTipoPista,
+      nombrePista: this.formularioPista.value.nombrePista,
+      capacidad: this.formularioPista.value.capacidad,
+      precioHora: this.formularioPista.value.precioHora,
+      tiempoMinCancelacionHoras: this.formularioPista.value.tiempoMinCancelacionHoras,
+      requierePagoPrevio: this.formularioPista.value.requierePagoPrevio,
+      activa: this.formularioPista.value.activa
+    };
 
     this.pistaService.crear(nuevaPista).subscribe({
       next: (pistaCreada) => {
@@ -154,20 +169,20 @@ export class GestionPistas implements OnInit {
     });
   }
 
-  getErrorMessage(fieldName: string): string {
-    const field = this.formularioPista.get(fieldName);
+  getErrorMessage(campoName: string): string {
+    const campo = this.formularioPista.get(campoName);
 
-    if (field?.hasError('required')) {
+    if (campo?.hasError('required')) {
       return 'Este campo es obligatorio.';
     }
-    if (field?.hasError('minLength')) {
-      return `Mínimo ${field.getError('minLength').requiredLength} caracteres.`;
+    if (campo?.hasError('minLength')) {
+      return `Mínimo ${campo.getError('minLength').requiredLength} caracteres.`;
     }
-    if (field?.hasError('min')) {
-      return `El valor mínimo es ${field.getError('min').min}.`;
+    if (campo?.hasError('min')) {
+      return `El valor mínimo es ${campo.getError('min').min}.`;
     }
-    if (field?.hasError('max')) {
-      return `El valor máximo es ${field.getError('max').max}.`;
+    if (campo?.hasError('max')) {
+      return `El valor máximo es ${campo.getError('max').max}.`;
     }
 
     return 'Campo inválido.';
