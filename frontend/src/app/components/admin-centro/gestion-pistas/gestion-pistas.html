@@ -1,3 +1,4 @@
+<div class="contenedor-principal">
 <div class="admin-card">
   <div class="card-header" style="margin-bottom: 20px;">
     <h3>Gestión de Instalaciones</h3>
@@ -16,7 +17,7 @@
       <thead>
         <tr>
           <th>Pista</th>
-          <th>Deporte</th>
+          <th>Tipo de Pista</th>
           <th>Estado Actual</th>
           <th>Acción (Mantenimiento)</th>
         </tr>
@@ -25,7 +26,7 @@
         @for (pista of pistas; track pista.idPista) {
           <tr>
             <td><strong>{{ pista.nombrePista }}</strong></td>
-            <td>{{ pista.tipoDeporte || 'Multideporte' }}</td>
+            <td>{{ pista.nombreTipoPista || 'Multideporte' }}</td>
             
             <td>
               <!-- Etiqueta visual de estado -->
@@ -56,4 +57,147 @@
       </tbody>
     </table>
   </div>
+</div>
+<div class="admin-card">
+  <div class="card-header" style="margin-bottom: 20px;">
+    <h3>Crear Nueva Pista</h3>
+    <p class="card-description">Añade una nueva instalación deportiva a tu polideportivo.</p>
+  </div>
+
+  @if (mensajeExitoCrear) {
+    <div class="alert alert-success" style="margin-bottom: 15px;">{{ mensajeExitoCrear }}</div>
+  }
+  @if (mensajeErrorCrear) {
+    <div class="alert alert-danger" style="margin-bottom: 15px;">{{ mensajeErrorCrear }}</div>
+  }
+
+  <form [formGroup]="formularioPista" (ngSubmit)="crearPista()" class="form-crear-pista">
+    
+    <!-- Fila 1: Nombre Pista y Tipo Pista -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="nombrePista">Nombre de la Pista *</label>
+        <input 
+          type="text" 
+          id="nombrePista"
+          formControlName="nombrePista" 
+          placeholder="Ej: Pista de Tenis A"
+          class="form-input"
+          [class.error]="formularioPista.get('nombrePista')?.invalid && formularioPista.get('nombrePista')?.touched">
+        @if (formularioPista.get('nombrePista')?.invalid && formularioPista.get('nombrePista')?.touched) {
+          <span class="form-error">{{ getErrorMessage('nombrePista') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="idTipoPista">Tipo de Pista *</label>
+        <select 
+          id="idTipoPista"
+          formControlName="idTipoPista"
+          class="form-input"
+          [class.error]="formularioPista.get('idTipoPista')?.invalid && formularioPista.get('idTipoPista')?.touched">
+          <option value="">Selecciona un tipo de pista</option>
+          @for (tipo of tiposPista; track tipo.idTipoPista) {
+            <option [value]="tipo.idTipoPista">{{ tipo.nombreTipo }}</option>
+          }
+        </select>
+        @if (formularioPista.get('idTipoPista')?.invalid && formularioPista.get('idTipoPista')?.touched) {
+          <span class="form-error">{{ getErrorMessage('idTipoPista') }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Fila 2: Capacidad y Precio Hora -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="capacidad">Capacidad (personas)</label>
+        <input 
+          type="number" 
+          id="capacidad"
+          formControlName="capacidad" 
+          placeholder="Ej: 20"
+          class="form-input"
+          [class.error]="formularioPista.get('capacidad')?.invalid && formularioPista.get('capacidad')?.touched">
+        @if (formularioPista.get('capacidad')?.invalid && formularioPista.get('capacidad')?.touched) {
+          <span class="form-error">{{ getErrorMessage('capacidad') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="precioHora">Precio por Hora (€)</label>
+        <input 
+          type="number" 
+          id="precioHora"
+          formControlName="precioHora" 
+          placeholder="Ej: 25.50"
+          step="0.01"
+          class="form-input"
+          [class.error]="formularioPista.get('precioHora')?.invalid && formularioPista.get('precioHora')?.touched">
+        @if (formularioPista.get('precioHora')?.invalid && formularioPista.get('precioHora')?.touched) {
+          <span class="form-error">{{ getErrorMessage('precioHora') }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Fila 3: Tiempo mínimo de cancelación -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="tiempoMinCancelacionHoras">Tiempo Mínimo de Cancelación (horas)</label>
+        <input 
+          type="number" 
+          id="tiempoMinCancelacionHoras"
+          formControlName="tiempoMinCancelacionHoras" 
+          placeholder="Ej: 24"
+          class="form-input"
+          [class.error]="formularioPista.get('tiempoMinCancelacionHoras')?.invalid && formularioPista.get('tiempoMinCancelacionHoras')?.touched">
+        @if (formularioPista.get('tiempoMinCancelacionHoras')?.invalid && formularioPista.get('tiempoMinCancelacionHoras')?.touched) {
+          <span class="form-error">{{ getErrorMessage('tiempoMinCancelacionHoras') }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Fila 4: Checkboxes -->
+    <div class="form-row checkbox-row">
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            formControlName="requierePagoPrevio"
+            class="checkbox-input">
+          <span class="checkbox-text">Requiere Pago Previo</span>
+        </label>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            formControlName="activa"
+            class="checkbox-input">
+          <span class="checkbox-text">Pista Activa</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        type="submit" 
+        class="btn-submit"
+        [disabled]="formularioPista.invalid || cargandoCrear">
+        @if (cargandoCrear) {
+          <span>Creando...</span>
+        } @else {
+          <span>Crear Pista</span>
+        }
+      </button>
+      <button 
+        type="button" 
+        class="btn-cancel"
+        (click)="resetearFormulario()">
+        <i class="fa-regular fa-trash-can" style="color: rgba(142, 157, 178);"></i>
+      
+      </button>
+    </div>
+  </form>
+</div>
 </div>
