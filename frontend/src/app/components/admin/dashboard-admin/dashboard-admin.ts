@@ -138,6 +138,7 @@ export class DashboardAdmin {
           Swal.fire('Director de centro creado correctamente.');
           this.registroAdminForm.reset();
           this.registroAdminForm.get('idPolideportivo')?.setValue('');
+          this.cargarDirectores();
         },
         error: (err) => {
           console.error('Error del servidor:', err);
@@ -150,6 +151,8 @@ export class DashboardAdmin {
     } else {
       this.registroAdminForm.markAllAsTouched(); 
     }
+
+    
   }
 
   // Método para activar / desactivar admin centro
@@ -182,6 +185,7 @@ export class DashboardAdmin {
         next: (respuesta) => {
           Swal.fire('¡Polideportivo creado con éxito!');
           this.registroPolideportivoForm.reset({ metodoPagoPreferido: 'Presencial' }); 
+          this.cargarPolideportivos();
         },
         error: (err) => {
           console.error('Error al crear el polideportivo:', err);
