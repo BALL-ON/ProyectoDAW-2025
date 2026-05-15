@@ -9,6 +9,7 @@ import {
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReservaService } from '../../services/ReservaService';
 import { PagoRequest, ReservaResponse } from '../../model/reserva.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-pago',
@@ -106,10 +107,30 @@ export class Pago implements OnInit {
     // el backend ya hace su parte de simulación con la validación.
     setTimeout(() => {
       this.service.pagar(this.idReserva, dto).subscribe({
-        next: () => {
+        next: (pagada) => {
           this.procesando = false;
-          this.router.navigate(['/mis-reservas'], {
-            queryParams: { pago: 'ok' },
+
+          Swal.fire({
+            icon: 'success',
+            title: '¡Pago realizado!',
+            html: `
+              <p style="margin: 8px 0 16px; color: #f0f0f5;">
+                Tu reserva del <strong>${pagada.fechaReserva}</strong>
+                de <strong>${pagada.horaInicio.substring(0, 5)}</strong>
+                a <strong>${pagada.horaFin.substring(0, 5)}</strong>
+                ha quedado confirmada.
+              </p>
+              <p style="font-size: 13px; color: #6b6b80; margin: 0;">
+                📧 Te hemos enviado un correo con los detalles y el código QR de acceso.
+              </p>
+            `,
+            background: '#111114',
+            color: '#f0f0f5',
+            confirmButtonText: 'Ver mis reservas',
+            confirmButtonColor: '#1a9fff',
+            allowOutsideClick: false,
+          }).then(() => {
+            this.router.navigate(['/mis-reservas']);
           });
         },
         error: (err) => {

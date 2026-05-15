@@ -16,6 +16,7 @@ import {
   SlotHorario,
 } from '../../model/reserva.model';
 import { DiaSemana, HorarioPistaResponse } from '../../model/horario.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reserva',
@@ -304,14 +305,37 @@ export class Reserva implements OnInit {
     this.service.crearReserva(dto).subscribe({
       next: (creada) => {
         this.enviando = false;
+
+        // Si requiere pago online, vamos a la pasarela y allí se mostrará
+        // su propio mensaje de éxito.
         if (creada.requierePago) {
           this.router.navigate(['/pago', creada.idReserva]);
           return;
         }
-        this.mensajeOk = `Reserva confirmada el ${creada.fechaReserva} de ${creada.horaInicio.substring(0, 5)} a ${creada.horaFin.substring(0, 5)}.`;
-        this.limpiarSeleccion();
-        this.cargarOcupacion(fecha);
-        this.cargarMisReservas();
+
+        // Reserva gratuita o presencial: confirmación + email + redirect.
+        Swal.fire({
+          icon: 'success',
+          title: '¡Reserva confirmada!',
+          html: `
+            <p style="margin: 8px 0 16px; color: #f0f0f5;">
+              Tu reserva del <strong>${creada.fechaReserva}</strong>
+              de <strong>${creada.horaInicio.substring(0, 5)}</strong>
+              a <strong>${creada.horaFin.substring(0, 5)}</strong>
+              se ha registrado correctamente.
+            </p>
+            <p style="font-size: 13px; color: #6b6b80; margin: 0;">
+              📧 Te hemos enviado un correo con los detalles y el código QR de acceso.
+            </p>
+          `,
+          background: '#111114',
+          color: '#f0f0f5',
+          confirmButtonText: 'Ver mis reservas',
+          confirmButtonColor: '#1a9fff',
+          allowOutsideClick: false,
+        }).then(() => {
+          this.router.navigate(['/mis-reservas']);
+        });
       },
       error: (err) => {
         this.enviando = false;
