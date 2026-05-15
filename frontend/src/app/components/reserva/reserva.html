@@ -1,146 +1,118 @@
-<div class="container-fluid mt-4 px-4 px-lg-5">
-  <div class="row g-4">
-    <!-- ═══════════ COLUMNA IZQUIERDA: PLANO/ESTADO DE LA PISTA ═══════════ -->
-    <div class="col-lg-6">
-      <div class="map-placeholder shadow-lg">
-        <h3 class="neon-text-blue text-center pt-3 mb-4">ESTADO DE LA PISTA</h3>
+<div class="reserva-page">
 
-        <div class="map-mockup">
-          <div class="court-line top-line"></div>
-          <div class="court-line center-line"></div>
-          <div class="court-line bottom-line"></div>
-          <div class="court-circle"></div>
+  <!-- ═══════════ TARJETA DE RESERVA ═══════════ -->
+  <div class="booking-wrapper">
+
+    <div class="booking-card">
+      <h2 class="card-title neon-text-blue">RESERVA TU PISTA</h2>
+
+      <form [formGroup]="reservaForm" (ngSubmit)="enviar()">
+
+        <!-- 1. Fecha -->
+        <div class="form-block">
+          <label class="form-label">1. Selecciona el día</label>
+          <input
+            type="date"
+            class="custom-input"
+            formControlName="fecha"
+            [min]="minDate"
+          />
+          <small class="form-hint">
+            Debes reservar con al menos 1 día de antelación.
+          </small>
+          <small *ngIf="horarioDelDiaTexto && !diaCerrado" class="form-hint highlight">
+            * Horario de la pista este día: <strong>{{ horarioDelDiaTexto }}</strong>
+          </small>
         </div>
 
-        <!-- Leyenda -->
-        <div class="legend mt-4">
-          <div class="legend-item">
-            <span class="dot dot-free"></span>
-            <span>Libre</span>
+        <!-- 2. Slots horarios -->
+        <div class="form-block" *ngIf="reservaForm.get('fecha')?.value">
+          <label class="form-label">
+            2. Selecciona horario <span class="muted">(máx. 3h consecutivas)</span>
+          </label>
+
+          <div *ngIf="diaCerrado" class="alert-error">
+            ⚠ La pista no abre este día. Selecciona otra fecha.
           </div>
-          <div class="legend-item">
-            <span class="dot dot-selected"></span>
-            <span>Seleccionado</span>
+
+          <div *ngIf="!diaCerrado && cargandoOcupacion" class="loading-text">
+            Cargando disponibilidad…
           </div>
-          <div class="legend-item">
-            <span class="dot dot-busy"></span>
-            <span>Ocupado</span>
+
+          <div class="time-grid" *ngIf="!diaCerrado && !cargandoOcupacion">
+            <button
+              type="button"
+              *ngFor="let slot of timeSlots"
+              (click)="seleccionarSlot(slot)"
+              [disabled]="estaOcupado(slot)"
+              [class.selected]="estaSeleccionado(slot)"
+              [class.busy]="estaOcupado(slot)"
+              class="slot-btn"
+            >
+              {{ slot.label }}
+            </button>
+          </div>
+
+          <div *ngIf="startSlot && !diaCerrado" class="selection-summary">
+            <div class="summary-text">
+              Seleccionado: <span>{{ resumenRango() }}</span>
+              <small>
+                {{ horasSeleccionadas() }} {{ horasSeleccionadas() === 1 ? 'hora' : 'horas' }}
+              </small>
+            </div>
+            <button type="button" (click)="limpiarSeleccion()" class="btn-reset-small">
+              ✕ Limpiar
+            </button>
           </div>
         </div>
+
+        <!-- Mensajes de feedback -->
+        <div *ngIf="mensajeError" class="alert-error">
+          ⚠ {{ mensajeError }}
+        </div>
+        <div *ngIf="mensajeOk" class="alert-ok">
+          ✓ {{ mensajeOk }}
+        </div>
+
+        <!-- Botón confirmar -->
+        <button
+          type="submit"
+          [disabled]="reservaForm.invalid || !startSlot || enviando || diaCerrado"
+          class="btn-neon-confirm"
+        >
+          {{ enviando ? 'PROCESANDO…' : 'CONFIRMAR RESERVA' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Leyenda fuera de la card -->
+    <div class="legend">
+      <div class="legend-item">
+        <span class="dot dot-free"></span>
+        <span>Libre</span>
+      </div>
+      <div class="legend-item">
+        <span class="dot dot-selected"></span>
+        <span>Seleccionado</span>
+      </div>
+      <div class="legend-item">
+        <span class="dot dot-busy"></span>
+        <span>Ocupado</span>
       </div>
     </div>
 
-    <!-- ═══════════ COLUMNA DERECHA: FORMULARIO DE RESERVA ═══════════ -->
-    <div class="col-lg-6">
-      <div class="booking-card shadow-lg p-4">
-        <h2 class="text-center neon-text-blue mb-4">RESERVA TU PISTA</h2>
-
-        <form [formGroup]="reservaForm" (ngSubmit)="enviar()">
-          <!-- 1. Fecha -->
-          <div class="mb-4">
-            <label class="form-label text-white-50"> 1. Selecciona el día</label>
-            <input
-              type="date"
-              class="form-control custom-input"
-              formControlName="fecha"
-              [min]="minDate"
-            />
-            <small class="text-white-50 d-block mt-1">
-              Debes reservar con al menos 1 día de antelación.
-            </small>
-
-            <!-- Horario del día seleccionado -->
-            <small
-              *ngIf="horarioDelDiaTexto && !diaCerrado"
-              class="d-block mt-1"
-              style="color: var(--blue);"
-            >
-              *Horario de la pista este día: <strong>{{ horarioDelDiaTexto }}</strong>
-            </small>
-          </div>
-
-          <!-- 2. Slots horarios -->
-          <div class="mb-3" *ngIf="reservaForm.get('fecha')?.value">
-            <label class="form-label text-white-50">
-              2. Selecciona horario <span class="text-white-50">(máx. 3h consecutivas)</span>
-            </label>
-
-            <!-- Día sin horario configurado: pista cerrada -->
-            <div *ngIf="diaCerrado" class="alert-error mt-2">
-              ⚠ La pista no abre este día. Selecciona otra fecha.
-            </div>
-
-            <!-- Cargando ocupación -->
-            <div
-              *ngIf="!diaCerrado && cargandoOcupacion"
-              class="text-center py-3 text-white-50"
-            >
-              Cargando disponibilidad…
-            </div>
-
-            <!-- Grid de slots -->
-            <div class="time-grid" *ngIf="!diaCerrado && !cargandoOcupacion">
-              <button
-                type="button"
-                *ngFor="let slot of timeSlots"
-                (click)="seleccionarSlot(slot)"
-                [disabled]="estaOcupado(slot)"
-                [class.selected]="estaSeleccionado(slot)"
-                [class.busy]="estaOcupado(slot)"
-                class="slot-btn"
-              >
-                {{ slot.label }}
-              </button>
-            </div>
-
-            <!-- Resumen de la selección -->
-            <div
-              *ngIf="startSlot && !diaCerrado"
-              class="selection-summary mt-3 d-flex align-items-center"
-            >
-              <div class="flex-grow-1">
-                Seleccionado: <span>{{ resumenRango() }}</span>
-                <small class="d-block text-white-50">
-                  {{ horasSeleccionadas() }} {{ horasSeleccionadas() === 1 ? 'hora' : 'horas' }}
-                </small>
-              </div>
-              <button type="button" (click)="limpiarSeleccion()" class="btn-reset-small ms-2">
-                ✕ Limpiar
-              </button>
-            </div>
-          </div>
-
-          <!-- Mensajes de feedback -->
-          <div *ngIf="mensajeError" class="alert-error mt-2">
-            ⚠ {{ mensajeError }}
-          </div>
-          <div *ngIf="mensajeOk" class="alert-ok mt-2">
-            ✓ {{ mensajeOk }}
-          </div>
-
-          <!-- Botón confirmar -->
-          <button
-            type="submit"
-            [disabled]="reservaForm.invalid || !startSlot || enviando || diaCerrado"
-            class="btn btn-neon-confirm w-100 mt-3"
-          >
-            {{ enviando ? 'PROCESANDO…' : 'CONFIRMAR RESERVA' }}
-          </button>
-        </form>
-      </div>
-    </div>
   </div>
 
-  <!-- ═══════════ HISTORIAL DE RESERVAS ═══════════ -->
-  <div class="row mt-5">
-    <div class="col-12">
-      <h3 class="neon-text-blue mb-4">HISTORIAL DE RESERVAS EN ESTA PISTA</h3>
+  <!-- ═══════════ HISTORIAL ═══════════ -->
+  <div class="history-section">
+    <h3 class="section-title neon-text-blue">HISTORIAL DE RESERVAS EN ESTA PISTA</h3>
 
-      <div *ngIf="misReservas.length === 0" class="text-white-50 fst-italic">
-        Aún no tienes reservas en esta pista.
-      </div>
+    <div *ngIf="misReservas.length === 0" class="history-empty">
+      Aún no tienes reservas en esta pista.
+    </div>
 
-      <table *ngIf="misReservas.length > 0" class="table table-dark table-hover custom-table">
+    <div class="table-wrap" *ngIf="misReservas.length > 0">
+      <table class="custom-table">
         <thead>
           <tr>
             <th>Fecha</th>
@@ -153,12 +125,12 @@
         </thead>
         <tbody>
           <tr *ngFor="let res of misReservas">
-            <td>{{ res.fechaReserva | date: 'dd/MM/yyyy' }}</td>
-            <td>
+            <td data-label="Fecha">{{ res.fechaReserva | date: 'dd/MM/yyyy' }}</td>
+            <td data-label="Horario">
               {{ res.horaInicio.substring(0, 5) }} - {{ res.horaFin.substring(0, 5) }}
             </td>
-            <td>{{ res.precioTotal | currency: 'EUR' }}</td>
-            <td>
+            <td data-label="Precio">{{ res.precioTotal | currency: 'EUR' }}</td>
+            <td data-label="Estado">
               <span class="badge" [ngClass]="{
                 'badge-confirmada': res.estadoReserva === 'Confirmada',
                 'badge-disfrutada': res.estadoReserva === 'Disfrutada',
@@ -168,7 +140,7 @@
                 {{ res.estadoReserva === 'No_Asistido' ? 'No asistido' : res.estadoReserva }}
               </span>
             </td>
-            <td>
+            <td data-label="Pago">
               <span class="badge" [ngClass]="{
                 'badge-pagado': res.estadoPago === 'Pagado',
                 'badge-pendiente': res.estadoPago === 'Pendiente',
@@ -177,11 +149,11 @@
                 {{ res.estadoPago }}
               </span>
             </td>
-            <td>
+            <td data-label="Acción">
               <button
                 (click)="borrar(res)"
                 [disabled]="res.estadoReserva !== 'Confirmada'"
-                class="btn btn-sm btn-outline-danger"
+                class="btn-outline-danger"
               >
                 {{ res.estadoReserva === 'Confirmada' ? 'Cancelar' : '—' }}
               </button>
@@ -191,4 +163,5 @@
       </table>
     </div>
   </div>
+
 </div>

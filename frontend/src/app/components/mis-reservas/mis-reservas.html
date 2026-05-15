@@ -76,7 +76,7 @@
 
               <!-- Cancelar (como ya estaba) -->
               @if (puedeCancelar(reserva.fechaReserva, reserva.horaInicio)) {
-                <button class="btn-cancelar" (click)="cancelarReserva(reserva.idReserva)">
+                <button class="btn-cancelar" (click)="cancelarReserva(reserva)">
                   Cancelar Reserva
                 </button>
               } @else {

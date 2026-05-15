@@ -6,17 +6,32 @@
   font-family: 'Barlow', sans-serif;
 }
 
-/* ─── Tarjeta principal del formulario ──────────────────────────────────── */
+/* ─── Layout general ─────────────────────────────────────────────────── */
+.reserva-page {
+  padding: 32px var(--page-pad, 24px) 60px;
+}
+
+.booking-wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* ─── Card principal ─────────────────────────────────────────────────── */
 .booking-card {
   background: var(--black-2);
   border: 1px solid var(--border);
   padding: 2.5rem;
   border-radius: 20px;
   box-shadow: 0 0 30px rgba(26, 159, 255, 0.08);
-  max-width: 100%;
 }
 
-/* ─── Tipografía neón ───────────────────────────────────────────────────── */
+.card-title {
+  text-align: center;
+  margin: 0 0 28px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+}
+
 .neon-text-blue {
   color: var(--blue);
   text-shadow: 0 0 15px var(--blue-glow);
@@ -25,33 +40,57 @@
   letter-spacing: 2px;
 }
 
-/* ─── Inputs ────────────────────────────────────────────────────────────── */
+/* ─── Bloques de formulario ──────────────────────────────────────────── */
+.form-block { margin-bottom: 1.5rem; }
+.form-block:last-of-type { margin-bottom: 0; }
+
+.form-label {
+  display: block;
+  color: rgba(240, 240, 245, 0.6);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-hint {
+  display: block;
+  color: rgba(240, 240, 245, 0.5);
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+.form-hint.highlight { color: var(--blue); }
+
+.muted { color: rgba(240, 240, 245, 0.5); font-size: 0.85em; }
+
+/* ─── Inputs ─────────────────────────────────────────────────────────── */
 .custom-input {
-  background-color: var(--black-3) !important;
-  border: 1px solid var(--border) !important;
-  color: var(--text) !important;
+  width: 100%;
+  background-color: var(--black-3);
+  border: 1px solid var(--border);
+  color: var(--text);
   border-radius: 10px;
-  padding: 0.6rem 0.9rem;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .custom-input:focus {
-  border-color: var(--blue) !important;
-  box-shadow: 0 0 0 3px var(--blue-dim) !important;
-  background-color: var(--black-3) !important;
-  color: var(--text) !important;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
 }
 
-/* Hack para que el icono del date picker se vea sobre fondo oscuro */
 .custom-input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1) opacity(0.7);
   cursor: pointer;
 }
 
-/* ─── Grid de slots horarios ────────────────────────────────────────────── */
+/* ─── Grid de slots ──────────────────────────────────────────────────── */
 .time-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
 }
 
 .slot-btn {
@@ -61,7 +100,8 @@
   padding: 12px 5px;
   border-radius: 8px;
   font-size: 0.85rem;
-  transition: all 0.25s ease;
+  font-family: inherit;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
@@ -88,20 +128,29 @@
   opacity: 0.55;
 }
 
-/* ─── Resumen de la selección ───────────────────────────────────────────── */
+.loading-text {
+  text-align: center;
+  padding: 16px;
+  color: var(--text-muted);
+}
+
+/* ─── Resumen de selección ───────────────────────────────────────────── */
 .selection-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 12px 14px;
   background: var(--blue-dim);
   border-left: 4px solid var(--blue);
   border-radius: 4px;
   font-size: 0.9rem;
   color: var(--text-muted);
+  margin-top: 12px;
 }
 
-.selection-summary span {
-  color: var(--blue);
-  font-weight: bold;
-}
+.summary-text { flex-grow: 1; }
+.summary-text span { color: var(--blue); font-weight: bold; }
+.summary-text small { display: block; color: rgba(240, 240, 245, 0.5); }
 
 .btn-reset-small {
   background: transparent;
@@ -112,7 +161,6 @@
   padding: 4px 10px;
   border-radius: 6px;
   transition: all 0.3s ease;
-  height: fit-content;
   cursor: pointer;
 }
 
@@ -122,8 +170,10 @@
   box-shadow: 0 0 8px rgba(255, 77, 77, 0.2);
 }
 
-/* ─── Botón principal de confirmar ──────────────────────────────────────── */
+/* ─── Botón confirmar ────────────────────────────────────────────────── */
 .btn-neon-confirm {
+  display: block;
+  width: 100%;
   background: var(--blue);
   border: none;
   color: var(--black);
@@ -132,7 +182,8 @@
   letter-spacing: 1px;
   padding: 15px;
   border-radius: 12px;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  font-size: 16px;
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -149,7 +200,7 @@
   cursor: not-allowed;
 }
 
-/* ─── Mensajes de feedback ──────────────────────────────────────────────── */
+/* ─── Mensajes ───────────────────────────────────────────────────────── */
 .alert-error {
   background: rgba(255, 77, 77, 0.1);
   border: 1px solid var(--error);
@@ -157,6 +208,7 @@
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 0.9rem;
+  margin-top: 12px;
 }
 
 .alert-ok {
@@ -166,87 +218,27 @@
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 0.9rem;
+  margin-top: 12px;
 }
 
-/* ─── Plano de la pista (placeholder visual) ────────────────────────────── */
-.map-placeholder {
-  background: var(--black-2);
-  border: 1px solid var(--border);
-  min-height: 600px;
-  border-radius: 20px;
-  padding: 24px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.map-placeholder:hover {
-  border-color: var(--blue);
-  box-shadow: 0 0 25px rgba(26, 159, 255, 0.15);
-}
-
-.map-mockup {
-  flex: 1;
-  width: 100%;
-  margin: 0 auto;
-  background:
-    linear-gradient(45deg, var(--black) 25%, var(--black-3) 25%, var(--black-3) 50%, var(--black) 50%, var(--black) 75%, var(--black-3) 75%, var(--black-3) 100%);
-  background-size: 24px 24px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  position: relative;
-  min-height: 350px;
-}
-
-/* Líneas decorativas tipo cancha de baloncesto/fútbol sala */
-.court-line {
-  position: absolute;
-  background: rgba(26, 159, 255, 0.4);
-  box-shadow: 0 0 6px var(--blue-glow);
-}
-
-.top-line, .bottom-line {
-  left: 10%;
-  right: 10%;
-  height: 2px;
-}
-
-.top-line { top: 12%; }
-.bottom-line { bottom: 12%; }
-
-.center-line {
-  top: 50%;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  transform: translateY(-50%);
-}
-
-.court-circle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 90px;
-  height: 90px;
-  border: 2px solid rgba(26, 159, 255, 0.4);
-  box-shadow: 0 0 8px var(--blue-glow);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Leyenda de colores */
+/* ─── Leyenda ────────────────────────────────────────────────────────── */
 .legend {
   display: flex;
-  gap: 20px;
+  gap: 28px;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .dot {
@@ -256,23 +248,40 @@
   display: inline-block;
 }
 
-.dot-free {
-  background: var(--black-3);
-  border: 1px solid var(--border);
+.dot-free { background: var(--black-3); border: 1px solid var(--border); }
+.dot-selected { background: var(--blue); box-shadow: 0 0 6px var(--blue-glow); }
+.dot-busy { background: var(--error); box-shadow: 0 0 6px rgba(255, 77, 77, 0.5); }
+
+/* ─── Historial ──────────────────────────────────────────────────────── */
+.history-section {
+  max-width: 900px;
+  margin: 60px auto 0;
 }
 
-.dot-selected {
-  background: var(--blue);
-  box-shadow: 0 0 6px var(--blue-glow);
+.section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  margin: 0 0 24px;
 }
 
-.dot-busy {
-  background: var(--error);
-  box-shadow: 0 0 6px rgba(255, 77, 77, 0.5);
+.history-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 40px;
+  background: var(--black-2);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
 }
 
-/* ─── Tabla del historial ───────────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+}
+
 .custom-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
   background: var(--black-2);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -284,68 +293,52 @@
   border-bottom: 2px solid var(--blue);
   color: var(--blue);
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 1px;
+  padding: 14px 16px;
+  text-align: left;
 }
 
 .custom-table tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
   vertical-align: middle;
-  border-color: var(--border);
-  color: var(--text-muted);
 }
 
-/* ─── Badges de estado ──────────────────────────────────────────────────── */
+.custom-table tbody tr:last-child td { border-bottom: none; }
+.custom-table tbody tr:hover { background: rgba(26, 159, 255, 0.04); }
+
+/* ─── Badges ─────────────────────────────────────────────────────────── */
 .badge {
-  font-size: 0.75rem;
+  display: inline-block;
+  font-size: 0.7rem;
   letter-spacing: 0.5px;
-  padding: 0.4em 0.7em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
-.badge-confirmada {
-  background: var(--blue-dim);
-  color: var(--blue);
-  border: 1px solid var(--blue);
-}
+.badge-confirmada { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue); }
+.badge-disfrutada { background: rgba(0, 255, 130, 0.08); color: #00FF82; border: 1px solid rgba(0, 255, 130, 0.4); }
+.badge-cancelada { background: rgba(255, 77, 77, 0.1); color: var(--error); border: 1px solid var(--error); }
+.badge-noasistido { background: rgba(255, 200, 0, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+.badge-pagado { background: rgba(0, 255, 130, 0.1); color: #00FF82; border: 1px solid #00FF82; }
+.badge-pendiente { background: rgba(255, 200, 0, 0.1); color: #FFC800; border: 1px solid #FFC800; }
+.badge-reembolsado { background: rgba(240, 240, 245, 0.05); color: var(--text-muted); border: 1px solid var(--border); }
 
-.badge-finalizada {
-  background: rgba(240, 240, 245, 0.05);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-}
-
-.badge-cancelada {
-  background: rgba(255, 77, 77, 0.1);
-  color: var(--error);
-  border: 1px solid var(--error);
-}
-
-.badge-pagado {
-  background: rgba(0, 255, 130, 0.1);
-  color: #00FF82;
-  border: 1px solid #00FF82;
-}
-
-.badge-pendiente {
-  background: rgba(255, 200, 0, 0.1);
-  color: #FFC800;
-  border: 1px solid #FFC800;
-}
-
-.badge-reembolsado {
-  background: rgba(240, 240, 245, 0.05);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-}
-
-.badge-noasistido {
-  background: var(--warning);
-  color: var(--black);
-}
-
-/* ─── Botón cancelar ────────────────────────────────────────────────────── */
+/* ─── Botón cancelar ─────────────────────────────────────────────────── */
 .btn-outline-danger {
-  border-color: var(--error);
+  background: transparent;
+  border: 1px solid var(--error);
   color: var(--error);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .btn-outline-danger:hover:not(:disabled) {
@@ -358,14 +351,126 @@
   border-color: var(--border);
   color: var(--text-muted);
   opacity: 0.4;
+  cursor: not-allowed;
 }
 
-/* ─── Responsive ────────────────────────────────────────────────────────── */
-@media (max-width: 991px) {
-  .map-placeholder {
-    min-height: 400px;
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .reserva-page {
+    padding: 24px 16px 50px;
   }
   .booking-card {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+  .card-title {
+    font-size: 24px;
+    letter-spacing: 2px;
+  }
+  .time-grid {
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+    gap: 8px;
+  }
+  .legend {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .history-section {
+    margin-top: 48px;
+  }
+}
+
+/* Móvil: la tabla se convierte en cards apiladas */
+@media (max-width: 640px) {
+  .booking-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 16px;
+  }
+  .selection-summary {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .btn-reset-small {
+    align-self: flex-end;
+  }
+  .legend {
+    gap: 12px;
+    font-size: 0.8rem;
+    padding: 12px;
+  }
+  .section-title {
+    font-size: 20px;
+  }
+
+  /* La tabla se transforma en cards */
+  .custom-table,
+  .custom-table thead,
+  .custom-table tbody,
+  .custom-table tr,
+  .custom-table td {
+    display: block;
+    width: 100%;
+  }
+  .custom-table {
+    background: transparent;
+    border: none;
+    overflow: visible;
+  }
+  .custom-table thead {
+    display: none;
+  }
+  .custom-table tbody tr {
+    background: var(--black-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .custom-table tbody tr:hover {
+    background: var(--black-2);
+  }
+  .custom-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: none;
+    text-align: right;
+    gap: 12px;
+  }
+  .custom-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--blue);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    text-align: left;
+  }
+}
+
+/* Móvil pequeño */
+@media (max-width: 400px) {
+  .reserva-page {
+    padding: 20px 12px 40px;
+  }
+  .booking-card {
+    padding: 1.5rem 1rem;
+  }
+  .time-grid {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+    gap: 6px;
+  }
+  .slot-btn {
+    padding: 10px 4px;
+    font-size: 0.8rem;
+  }
+  .btn-neon-confirm {
+    font-size: 14px;
+    padding: 13px;
   }
 }

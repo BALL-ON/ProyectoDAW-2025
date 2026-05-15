@@ -346,17 +346,62 @@ export class Reserva implements OnInit {
 
   borrar(reserva: ReservaResponse): void {
     if (reserva.estadoReserva !== 'Confirmada') return;
-    if (!confirm('¿Seguro que quieres cancelar esta reserva?')) return;
 
-    this.service.cancelarReserva(reserva.idReserva).subscribe({
-      next: () => {
-        this.cargarMisReservas();
-        const fecha = this.reservaForm.get('fecha')!.value;
-        if (fecha) this.cargarOcupacion(fecha);
-      },
-      error: (err) => {
-        this.mensajeError = err?.error?.message || 'No se pudo cancelar la reserva.';
-      },
+    Swal.fire({
+      title: '¿Cancelar esta reserva?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'Volver',
+      confirmButtonColor: '#ff4d4d',
+      cancelButtonColor: '#6b6b80',
+      background: '#111114',
+      color: '#f0f0f5',
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
+      const eraPagada = reserva.estadoPago === 'Pagado';
+
+      this.service.cancelarReserva(reserva.idReserva).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Reserva cancelada',
+            html: `
+              <p style="margin: 8px 0 ${eraPagada ? '16px' : '0'}; color: #f0f0f5;">
+                Tu reserva del <strong>${reserva.fechaReserva}</strong>
+                de <strong>${reserva.horaInicio.substring(0, 5)}</strong>
+                a <strong>${reserva.horaFin.substring(0, 5)}</strong>
+                se ha cancelado correctamente.
+              </p>
+              ${eraPagada ? `
+                <p style="font-size: 13px; color: #6b6b80; margin: 0;">
+                  Se reembolsará el importe al método de pago original en unos días hábiles.
+                </p>
+              ` : ''}
+            `,
+            background: '#111114',
+            color: '#f0f0f5',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#1a9fff',
+          });
+
+          this.cargarMisReservas();
+          const fecha = this.reservaForm.get('fecha')!.value;
+          if (fecha) this.cargarOcupacion(fecha);
+        },
+        error: (err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo cancelar',
+            text: err?.error?.message || 'Ha ocurrido un error al cancelar la reserva.',
+            background: '#111114',
+            color: '#f0f0f5',
+            confirmButtonColor: '#1a9fff',
+          });
+        },
+      });
     });
   }
 
