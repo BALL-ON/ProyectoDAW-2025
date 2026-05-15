@@ -325,7 +325,7 @@ export class Reserva implements OnInit {
               se ha registrado correctamente.
             </p>
             <p style="font-size: 13px; color: #6b6b80; margin: 0;">
-              📧 Te hemos enviado un correo con los detalles y el código QR de acceso.
+              Te hemos enviado un correo con los detalles y el código QR de acceso.
             </p>
           `,
           background: '#111114',
