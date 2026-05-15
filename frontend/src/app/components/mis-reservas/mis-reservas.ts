@@ -1,8 +1,10 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReservaResponse } from '../../model/reserva.model';
+import { ReservaResponse, QrReserva } from '../../model/reserva.model';
 import { AuthService } from '../../services/auth';
 import { ReservaService } from '../../services/ReservaService';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mis-reservas',
@@ -14,6 +16,7 @@ import { ReservaService } from '../../services/ReservaService';
 export class MisReservas implements OnInit {
   authService = inject(AuthService);
   reservaService = inject(ReservaService);
+  private router = inject(Router);
 
   // Variables de estado (señales)
   todasLasReservas = signal<ReservaResponse[]>([]);
@@ -22,6 +25,10 @@ export class MisReservas implements OnInit {
   reservaAValorar = signal<number | null>(null);
   estrellasSeleccionadas = signal<number>(0);
   textoComentario = signal<string>('');
+
+  // Modal del QR
+  qrAbierto = signal<{ imagenBase64: string; reserva: ReservaResponse } | null>(null);
+  cargandoQr = signal<boolean>(false);
 
   // Filtra las próximas: no están canceladas y su hora exacta no ha pasado
   reservasProximas = computed(() => {
@@ -126,11 +133,11 @@ export class MisReservas implements OnInit {
     if(confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
       this.reservaService.cancelarReserva(id).subscribe({
         next: () => {
-          alert('Reserva cancelada correctamente.');
+          Swal.fire('Reserva cancelada correctamente.');
           this.cargarReservas(); 
         },
         error: (err) => {
-          alert(err.error?.message || 'Error al cancelar la reserva.');
+          Swal.fire(err.error?.message || 'Error al cancelar la reserva.');
         }
       });
     }
@@ -192,15 +199,43 @@ export class MisReservas implements OnInit {
     this.reservaService.crearResena(payload).subscribe({
       next: (respuesta) => {
         console.log('4. ✅ ¡ÉXITO! El backend ha respondido bien:', respuesta);
-        alert('¡Gracias por valorar la pista!');
+        Swal.fire('¡Gracias por valorar la pista!');
         this.cerrarModalResena();
         this.cargarReservas();
       },
       error: (err) => {
         console.error('4. ❌ ERROR: El backend ha devuelto un fallo:', err);
         const mensajeError = err.error?.message || 'Hubo un error al enviar tu reseña.';
-        alert(mensajeError);
+        Swal.fire(mensajeError);
       }
     });
   }
+
+  /**
+ * Abre el modal con el QR de la reserva. Pide la imagen al backend en base64.
+ */
+verQr(reserva: ReservaResponse) {
+  this.cargandoQr.set(true);
+  this.reservaService.obtenerQr(reserva.idReserva).subscribe({
+    next: (data) => {
+      this.cargandoQr.set(false);
+      this.qrAbierto.set({ imagenBase64: data.imagenBase64, reserva });
+      document.documentElement.style.overflow = 'hidden';
+    },
+    error: (err) => {
+      this.cargandoQr.set(false);
+      Swal.fire(err.error?.message || 'No se pudo cargar el código QR.');
+    },
+  });
+}
+
+cerrarModalQr() {
+  this.qrAbierto.set(null);
+  document.documentElement.style.overflow = 'auto';
+}
+
+/** Redirige a la pasarela de pago de una reserva pendiente. */
+irAPagar(idReserva: number) {
+  this.router.navigate(['/pago', idReserva]);
+}
 }

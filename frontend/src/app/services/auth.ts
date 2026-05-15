@@ -6,6 +6,7 @@ import { isPlatformBrowser } from '@angular/common';
 export interface AuthResponse {
   token: string;
   rol: string;
+  idPolideportivo?: number;
 }
 
 @Injectable({
@@ -30,7 +31,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, contrasena, remember }).pipe(
       tap(response => {
         if (response.token) {
-          this.guardarSesion(response.token, response.rol, remember);
+          this.guardarSesion(response.token, response.rol, remember, response.idPolideportivo);
           this.loggedSignal.set(true);
         }
       })
@@ -38,22 +39,31 @@ export class AuthService {
   }
 
   // Registrar Usuario
-  registro(datosRegistro: any): Observable<any> {
-    // Hace un POST al endpoint /auth/register
-    return this.http.post(`${this.apiUrl}/register`, datosRegistro);
+  registro(datosRegistro: any, archivoFoto: File): Observable<any> {
+
+    const formData = new FormData();
+    formData.append('foto', archivoFoto);
+    formData.append('usuario', new Blob([JSON.stringify(datosRegistro)], { type: 'application/json' }))
+    
+    return this.http.post(`${this.apiUrl}/register`, formData);
   }
 
 
   // Guarda el token y el rol
-  private guardarSesion(token: string, rol: string, remember: boolean): void {
-    // Comprobamos que estamos en el navegador para evitar errores con Angular SSR ya que sessionStorage no existe en el servidor.
-      if (isPlatformBrowser(this.platformId)) {
+  private guardarSesion(token: string, rol: string, remember: boolean, idPolideportivo?: number): void {
+    if (isPlatformBrowser(this.platformId)) {
       if (remember) {
         localStorage.setItem(this.TOKEN_KEY, token);
         localStorage.setItem(this.ROL_KEY, rol);
+        if (idPolideportivo) {
+          localStorage.setItem('idPolideportivo', idPolideportivo.toString());
+        }
       } else {
         sessionStorage.setItem(this.TOKEN_KEY, token);
         sessionStorage.setItem(this.ROL_KEY, rol);
+        if (idPolideportivo) {
+          sessionStorage.setItem('idPolideportivo', idPolideportivo.toString());
+        }
       }
     }
   }

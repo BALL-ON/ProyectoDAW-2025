@@ -31,7 +31,15 @@
         <div class="glass-card identity-card">
           
           <div class="avatar-wrapper">
-            <div class="avatar-placeholder">{{ getIniciales() }}</div>
+            <img [src]="fotoUrl()" alt="Foto de Perfil" class="profile-img">
+            
+            <input type="file" id="fotoUpdate" accept="image/*" style="display: none;" (change)="onCambiarFoto($event)">
+            <button class="btn-edit-photo" onclick="document.getElementById('fotoUpdate').click()" title="Cambiar foto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </button>
           </div>
 
           <h2 class="user-name">{{ usuario()?.nombre }} {{ usuario()?.apellidos }}</h2>
@@ -48,6 +56,34 @@
             </div>
           </div>
 
+        </div>
+
+        <div class="simple-password-section">
+          <button type="button" class="btn-change-pass" [class.active]="mostrarFormPassword" (click)="toggleFormPassword()">
+            {{ mostrarFormPassword ? '✖ Cancelar' : 'Cambiar Contraseña' }}
+          </button>
+
+          @if (mostrarFormPassword) {
+            <form [formGroup]="passwordForm" (ngSubmit)="onActualizarPassword()" class="minimal-password-form slide-down">
+              
+              <input type="password" formControlName="actual" class="mini-input" placeholder="Contraseña actual">
+              
+              <input type="password" formControlName="nueva" class="mini-input" placeholder="Nueva contraseña (Mín. 6, 1 mayús, 1 núm)">
+              @if (passwordForm.get('nueva')?.touched && passwordForm.get('nueva')?.invalid) {
+                <span class="mini-error">Formato de contraseña inválido.</span>
+              }
+
+              <input type="password" formControlName="confirmar" class="mini-input" placeholder="Repite la nueva contraseña">
+              @if (passwordForm.hasError('passwordsMismatch') && passwordForm.get('confirmar')?.touched) {
+                <span class="mini-error">Las contraseñas no coinciden.</span>
+              }
+
+              <button type="submit" class="btn-save-mini" [disabled]="passwordForm.invalid">
+                Guardar
+              </button>
+
+            </form>
+          }
         </div>
       </aside>
 
@@ -135,6 +171,29 @@
               <p class="empty-state">Aún no has dejado ninguna reseña.</p>
             }
           </div>
+
+          @if (totalElementos() > 0) {
+            <div class="pagination-container">
+              <button 
+                class="btn-page" 
+                [disabled]="paginaActual() === 0" 
+                (click)="cambiarPagina(paginaActual() - 1)">
+                ← Anterior
+              </button>
+              
+              <span class="page-info">
+                Página <strong>{{ paginaActual() + 1 }}</strong> de <strong>{{ totalPaginas() }}</strong> 
+                <small>({{ totalElementos() }} reseñas)</small>
+              </span>
+
+              <button 
+                class="btn-page" 
+                [disabled]="paginaActual() === totalPaginas() - 1" 
+                (click)="cambiarPagina(paginaActual() + 1)">
+                Siguiente →
+              </button>
+            </div>
+          }
         </section>
 
       </main>

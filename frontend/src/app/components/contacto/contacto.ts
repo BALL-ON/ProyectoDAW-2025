@@ -1,33 +1,91 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MensajeContacto } from '../../services/mensaje-contacto';
+import { AuthService } from '../../services/auth';
+import { Usuario } from '../../services/usuario';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-contacto',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './contacto.html',
   styleUrl: './contacto.css',
 })
 export class Contacto {
+  private contactoServicio = inject(MensajeContacto);
+  private usuarioServicio = inject(Usuario);
+  authService = inject(AuthService);
 
   enviando = false;
-  enviado  = false;
+  enviado = false;
 
-  form = {
-    nombre:  '',
-    email:   '',
-    asunto:  'reserva',
-    mensaje: ''
-  };
+  successMessage = '';
+  showSuccessMessage = false;
+
+  form: any;
+
+  email = '';
+  telefono = '';
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      telefono: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]],
+      asunto: 'reserva',
+      mensaje: ['', [Validators.required, Validators.minLength(10)]],
+      fecha_envio: this.obtenerFechaActual(),
+      leido: false,
+    });
+  }
 
   enviarMensaje() {
     this.enviando = true;
-    // Aquí harías tu llamada al servicio/API
+
+    this.usuarioServicio
+      .obtenerMiPerfil()
+      .pipe(
+        switchMap((perfil) => {
+          if (this.isLoggedIn()) {
+            this.form.patchValue({ nombre: perfil.nombre });
+            this.form.patchValue({ email: perfil.email });
+            this.form.patchValue({ telefono: perfil.telefono });
+          }
+
+          return this.contactoServicio.enviar(this.form.value);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.enviando = false;
+          this.enviado = true;
+          this.form.reset();
+        },
+        error: (err) => {
+          console.error('Error al enviar el mensaje:', err);
+          this.enviando = false;
+        },
+      });
+
+    this.successMessage = '✓ Mensaje enviado con éxito. Nos pondremos en contacto contigo pronto.';
+    this.showSuccessMessage = true;
+
     setTimeout(() => {
-      this.enviando = false;
-      this.enviado  = true;
-      this.form = { nombre: '', email: '', asunto: 'reserva', mensaje: '' };
-    }, 1000);
+      this.showSuccessMessage = false;
+    }, 10000);
+  }
+
+  private obtenerFechaActual(): string {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${año}-${mes}-${dia}`;
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 }

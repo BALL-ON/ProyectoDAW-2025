@@ -336,3 +336,49 @@ select.inp {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.3; }
 }
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  padding: 8px 12px;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.error-msg::before {
+  content: 'warning';
+  font-family: 'Material Symbols Outlined';
+  font-size: 1.2rem;
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+.field-half {
+  width: 100%;
+}
+
+/* Responsive: En móviles, vuelven a estar uno debajo del otro */
+@media (max-width: 768px) {
+  .fields-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fields-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}

@@ -359,6 +359,205 @@
   background: rgba(26, 159, 255, 0.05);
 }
 
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02); /* Sombra muy ligera */
+}
+
+.page-info {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.page-info strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.page-info small {
+  color: #64748b;
+  margin-left: 6px;
+  font-size: 0.85rem;
+}
+
+.btn-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: white;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-page:hover:not(:disabled) {
+  background-color: #3b82f6;
+  color: white;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-page:disabled {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  border-color: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Contenedor de la foto */
+.avatar-wrapper {
+  position: relative; 
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px auto;
+}
+
+/* La imagen de perfil */
+.profile-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover; 
+  border: 4px solid var(--blue);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Botoncito para cambiar foto */
+.btn-edit-photo {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--blue);
+  color: white;
+  border: 2px solid var(--black-2);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(26,159,255,0.4);
+}
+
+.btn-edit-photo:hover {
+  transform: scale(1.1);
+  background: #1085dd; /* Un azul un pelín más oscuro */
+}
+
+/* Para que el icono SVG cuadre bien */
+.btn-edit-photo svg {
+  width: 16px;
+  height: 16px;
+}
+/* Contenedor principal */
+.simple-password-section {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra el botón y el formulario */
+}
+
+/* El botón inicial */
+.btn-change-pass {
+  background: #ffffff;
+  color: #1085dd;
+  border: 1px solid #a3a3a3;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-change-pass:hover {
+  background: #cfcfcf;
+  border-color: #666666;
+  color: #0971c0;
+}
+
+.btn-change-pass.active {
+  color: #ef4444;
+  border-color: #ef4444;
+  background: transparent;
+}
+
+/* El formulario compacto */
+.minimal-password-form {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espacio muy pequeño entre los inputs */
+  width: 100%;
+  max-width: 280px; /* Muy estrecho */
+}
+
+/* Inputs pequeños */
+.mini-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  outline: none;
+}
+
+.mini-input:focus {
+  border-color: var(--blue);
+}
+
+/* Botón de guardar pequeñito */
+.btn-save-mini {
+  margin-top: 4px;
+  background: var(--blue);
+  color: white;
+  border: none;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-save-mini:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Error diminuto */
+.mini-error {
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: -6px;
+  margin-left: 4px;
+}
+
+/* Animación */
+.slide-down {
+  animation: slideDown 0.2s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /*RESPONSIVE */
 @media (max-width: 768px) {
   .perfil-layout {

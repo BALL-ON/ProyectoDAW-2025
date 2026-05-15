@@ -2,37 +2,50 @@
   <div class="header-inner">
  
     <!-- LOGO -->
-    <a class="header-logo" routerLink="/" (click)="closeMobileMenu()">
+    <a class="header-logo" 
+       [routerLink]="(rolUsuario === 'ROLE_Admin_Centro' || rolUsuario === 'ROLE_Admin_Global') ? '/admin/dashboard' : '/'" 
+       (click)="closeMobileMenu()">
+       
       <div class="logo-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20"/>
-        </svg>
+        <img src="../../../../assets/images/logo-ballon.png" alt="Logo Ballon" class="img-logo-real" />
       </div>
-      <span class="logo-text">Ballon</span>
     </a>
  
     <!-- NAV CENTRAL -->
     <nav class="header-nav" [class.open]="menuOpen()">
-      <a routerLink="/" 
-         routerLinkActive="active" 
-         [routerLinkActiveOptions]="{exact: true}" 
-         class="nav-link" 
-         (click)="closeMobileMenu()">
-        Inicio
-      </a>
-      <a routerLink="/polideportivos" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
-        Polideportivos
-      </a>
-      <a routerLink="/contacto" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
-        Contacto
-      </a>
-      <a routerLink="/faq" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
-        FAQ
-      </a>
+      
+      @if (rolUsuario === 'ROLE_Admin_Centro' || rolUsuario === 'ROLE_Admin_Global') {
+        
+        <!-- VISTA DE ADMINISTRADOR -->
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
+          Panel Admin
+        </a>
+        @if (rolUsuario === 'ROLE_Admin_Centro') {
+          <a routerLink="/admin/escanear-qr" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
+            Escanear QR
+          </a>
+        }
+
+      } @else {
+        
+        <!-- VISTA DE USUARIO NORMAL / DESLOGUEADO -->
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMobileMenu()">
+          Inicio
+        </a>
+        <a routerLink="/polideportivos" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
+          Polideportivos
+        </a>
+        <a routerLink="/contacto" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
+          Contacto
+        </a>
+        <a routerLink="/faq" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">
+          FAQ
+        </a>
+
+      }
     </nav>
  
-    <!-- DERECHA -->
+    <!-- DERECHA (Se queda igual, el admin también necesita cerrar sesión) -->
     <div class="header-right">
     
     @if (authService.loggedSignal()) {
@@ -52,7 +65,12 @@
         @if (dropdownOpen()) {
           <div class="dropdown-menu">
             <a routerLink="/perfil" class="dropdown-item" (click)="closeDropdown()">Mi Perfil</a>
-            <a routerLink="/mis-reservas" class="dropdown-item" (click)="closeDropdown()">Mis Reservas</a>
+            
+            <!-- Opcional: Si el admin no hace reservas, puedes ocultar este botón para él también -->
+            @if (rolUsuario !== 'ROLE_Admin_Centro' && rolUsuario !== 'ROLE_Admin_Global') {
+              <a routerLink="/mis-reservas" class="dropdown-item" (click)="closeDropdown()">Mis Reservas</a>
+            }
+            
             <button class="dropdown-item logout" (click)="logout()">Cerrar Sesión</button>
           </div>
         }
@@ -84,7 +102,4 @@
 
 <!-- COSAS QUE FALTAN EN EL HEADER:
  - Cambiar el logo por el SVG real de Ballon (Obviamente también hacerlo)
- - Cambiar el icono de "Mi Cuenta" por uno de FontAwesome o similar
- - Modificar la lógica del botón de "Mi Cuenta" para que dependiendo de si el usuario está logueado o no, muestre "Mi Cuenta" o "Iniciar Sesión", incluso a lo mejor mostrar un menú desplegable con opciones como "Perfil", "Mis Reservas", "Cerrar Sesión", etc. (Esto último es opcional, pero le daría un toque más profesional)
- - En la versión móvil, no aparece ninguna opción de Mi Cuenta, estaría bien que apareciese únicamente el icono.
 -->

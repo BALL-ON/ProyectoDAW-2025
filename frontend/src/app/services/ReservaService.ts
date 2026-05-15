@@ -5,7 +5,9 @@ import {
   OcupacionSlot,
   ReservaRequest,
   ReservaResponse,
-  ResenaRequest
+  ResenaRequest,
+  PagoRequest,
+  QrReserva
 } from '../model/reserva.model';
 import { AuthService } from './auth';
 
@@ -65,4 +67,28 @@ export class ReservaService {
   crearResena(dto: ResenaRequest): Observable<any> {
     return this.http.post<any>('http://localhost:9999/api/resenas', dto, { headers: this.getHeaders() });
   }
+
+  obtenerReservasPorPolideportivo(idPolideportivo: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/polideportivo/${idPolideportivo}/reservas`);
+  }
+
+  obtenerReservasPaginadas(idPolideportivo: number, page: number, size: number): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+      
+    return this.http.get<any>(`${this.apiUrl}/polideportivo/${idPolideportivo}/page`, { headers: this.getHeaders(), params });
+  }
+
+  obtenerPorId(idReserva: number): Observable<ReservaResponse> {
+  return this.http.get<ReservaResponse>(`${this.apiUrl}/${idReserva}`);
+  }
+
+  pagar(idReserva: number, dto: PagoRequest): Observable<ReservaResponse> {
+    return this.http.post<ReservaResponse>(`${this.apiUrl}/${idReserva}/pagar`, dto);
+  }
+
+  obtenerQr(idReserva: number): Observable<QrReserva> {
+  return this.http.get<QrReserva>(`${this.apiUrl}/${idReserva}/qr`);
+}
 }

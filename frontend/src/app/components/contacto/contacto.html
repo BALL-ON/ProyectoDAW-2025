@@ -1,14 +1,11 @@
 <main class="contact-wrapper">
-
   <!-- ── HERO ─────────────────────────────────────────────────────── -->
   <section class="contact-hero">
     <div class="hero-badge">
       <span></span>
       Contáctanos
     </div>
-    <h1 class="contact-title">
-      Estamos aquí para <span class="text-blue">ayudarte</span>
-    </h1>
+    <h1 class="contact-title">Estamos aquí para <span class="text-blue">ayudarte</span></h1>
     <p class="contact-subtitle">
       Escríbenos con cualquier duda sobre reservas, pagos o instalaciones.
     </p>
@@ -16,28 +13,39 @@
 
   <!-- ── GRID PRINCIPAL ────────────────────────────────────────────── -->
   <section class="contact-main">
-
     <!-- Formulario -->
     <div class="contact-card">
       <p class="card-title">Envíanos un mensaje</p>
 
-      <form (ngSubmit)="enviarMensaje()">
-        <div class="row-2">
+      <form (ngSubmit)="enviarMensaje()" [formGroup]="form">
+        @if (!isLoggedIn()) {
           <div class="field">
             <label for="nombre">Nombre</label>
-            <input id="nombre" class="inp" type="text" placeholder="Tu nombre"
-                   [(ngModel)]="form.nombre" name="nombre" />
+            <input type="text" id="nombre" class="inp" formControlName="nombre" required />
           </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" class="inp" type="email" placeholder="correo@ejemplo.com"
-                   [(ngModel)]="form.email" name="email" />
+          <div class="fields-row">
+            <div class="field field-half">
+              <label for="email">Email</label>
+              <input type="email" id="email" class="inp" formControlName="email" required />
+            </div>
+
+            <div class="field field-half">
+              <label for="telefono">Teléfono</label>
+              <input type="tel" id="telefono" class="inp" formControlName="telefono" required />
+            </div>
           </div>
-        </div>
+          @if (this.form.get('email')?.errors?.['email']) {
+            <p class="error-msg">Por favor, introduce un email válido.</p>
+          }
+          @if (this.form.get('telefono')?.errors?.['pattern']) {
+            <p class="error-msg">Por favor, introduce un número de teléfono válido (9 dígitos).</p>
+          }
+          
+        }
 
         <div class="field">
           <label for="asunto">Asunto</label>
-          <select id="asunto" class="inp" [(ngModel)]="form.asunto" name="asunto">
+          <select id="asunto" class="inp" formControlName="asunto">
             <option value="reserva">Problema con una reserva</option>
             <option value="pago">Consulta sobre pagos</option>
             <option value="instalaciones">Información de instalaciones</option>
@@ -48,21 +56,35 @@
 
         <div class="field">
           <label for="mensaje">Mensaje</label>
-          <textarea id="mensaje" class="inp" rows="5"
-                    placeholder="Cuéntanos en qué podemos ayudarte…"
-                    [(ngModel)]="form.mensaje" name="mensaje"></textarea>
+          <textarea
+            id="mensaje"
+            class="inp"
+            rows="5"
+            placeholder="Cuéntanos en qué podemos ayudarte…"
+            formControlName="mensaje"
+            required
+          ></textarea>
+          @if (this.form.get('mensaje')?.errors?.['minlength']) {
+            <p class="error-msg">El mensaje debe tener al menos 10 caracteres.</p>
+          }
         </div>
 
         <button type="submit" class="btn-primary" [disabled]="enviando">
           {{ enviando ? 'Enviando…' : 'Enviar mensaje' }}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2.5">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
 
-        <p *ngIf="enviado" class="success-msg">
-          ✓ Mensaje enviado. Te responderemos pronto.
+        <p *ngIf="showSuccessMessage" class="success-msg">
+          {{ successMessage }}
         </p>
       </form>
     </div>
@@ -105,12 +127,10 @@
         <div class="info-divider"></div>
 
         <p class="hours-text">
-          Lun–Vie: 9:00 – 20:00<br>
+          Lun–Vie: 9:00 – 20:00<br />
           Fines de semana: cerrado
         </p>
       </div>
     </div>
-
   </section>
-
 </main>

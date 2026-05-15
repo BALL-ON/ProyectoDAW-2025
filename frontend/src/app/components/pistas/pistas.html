@@ -10,7 +10,7 @@
     <p class="pistas-eyebrow">CENTRO DEPORTIVO</p>
     <h1 class="pistas-title">{{ polideportivo.nombre }}</h1>
     <p class="pistas-meta">
-      📍 {{ polideportivo.direccion }} · {{ polideportivo.poblacion }}
+      {{ polideportivo.direccion }} · {{ polideportivo.poblacion }}
     </p>
   </header>
 
@@ -67,7 +67,6 @@
       (keyup.enter)="reservarPista(p)"
     >
       <div class="pista-card-top">
-        <span class="pista-icon">{{ iconoPorTipo(p.nombreTipoPista) }}</span>
         <span class="pista-tipo">{{ p.nombreTipoPista }}</span>
       </div>
 
@@ -75,12 +74,10 @@
 
       <div class="pista-specs">
         <div class="spec">
-          <span class="spec-icon">👥</span>
           <span class="spec-value">{{ p.capacidad }}</span>
           <span class="spec-label">jugadores</span>
         </div>
         <div class="spec">
-          <span class="spec-icon">💶</span>
           <span class="spec-value">{{ p.precioHora | currency: 'EUR' }}</span>
           <span class="spec-label">/ hora</span>
         </div>

@@ -1,0 +1,251 @@
+.pago-page {
+  min-height: calc(100vh - var(--header-height));
+  background: var(--black);
+  color: var(--text);
+  padding: var(--page-pad);
+  font-family: 'Barlow', sans-serif;
+}
+
+.pago-wrap {
+  width: 100%;
+}
+
+/* ── Estados ───────────────────────────────────────────────────────── */
+.loading-state, .error-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
+}
+.spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Grid ──────────────────────────────────────────────────────────── */
+.pago-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .pago-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Resumen (izquierda) ───────────────────────────────────────────── */
+.resumen-card {
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+}
+.card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--blue);
+  margin: 0 0 24px;
+}
+.resumen-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.resumen-row:last-of-type { border-bottom: none; }
+.resumen-row .label { color: var(--text-muted); }
+.resumen-row .value { color: var(--text); font-weight: 600; text-align: right; }
+
+.total-block {
+  margin-top: 16px;
+  padding: 18px;
+  background: var(--blue-dim);
+  border: 1px solid var(--blue-glow);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.total-label {
+  color: var(--text);
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 1px;
+}
+.total-value {
+  color: var(--blue);
+  font-size: 24px;
+  font-weight: 700;
+  text-shadow: 0 0 10px var(--blue-glow);
+}
+
+/* Tarjetas de prueba */
+.info-tarjetas {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.info-titulo {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.tarjeta-test {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: var(--black-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  transition: border-color 0.15s, background 0.15s;
+}
+.tarjeta-test:hover { border-color: var(--blue); background: var(--black); }
+.tarjeta-test strong { font-size: 13px; letter-spacing: 1px; }
+.tarjeta-test small { font-family: 'Barlow', sans-serif; font-size: 11px; margin-top: 2px; }
+.tarjeta-test.ok small { color: var(--success); }
+.tarjeta-test.ko small { color: var(--error); }
+
+/* ── Formulario (derecha) ──────────────────────────────────────────── */
+.form-card {
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px;
+}
+.form-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  letter-spacing: 3px;
+  color: var(--blue);
+  margin: 0 0 6px;
+  text-shadow: 0 0 12px var(--blue-glow);
+}
+.form-sub {
+  color: var(--text-muted);
+  margin: 0 0 28px;
+  font-size: 14px;
+}
+
+.pago-form { display: flex; flex-direction: column; gap: 16px; }
+
+.campo { display: flex; flex-direction: column; }
+.campo-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.input {
+  background: var(--black-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
+}
+.input.mono { font-family: 'Courier New', monospace; letter-spacing: 1px; }
+.input::placeholder { color: var(--text-muted); }
+select.input { appearance: none; cursor: pointer; }
+
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.alert-error {
+  background: rgba(255, 77, 77, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.input.invalido {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.15);
+}
+
+/* ── Botones ───────────────────────────────────────────────────────── */
+.btn-pagar {
+  background: var(--blue);
+  color: var(--black);
+  border: none;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 0 20px var(--blue-glow);
+  transition: transform 0.1s, box-shadow 0.15s;
+}
+.btn-pagar:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 0 28px var(--blue-glow);
+}
+.btn-pagar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-cancelar {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-cancelar:hover:not(:disabled) {
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.seguridad {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin: 4px 0 0;
+  letter-spacing: 0.5px;
+}

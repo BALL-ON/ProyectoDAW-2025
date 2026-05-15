@@ -1,0 +1,115 @@
+:host {
+  display: block;
+  font-family: 'Barlow', sans-serif;
+  color: var(--text);
+}
+
+.privacidad-container {
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  min-height: 100vh;
+  padding: clamp(60px, 10vh, 100px) var(--page-pad);
+}
+
+.privacidad-content {
+  background-color: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: clamp(40px, 6vw, 80px);
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.8;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.privacidad-content h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  margin-bottom: 40px;
+  text-align: center;
+  color: var(--blue);
+  border-bottom: 2px solid var(--blue);
+  padding-bottom: 24px;
+}
+
+.privacidad-section {
+  margin-bottom: 40px;
+  scroll-margin-top: 100px;
+}
+
+.privacidad-section h2 {
+  color: var(--blue);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-shadow: 0 0 10px var(--blue-dim);
+}
+
+.privacidad-section p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+.privacidad-section strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ════ RESPONSIVE ══════════════════════════════════════════════════════ */
+@media (max-width: 992px) {
+  .privacidad-content {
+    padding: clamp(30px, 5vw, 60px);
+  }
+}
+
+@media (max-width: 768px) {
+  .privacidad-content {
+    padding: 24px 20px;
+  }
+
+  .privacidad-content h1 {
+    font-size: 1.8rem;
+    margin-bottom: 32px;
+  }
+
+  .privacidad-section {
+    margin-bottom: 32px;
+  }
+
+  .privacidad-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .privacidad-section p {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .privacidad-container {
+    padding: 40px 16px;
+  }
+
+  .privacidad-content {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .privacidad-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  .privacidad-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .privacidad-section p {
+    font-size: 0.95rem;
+  }
+}

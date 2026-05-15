@@ -2,14 +2,18 @@ package com.ballon.backend.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.dtos.ReseñaRequestDTO;
@@ -51,5 +55,43 @@ public class ReseñaController {
         ReseñaResponseDTO reseñaPublicada = reseñaService.publicarReseña(request, usuario);
         
         return new ResponseEntity<>(reseñaPublicada, HttpStatus.CREATED);
+    }
+    
+    /** PATCH /api/resenas/{id}/visibilidad?visible=false (ADMIN, moderación) */
+    @PatchMapping("/{id}/visibilidad")
+    public ResponseEntity<ReseñaResponseDTO> cambiarVisibilidad(@PathVariable Long id, @RequestParam boolean visible) {
+        return ResponseEntity.ok(reseñaService.cambiarVisibilidad(id, visible));
+    }
+    
+    
+    /**
+     * Endpoint para obtener las reseñas de un polideportivo especifico
+     * @param idPolideportivo
+     * @return
+     */
+    @GetMapping("/polideportivo/{idPolideportivo}")
+    public ResponseEntity<List<ReseñaResponseDTO>> obtenerResenasDelCentro(@PathVariable Long idPolideportivo) {
+        // Llama al servicio que use el repositorio de arriba y devuelva la lista
+        return ResponseEntity.ok(reseñaService.obtenerPorPolideportivo(idPolideportivo));
+    }
+    
+    /**
+     * Endpoint para obtener todas las reseñas paginadas
+     * @param authentication
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/mis-resenas/page")
+    public ResponseEntity<Page<ReseñaResponseDTO>> obtenerMisResenasPaginadas(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        
+        String email = authentication.getName(); 
+        
+        Page<ReseñaResponseDTO> resenasPage = reseñaService.obtenerMisResenasPaginadas(email, page, size);
+        
+        return ResponseEntity.ok(resenasPage);
     }
 }

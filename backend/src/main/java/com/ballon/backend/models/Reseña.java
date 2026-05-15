@@ -45,5 +45,7 @@ public class Reseña {
 
     @Column(updatable = false)
     private LocalDateTime fecha = LocalDateTime.now();
+    
+    private boolean visible = true;
 
 }

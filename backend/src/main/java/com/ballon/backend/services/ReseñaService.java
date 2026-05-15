@@ -3,6 +3,9 @@ package com.ballon.backend.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,5 +79,37 @@ public class ReseñaService {
         return reseñas.stream()
                 .map(reseñaMapper::toReseñaResponse)
                 .collect(Collectors.toList());
+    }
+    
+    /**
+     * Método para hacer visible o no una reseña (por control de comentarios ofensivos)
+     * @param idResena
+     * @param visible
+     * @return
+     */
+    public ReseñaResponseDTO cambiarVisibilidad(Long idResena, boolean visible) {
+        Reseña resena = reseñaRepository.findById(idResena)
+            .orElseThrow(() -> new RuntimeException("Reseña no encontrada"));
+            
+        resena.setVisible(visible);
+        Reseña guardada = reseñaRepository.save(resena);
+        
+        return reseñaMapper.toReseñaResponse(guardada);
+    }
+
+    public List<ReseñaResponseDTO> obtenerPorPolideportivo(Long idPolideportivo) {
+        List<Reseña> resenas = reseñaRepository.findByPolideportivoId(idPolideportivo);
+        return resenas.stream()
+                .map(reseñaMapper::toReseñaResponse)
+                .collect(Collectors.toList());
+    }
+    
+    public Page<ReseñaResponseDTO> obtenerMisResenasPaginadas(String email, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        
+        Page<Reseña> paginaResenas = reseñaRepository.findByUsuarioEmailPaginado(email, pageable);
+ 
+        return paginaResenas.map(reseñaMapper::toReseñaResponse);
     }
 }

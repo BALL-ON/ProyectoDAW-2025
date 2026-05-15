@@ -3,6 +3,7 @@ package com.ballon.backend.controllers;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ballon.backend.dtos.OcupacionSlotDTO;
+import com.ballon.backend.dtos.PagoRequestDTO;
+import com.ballon.backend.dtos.QrReservaDTO;
 import com.ballon.backend.dtos.ReservaRequestDTO;
 import com.ballon.backend.dtos.ReservaResponseDTO;
 import com.ballon.backend.dtos.TokenQrDTO;
@@ -100,6 +103,65 @@ public class ReservaController {
     public ResponseEntity<String> escanearQr(@RequestBody TokenQrDTO dto) {
         reservaService.realizarCheckIn(dto.token);
         return ResponseEntity.ok("Check-in realizado correctamente. Reserva Disfrutada.");
+    }
+    
+    /**
+     * Endpoint para acceder a todas las reservas de un polideprotivo específico
+     */
+    @GetMapping("/polideportivo/{idPolideportivo}/reservas")
+    public ResponseEntity<List<ReservaResponseDTO>> listarReservasDelCentro(@PathVariable Long idPolideportivo) {
+        List<ReservaResponseDTO> reservas = reservaService.listarReservasPorPolideportivo(idPolideportivo);
+        return ResponseEntity.ok(reservas);
+    }
+    
+    /**
+     * Endpoint para obtener las reservas de forma paginada 
+     * @param idPolideportivo
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/polideportivo/{idPolideportivo}/page")
+    public ResponseEntity<Page<ReservaResponseDTO>> obtenerReservasPaginadas(
+            @PathVariable Long idPolideportivo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        
+        Page<ReservaResponseDTO> reservas = reservaService.obtenerReservasPaginadas(idPolideportivo, page, size);
+        return ResponseEntity.ok(reservas);
+    }
+    
+    /**
+     * Devuelve una reserva concreta (sólo si pertenece al usuario autenticado).
+     * Usado por la pantalla de pago al refrescar.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservaResponseDTO> obtenerPorId(@PathVariable Long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(reservaService.obtenerPorId(id, username));
+    }
+
+    /**
+     * Procesa el pago simulado de una reserva. Sólo el dueño puede pagarla.
+     * Devuelve la reserva actualizada (estadoPago=Pagado) o 400 con el motivo.
+     */
+    @PostMapping("/{id}/pagar")
+    public ResponseEntity<ReservaResponseDTO> pagar(
+            @PathVariable Long id,
+            @Valid @RequestBody PagoRequestDTO dto) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(reservaService.procesarPago(id, dto, username));
+    }
+    
+    /**
+     * Devuelve el código QR de una reserva como imagen base64.
+     * Sólo el dueño puede pedirlo, y la reserva debe estar Confirmada (y Pagada
+     * si la pista lo requiere).
+     */
+    @GetMapping("/{id}/qr")
+    public ResponseEntity<QrReservaDTO> obtenerQr(@PathVariable Long id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(reservaService.obtenerQr(id, username));
     }
     
 }

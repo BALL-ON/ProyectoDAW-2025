@@ -1,0 +1,74 @@
+<div class="escaner-page">
+  <div class="admin-card escaner-container">
+    
+    <div class="escaner-header">
+      <h3>Validación de Accesos</h3>
+      <p>Escanee el código QR del cliente para confirmar la reserva</p>
+    </div>
+
+    @if (camaras.length > 1) {
+      <div class="camera-selector">
+        <label for="cameraSelect">Cambiar cámara:</label>
+        <select id="cameraSelect" (change)="camaraSeleccionada = camaras[$any($event.target).selectedIndex]">
+          @for (camara of camaras; track $index) {
+            <option [value]="camara.deviceId">{{ camara.label || 'Cámara ' + ($index + 1) }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    <div class="scanner-wrapper" [class.scanning]="procesando">
+      <zxing-scanner
+        [device]="camaraSeleccionada"
+        (camerasFound)="alEncontrarCamaras($event)"
+        (scanSuccess)="alEscanearExito($event)"
+        class="scanner-preview">
+      </zxing-scanner>
+      
+      <div class="scanner-overlay">
+        <div class="scanner-laser"></div>
+      </div>
+    </div>
+
+    <div class="results-area">
+      
+      @if (estadoValidacion === 'esperando') {
+        <div class="status-msg waiting">
+          <div class="spinner-small" [style.display]="procesando ? 'block' : 'none'"></div>
+          <span>{{ procesando ? 'Procesando código...' : 'Esperando QR...' }}</span>
+        </div>
+      }
+
+      @if (estadoValidacion === 'valida') {
+        <div class="status-msg success-card animate-in">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="success-details">
+            <h4>¡ACCESO PERMITIDO!</h4>
+            <p class="pista-name">{{ datosReserva?.pista }}</p>
+            <p class="cliente-name">Cliente: {{ datosReserva?.cliente }}</p>
+          </div>
+        </div>
+      }
+
+      @if (estadoValidacion === 'invalida') {
+        <div class="status-msg error-card animate-in">
+          <div class="error-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <div class="error-details">
+            <h4>ACCESO DENEGADO</h4>
+            <p>{{ mensajeError }}</p>
+          </div>
+        </div>
+      }
+      
+    </div>
+
+    <button routerLink="/admin/dashboard" class="btn-back">
+      Volver al Panel
+    </button>
+
+  </div>
+</div>

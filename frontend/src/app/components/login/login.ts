@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class Login {
     // Comprobamos si la URL trae el parametro de expiracion de sesion
     this.route.queryParams.subscribe(params => {
       if (params['expirada']) {
-        this.mensajeError = 'Tu sesión ha caducado. Vuelve a entrar.';
+        this.mensajeError = 'Tu sesión ha caducado o es inválida. Vuelve a entrar.';
       }
     });
   }
@@ -45,21 +46,37 @@ export class Login {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      // Se usa el operador ?? para decirle: "Si es null o undefined, usa '' o false"
       const email = this.loginForm.value.email ?? '';
       const contrasena = this.loginForm.value.contrasena ?? '';
       const remember = this.loginForm.value.remember ?? false;
 
       this.authService.login(email, contrasena, remember).subscribe({
         next: (respuesta) => {
-          //console.log('¡Login correcto! Token recibido:', respuesta.token);
+          sessionStorage.setItem('token', respuesta.token);
+          sessionStorage.setItem('user_rol', respuesta.rol);
+
+          if (respuesta.idPolideportivo) {
+            sessionStorage.setItem('idPolideportivo', respuesta.idPolideportivo.toString());
+          }
           
-          // Redirigimos al usuario a la página principal
-          this.router.navigate(['/']); 
+          this.authService.loggedSignal.set(true); 
+
+          if (respuesta.rol === 'ROLE_Admin_Centro' || respuesta.rol === 'ROLE_Admin_Global') {
+            // Si es admin, redirige a panel de gestion
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            // Si es un cliente redirige a la pantalla de inicio
+            this.router.navigate(['/']);
+          }
         },
         error: (err) => {
-          console.error('Error en el login', err);
-          alert('El usuario o la contraseña no son correctos.');
+          if (err.status === 403 && err.error?.mensaje) {
+            Swal.fire(err.error.mensaje);
+          }  else if (err.status === 401) {
+            Swal.fire('El usuario o la contraseña no son correctos.');
+          } else {
+            Swal.fire('Ocurrió un error inesperado al intentar iniciar sesión.');
+          }
         }
       });
     }

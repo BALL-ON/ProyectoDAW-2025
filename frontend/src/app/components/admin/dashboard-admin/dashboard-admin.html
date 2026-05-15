@@ -1,0 +1,419 @@
+<div class="dashboard-container">
+
+  <!-- VISTA ADMIN_GLOBAL -->
+  @if (rolUsuario === 'ROLE_Admin_Global') {
+    <div class="dashboard-header">
+      <div class="header-content">
+        <h1>Panel de Control Global</h1>
+        <p>Visión general y gestión de la plataforma</p>
+      </div>
+      <div class="header-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+      </div>
+    </div>
+      
+    <div class="card-grid">
+      <!-- Tarjeta 1: Registrar Admin -->
+      <div class="admin-card">
+        <div class="card-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <line x1="19" y1="8" x2="19" y2="14"></line>
+            <line x1="22" y1="11" x2="16" y2="11"></line>
+          </svg>
+          <h3>Nuevo Director de Centro</h3>
+        </div>
+        <p class="card-description">Da de alta a los administradores de los polideportivos.</p>
+        
+        <form class="modern-form" [formGroup]="registroAdminForm" (ngSubmit)="crearAdminCentro()">
+          
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" formControlName="nombre" placeholder="Ej. Pedro">
+            @if (registroAdminForm.get('nombre')?.invalid && registroAdminForm.get('nombre')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">El nombre es obligatorio</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Apellidos</label>
+            <input type="text" formControlName="apellidos" placeholder="Ej. Martínez Silva">
+            @if (registroAdminForm.get('apellidos')?.invalid && registroAdminForm.get('apellidos')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">Los apellidos son obligatorios</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" formControlName="telefono" placeholder="Ej. 600123456">
+            
+            @if (registroAdminForm.get('telefono')?.hasError('pattern') && registroAdminForm.get('telefono')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">El teléfono debe tener 9 dígitos</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Email corporativo</label>
+            <input type="email" formControlName="email" placeholder="tu@correo.com">
+            @if (registroAdminForm.get('email')?.invalid && registroAdminForm.get('email')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">Introduce un email válido</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" formControlName="contrasena" placeholder="••••••••">
+            @if (registroAdminForm.get('contrasena')?.hasError('required') && registroAdminForm.get('contrasena')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">La contraseña es obligatoria</span>
+            }
+            @else if (registroAdminForm.get('contrasena')?.hasError('minlength') && registroAdminForm.get('contrasena')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">Mínimo 6 caracteres</span>
+            }
+            @else if (registroAdminForm.get('contrasena')?.hasError('pattern') && registroAdminForm.get('contrasena')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">Debe incluir al menos una mayúscula y un carácter especial (ej. @, #, *)</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Polideportivo Asignado</label>
+            <select formControlName="idPolideportivo" style="padding: 12px 16px; background-color: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #f8fafc; border-radius: 8px; font-size: 1rem; width: 100%;">
+              <option value="" disabled selected>Selecciona un centro deportivo...</option>
+              @for (poli of polideportivos; track poli.idPolideportivo) {
+                <option [value]="poli.idPolideportivo">{{ poli.nombre }} ({{ poli.poblacion }})</option>
+              }
+            </select>
+            @if (registroAdminForm.get('idPolideportivo')?.invalid && registroAdminForm.get('idPolideportivo')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: 5px;">Debes asignar un centro</span>
+            }
+          </div>
+
+          <button type="submit" class="btn-primary">
+            Crear Administrador
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Tarjeta 2: Crear Polideportivos -->
+      <div class="admin-card">
+        
+      <div class="card-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path><path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path><path d="M10 9h4"></path><path d="M10 13h4"></path></svg>
+        <h3>Registrar Nuevo Polideportivo</h3>
+      </div>
+      <p class="card-description">Añade un nuevo centro deportivo al sistema.</p>
+
+      <form [formGroup]="registroPolideportivoForm" (ngSubmit)="crearPolideportivo()" class="modern-form">
+        
+        <div class="form-group">
+          <label>Nombre del Centro</label>
+          <input type="text" formControlName="nombre" placeholder="Ej: Polideportivo Municipal La Paz">
+        </div>
+
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" formControlName="direccion" placeholder="Ej: Av. de los Deportes, s/n">
+        </div>
+
+        <div class="form-group">
+          <label>Población</label>
+          <input type="text" formControlName="poblacion" placeholder="Ej: Madrid">
+        </div>
+
+        <div class="form-group">
+          <label>Método de Pago Preferido</label>
+          <select formControlName="metodoPagoPreferido" style="padding: 12px 16px; background-color: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #f8fafc; border-radius: 8px;">
+            <option value="Presencial">Presencial</option>
+            <option value="Online">Online</option>
+            <option value="Gratis">Gratis</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Crear Polideportivo
+        </button>
+      </form>
+    </div>
+
+      <!-- Tarjeta 3: Crear Tipo de Pista -->
+      <div class="admin-card">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <h3>Nuevo Tipo de Pista</h3>
+        </div>
+        <p class="card-description">Define un nuevo tipo de deporte o categoría de pista disponible en el sistema.</p>
+
+        <form [formGroup]="registroTipoPistaForm" (ngSubmit)="crearTipoPista()" class="modern-form">
+
+          <div class="form-group">
+            <label>Nombre del Tipo</label>
+            <input type="text" formControlName="nombreTipo" placeholder="Ej: Pádel, Fútbol 7, Baloncesto...">
+            @if (registroTipoPistaForm.get('nombreTipo')?.hasError('required') && registroTipoPistaForm.get('nombreTipo')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">El nombre del tipo es obligatorio</span>
+            }
+            @else if (registroTipoPistaForm.get('nombreTipo')?.hasError('minlength') && registroTipoPistaForm.get('nombreTipo')?.touched) {
+              <span style="color: #ef4444; font-size: 0.8rem; margin-top: -10px;">Mínimo 3 caracteres</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Descripción <span style="color: #475569; font-weight: 400; text-transform: none;">(opcional)</span></label>
+            <input type="text" formControlName="descripcion" placeholder="Ej: Pista de pádel cubierta con césped artificial">
+          </div>
+
+          <button type="submit" class="btn-primary">
+            Crear Tipo de Pista
+          </button>
+
+        </form>
+      </div>
+
+    </div>
+
+    <div class="admin-card" style="margin-top: 30px;">
+
+      <div class="card-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <h3>Gestión de Directores de Centro</h3>
+      </div>
+      <p class="card-description">Listado de todos los administradores y su estado de acceso.</p>
+      
+      <!-- busqueda paginada -->
+      <form [formGroup]="filtrosDirectores" (ngSubmit)="buscarConFiltros()" class="search-bar" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" formControlName="nombre" placeholder="Buscar por nombre..." style="flex: 1; padding: 8px; border-radius: 8px; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid #334155;">
+        <input type="text" formControlName="email" placeholder="Buscar por email..." style="flex: 1; padding: 8px; border-radius: 8px; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid #334155;">
+        <button type="submit" class="btn-primary-outline" style="padding: 10px 20px;">Buscar</button>
+        <button type="button" class="btn-primary-outline" (click)="limpiarFiltros()" style="padding: 8px 10px;">Limpiar</button>
+      </form>
+
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Nombre Completo</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Centro Asociado</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (director of directores; track director.idUsuario) {
+              <tr>
+                <td><strong>{{ director.nombre }} {{ director.apellidos }}</strong></td>
+                <td>{{ director.email }}</td>
+                <td>{{ director.telefono || '—' }}</td>
+                <td>{{ director.nombrePolideportivo || '—' }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="director.suspendido ? 'suspended' : 'active'">
+                    {{ director.suspendido ? 'Suspendido' : 'Activo' }}
+                  </span>
+                </td>
+                <td>
+                  @if (!director.suspendido) {
+                    <button class="btn-table-action btn-suspend" (click)="cambiarEstadoDirector(director.idUsuario, director.suspendido)">Suspender</button>
+                  } @else {
+                    <button class="btn-table-action btn-reactivate" (click)="cambiarEstadoDirector(director.idUsuario, director.suspendido)">Reactivar</button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6">
+                  @if (cargando) {
+                    <div class="empty-state"><p>Cargando directores...</p></div>
+                  } @else {
+                    <div class="empty-state"><p>No hay directores registrados.</p></div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (totalElementos > 0) {
+        <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; color: #94a3b8; font-size: 0.9rem;">
+          
+          <span>Mostrando página {{ paginaActual + 1 }} de {{ totalPaginas }} (Total: {{ totalElementos }} directores)</span>
+          
+          <div style="display: flex; gap: 10px;">
+            <button 
+              type="button" 
+              class="btn-primary-outline" 
+              [disabled]="paginaActual === 0 || cargando" 
+              (click)="cambiarPagina(-1)" 
+              style="padding: 5px 15px; font-size: 0.9rem; border-color: #334155;" 
+              [style.opacity]="(paginaActual === 0 || cargando) ? '0.5' : '1'">
+              Anterior
+            </button>
+            <button 
+              type="button" 
+              class="btn-primary-outline" 
+              [disabled]="paginaActual >= totalPaginas - 1 || cargando" 
+              (click)="cambiarPagina(1)" 
+              style="padding: 5px 15px; font-size: 0.9rem; border-color: #334155;" 
+              [style.opacity]="(paginaActual >= totalPaginas - 1 || cargando) ? '0.5' : '1'">
+              Siguiente
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="admin-card" style="margin-top: 30px;">
+    <div class="card-header">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path><path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path></svg>
+      <h3>Centros Polideportivos</h3>
+    </div>
+    <p class="card-description">Listado de todas las instalaciones disponibles.</p>
+    
+    <form [formGroup]="filtrosPoli" (ngSubmit)="buscarPoliConFiltros()" class="search-bar" style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <input type="text" formControlName="nombre" placeholder="Buscar por nombre..." style="flex: 1; padding: 8px; border-radius: 8px; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid #334155;">
+      <input type="text" formControlName="poblacion" placeholder="Buscar por población..." style="flex: 1; padding: 8px; border-radius: 8px; background: rgba(15, 23, 42, 0.8); color: white; border: 1px solid #334155;">
+      <button type="submit" class="btn-primary-outline" style="padding: 10px 20px;">Buscar</button>
+      <button type="button" class="btn-primary-outline" (click)="limpiarFiltrosPoli()" style="padding: 8px 10px;">Limpiar</button>
+    </form>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Población</th>
+            <th>Pago Preferido</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (poli of polideportivos; track $index) {
+            <tr>
+              <td><strong>{{ poli.nombre }}</strong></td>
+              <td>{{ poli.direccion }}</td>
+              <td>{{ poli.poblacion }}</td>
+              <td>
+                <span class="status-badge active">{{ poli.metodoPagoPreferido }}</span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">
+                @if (cargandoPoli) {
+                  <div class="empty-state"><p>Cargando polideportivos...</p></div>
+                } @else {
+                  <div class="empty-state"><p>No hay polideportivos registrados.</p></div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalElementosPoli > 0) {
+      <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; color: #94a3b8; font-size: 0.9rem;">
+        
+        <span>Mostrando página {{ paginaActualPoli + 1 }} de {{ totalPaginasPoli }} (Total: {{ totalElementosPoli }} centros)</span>
+        
+        <div style="display: flex; gap: 10px;">
+          <button 
+            type="button" 
+            class="btn-primary-outline" 
+            [disabled]="paginaActualPoli === 0 || cargandoPoli" 
+            (click)="cambiarPaginaPoli(-1)" 
+            style="padding: 5px 15px; font-size: 0.9rem; border-color: #334155;" 
+            [style.opacity]="(paginaActualPoli === 0 || cargandoPoli) ? '0.5' : '1'">
+            Anterior
+          </button>
+          <button 
+            type="button" 
+            class="btn-primary-outline" 
+            [disabled]="paginaActualPoli >= totalPaginasPoli - 1 || cargandoPoli" 
+            (click)="cambiarPaginaPoli(1)" 
+            style="padding: 5px 15px; font-size: 0.9rem; border-color: #334155;" 
+            [style.opacity]="(paginaActualPoli >= totalPaginasPoli - 1 || cargandoPoli) ? '0.5' : '1'">
+            Siguiente
+          </button>
+        </div>
+      </div>
+    }
+    </div>
+
+
+  <!-- VISTA ADMIN_CENTRO -->
+  } @else if (rolUsuario === 'ROLE_Admin_Centro') {
+    <div class="dashboard-header">
+      <div class="header-content">
+        <h1>Panel de Gestión de Centro Deportivo</h1>
+        <p>Resumen de actividad diaria y gestión de pistas</p>
+      </div>
+      <div class="header-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 21h18"></path>
+          <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
+          <path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- resumen -->
+    @if (vistaCentroActiva === 'resumen') {
+      
+      <div class="actions-bar" style="margin-bottom: 24px;">
+
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'ver-reservas'">
+          Ver Todas las Reservas
+        </button>
+
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'gestion-pistas'">
+          Gestionar Pistas
+        </button>
+
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'gestion-resenas'">
+          Ver y Gestionar Reseñas
+        </button>
+      </div>
+
+    } 
+
+    @if (vistaCentroActiva === 'ver-reservas') {
+      <div style="margin-bottom: 20px;">
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
+          ← Volver al Resumen
+        </button>
+      </div>
+
+      <app-lista-reservas></app-lista-reservas>
+    }
+
+    @if (vistaCentroActiva === 'gestion-pistas') {
+      <div style="margin-bottom: 20px;">
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
+          ← Volver al Resumen
+        </button>
+      </div>
+
+      <app-gestion-pistas></app-gestion-pistas>
+    }
+
+    @if (vistaCentroActiva === 'gestion-resenas') {
+      <div style="margin-bottom: 20px;">
+        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
+          ← Volver al Resumen
+        </button>
+      </div>
+
+      <app-gestion-resenas></app-gestion-resenas>
+    }
+  }
+</div>

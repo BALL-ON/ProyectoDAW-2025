@@ -11,7 +11,6 @@
   <!-- Filtros -->
   <div class="poli-filters">
     <div class="filter-input">
-      <span class="filter-icon">🔎</span>
       <input
         type="text"
         placeholder="Buscar por nombre…"
@@ -19,7 +18,6 @@
       />
     </div>
     <div class="filter-input">
-      <span class="filter-icon">📍</span>
       <input
         type="text"
         placeholder="Filtrar por población…"
@@ -53,13 +51,12 @@
       (click)="abrirPolideportivo(p)"
       (keyup.enter)="abrirPolideportivo(p)"
     >
-      <div class="poli-card-icon">🏟️</div>
 
       <h2 class="poli-card-name">{{ p.nombre }}</h2>
 
       <div class="poli-card-info">
-        <p><span class="info-label">📍</span> {{ p.direccion }}</p>
-        <p><span class="info-label">🏘️</span> {{ p.poblacion }}</p>
+        <p>{{ p.direccion }}</p>
+        <p>{{ p.poblacion }}</p>
       </div>
 
       <div class="poli-card-footer">

@@ -62,14 +62,24 @@
           <!-- Pie de la tarjeta (Botones) -->
           <div class="reserva-actions">
             @if (pestanaActiva() === 'proximas' && reserva.estadoReserva === 'Confirmada') {
-              
-              <!-- Comprobamos si cumple las 24h usando nuestra nueva función -->
+
+              <!-- Pago pendiente: priorizar pagar antes que ver QR -->
+              @if (reserva.requierePago && reserva.estadoPago === 'Pendiente') {
+                <button class="btn-pagar-ahora" (click)="irAPagar(reserva.idReserva)" style="margin-right: 10px;">
+                  Pagar Ahora
+                </button>
+              } @else {
+                <button class="btn-qr" (click)="verQr(reserva)" [disabled]="cargandoQr()" style="margin-right: 10px;">
+                  {{ cargandoQr() ? 'Cargando...' : 'Ver QR' }}
+                </button>
+              }
+
+              <!-- Cancelar (como ya estaba) -->
               @if (puedeCancelar(reserva.fechaReserva, reserva.horaInicio)) {
                 <button class="btn-cancelar" (click)="cancelarReserva(reserva.idReserva)">
                   Cancelar Reserva
                 </button>
               } @else {
-                <!-- Si faltan menos de 24h -->
                 <span class="info-label" style="color: #ff4757; opacity: 0.8;">
                   Ya no se puede cancelar
                 </span>
@@ -78,10 +88,8 @@
             }
 
             @if (pestanaActiva() === 'pasadas') {
-              
               <div style="width: 100%; display: flex; justify-content: center; align-items: center;">
                 @if (reserva.estadoReserva === 'Disfrutada') {
-                  
                   @if (!reserva.tieneResena) {
                     <button class="btn-valorar" (click)="dejarResena(reserva.idReserva)">
                       Valorar Pista
@@ -91,7 +99,6 @@
                       ✓ Ya valorada
                     </span>
                   }
-                  
                 } @else if (reserva.estadoReserva === 'No_Asistido') {
                   <span class="info-label" style="color: #ffa502; opacity: 0.8;">
                     No se permite valoración
@@ -102,7 +109,6 @@
                   </span>
                 }
               </div>
-
             }
           </div>
           
@@ -157,6 +163,46 @@
             </button>
           </div>
 
+        </div>
+      </div>
+    }
+
+    <!-- POPUP DEL QR -->
+    @if (qrAbierto() !== null) {
+      <div class="modal-overlay" (click)="cerrarModalQr()">
+        <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+          <h2 style="text-align: center; color: white; margin: 0 0 8px;">Tu código QR</h2>
+          <p style="color: #ccc; text-align: center; margin: 0 0 20px; font-size: 14px;">
+            Muéstralo al llegar al polideportivo
+          </p>
+
+          <div class="qr-info">
+            <strong style="color: white; font-size: 18px;">
+              {{ qrAbierto()!.reserva.nombrePista }}
+            </strong>
+            <span style="color: var(--blue); font-size: 13px; margin-top: 4px;">
+              {{ qrAbierto()!.reserva.nombrePolideportivo }}
+            </span>
+            <span style="color: #ccc; margin-top: 8px; font-size: 14px;">
+              {{ qrAbierto()!.reserva.fechaReserva }}
+              ·
+              {{ qrAbierto()!.reserva.horaInicio | slice:0:5 }}
+              -
+              {{ qrAbierto()!.reserva.horaFin | slice:0:5 }}
+            </span>
+          </div>
+
+          <div class="qr-wrapper">
+            <img [src]="qrAbierto()!.imagenBase64" alt="Código QR de la reserva" class="qr-img" />
+          </div>
+
+          <button
+            class="btn-cancelar"
+            style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #ccc; width: 100%; margin-top: 12px;"
+            (click)="cerrarModalQr()"
+          >
+            Cerrar
+          </button>
         </div>
       </div>
     }

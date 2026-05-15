@@ -40,6 +40,21 @@ export interface ReservaResponse {
   estadoPago: EstadoPago;
   tokenQr?: string;
   tieneResena: boolean;
+  requierePago: boolean;
+}
+
+// ─── Existente: añade el campo requierePago a ReservaResponse ──────────────
+// Si tu interfaz se llama distinto, ajusta. Sólo añade el campo:
+//   requierePago: boolean;
+
+// ─── NUEVO ─────────────────────────────────────────────────────────────────
+
+export interface PagoRequest {
+  titular: string;
+  numeroTarjeta: string;
+  mesExp: number;
+  anioExp: number;
+  cvv: string;
 }
 
 /**
@@ -69,4 +84,9 @@ export interface ResenaRequest {
   idReserva: number;
   puntuacion: number;
   comentario: string;
+}
+
+export interface QrReserva {
+  imagenBase64: string;
+  tokenQr: string;
 }
