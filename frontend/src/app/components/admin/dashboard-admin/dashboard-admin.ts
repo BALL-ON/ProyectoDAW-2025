@@ -3,7 +3,6 @@ import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminGlobalService } from '../../../services/admin-global-service';
 import { TipoPistaService } from '../../../services/tipo-pista-service';
-import { crearReserva } from '../../admin-centro/crear-reserva/crear-reserva';
 import { ListaReservas } from '../../admin-centro/lista-reservas/lista-reservas';
 import { GestionPistas } from '../../admin-centro/gestion-pistas/gestion-pistas';
 import { GestionResenas } from '../../admin-centro/gestion-resenas/gestion-resenas';
@@ -11,7 +10,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard-admin',
-  imports: [ReactiveFormsModule, NgClass, crearReserva, ListaReservas, GestionPistas, GestionResenas],
+  imports: [ReactiveFormsModule, NgClass, ListaReservas, GestionPistas, GestionResenas],
   templateUrl: './dashboard-admin.html',
   styleUrl: './dashboard-admin.css',
 })

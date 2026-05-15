@@ -28,7 +28,7 @@ export class Login {
     // Comprobamos si la URL trae el parametro de expiracion de sesion
     this.route.queryParams.subscribe(params => {
       if (params['expirada']) {
-        this.mensajeError = 'Tu sesión ha caducado. Vuelve a entrar.';
+        this.mensajeError = 'Tu sesión ha caducado o es inválida. Vuelve a entrar.';
       }
     });
   }

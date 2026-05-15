@@ -370,9 +370,6 @@
     @if (vistaCentroActiva === 'resumen') {
       
       <div class="actions-bar" style="margin-bottom: 24px;">
-        <button class="btn-primary" (click)="vistaCentroActiva = 'crear-reserva'">
-          Nueva Reserva
-        </button>
 
         <button class="btn-primary-outline" (click)="vistaCentroActiva = 'ver-reservas'">
           Ver Todas las Reservas
@@ -387,20 +384,7 @@
         </button>
       </div>
 
-    }
-
-    <!-- formulario reactivo de crear reserva -->
-    @if (vistaCentroActiva === 'crear-reserva') {
-      
-      <!-- Botón para volver atrás -->
-      <div style="margin-bottom: 20px;">
-        <button class="btn-primary-outline" (click)="vistaCentroActiva = 'resumen'">
-          ← Volver al Resumen
-        </button>
-      </div>
-
-      <app-crear-reserva (reservaCompletada)="vistaCentroActiva = 'resumen'"> </app-crear-reserva>
-    }
+    } 
 
     @if (vistaCentroActiva === 'ver-reservas') {
       <div style="margin-bottom: 20px;">
