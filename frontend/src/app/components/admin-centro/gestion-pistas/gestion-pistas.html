@@ -179,6 +179,51 @@
       </div>
     </div>
 
+    <!-- Sección de Horarios Semanales -->
+    <div class="form-group">
+      <label>Horario de Apertura Semanal</label>
+      <p class="campo-ayuda">
+        Activa los días en que la pista estará disponible y establece el rango de horas.
+      </p>
+
+      <div class="horarios-grid">
+        @for (dia of diasHorario; track dia.diaSemana) {
+          <div class="horario-row" [class.inactivo]="!dia.activo">
+
+            <!-- Día + toggle -->
+            <label class="dia-label">
+              <input
+                type="checkbox"
+                [checked]="dia.activo"
+                (change)="toggleDia(dia)"
+                class="checkbox-input">
+              <span class="dia-nombre">{{ dia.diaSemana }}</span>
+            </label>
+
+            <!-- Inputs de hora (solo si el día está activo) -->
+            @if (dia.activo) {
+              <div class="horas-rango">
+                <input
+                  type="time"
+                  class="form-input time-input"
+                  [value]="dia.horaInicio.substring(0, 5)"
+                  (change)="actualizarHora(dia, 'horaInicio', $event)">
+                <span class="separador-hora">→</span>
+                <input
+                  type="time"
+                  class="form-input time-input"
+                  [value]="dia.horaFin.substring(0, 5)"
+                  (change)="actualizarHora(dia, 'horaFin', $event)">
+              </div>
+            } @else {
+              <span class="cerrado-label">Cerrado</span>
+            }
+
+          </div>
+        }
+      </div>
+    </div>
+
     <div class="form-actions">
       <button 
         type="submit" 

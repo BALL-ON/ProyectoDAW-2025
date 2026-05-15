@@ -4,6 +4,7 @@ import { PistaService } from '../../../services/PistaService';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TipoPistaService } from '../../../services/tipo-pista-service';
 import { PistaRequest } from '../../../model/pista.model';
+import { AdminCentroService, DiaHorario, HORARIO_DEFAULT } from '../../../services/admin-centro-service';
 
 @Component({
   selector: 'app-gestion-pistas',
@@ -27,6 +28,9 @@ export class GestionPistas implements OnInit {
   // Tipos de pista disponibles
   tiposPista: any[] = [];
 
+  // Horarios semanales para la nueva pista (L-V 08-22, S 09-20, D cerrado por defecto)
+  diasHorario: DiaHorario[] = HORARIO_DEFAULT.map(d => ({ ...d }));
+
   //variable para saber si el precio de la reserva es 0 o no, para dejar checkeable el checkbox de "requiere pago previo" o no
   visibleRequierePagoPrevio: boolean = false;
 
@@ -34,6 +38,7 @@ export class GestionPistas implements OnInit {
     private pistaService: PistaService,
     private fb: FormBuilder,
     private tipoPistaService: TipoPistaService,
+    private adminCentroService: AdminCentroService,
   ) {
     this.formularioPista = this.fb.group({
       nombrePista: ['', [Validators.required, Validators.minLength(3)]],
@@ -55,6 +60,26 @@ export class GestionPistas implements OnInit {
       this.cambiarVisibilidadRequierePagoPrevio();
     });
   }
+
+  // ── Helpers de horario ────────────────────────────────────────
+
+  /** Activa o desactiva un día del horario semanal. */
+  toggleDia(dia: DiaHorario): void {
+    dia.activo = !dia.activo;
+  }
+
+  /**
+   * Actualiza la hora de un día concreto.
+   * El input[type=time] devuelve "HH:mm"; el backend espera "HH:mm:ss".
+   */
+  actualizarHora(dia: DiaHorario, campo: 'horaInicio' | 'horaFin', event: Event): void {
+    const valor = (event.target as HTMLInputElement).value;
+    if (valor) {
+      dia[campo] = `${valor}:00`;
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
 
   cargarPistas() {
     const idStr = sessionStorage.getItem('idPolideportivo');
@@ -147,10 +172,33 @@ export class GestionPistas implements OnInit {
 
     this.pistaService.crear(nuevaPista).subscribe({
       next: (pistaCreada) => {
-        this.cargandoCrear = false;
-        this.mensajeExitoCrear = `La pista "${pistaCreada.nombrePista}" ha sido creada exitosamente.`;
-        this.resetearFormulario();
-        this.cargarPistas();
+        // Crear los horarios para los días activos en paralelo
+        const diasActivos = this.diasHorario.filter(d => d.activo);
+
+        if (diasActivos.length === 0) {
+          // Sin horarios configurados: informar y terminar
+          this.cargandoCrear = false;
+          this.mensajeExitoCrear = `La pista "${pistaCreada.nombrePista}" ha sido creada sin horarios asignados.`;
+          this.resetearFormulario();
+          this.cargarPistas();
+          return;
+        }
+
+        this.adminCentroService.crearHorariosParaPista(pistaCreada.idPista, this.diasHorario).subscribe({
+          next: () => {
+            this.cargandoCrear = false;
+            this.mensajeExitoCrear = `La pista "${pistaCreada.nombrePista}" ha sido creada con ${diasActivos.length} día(s) de horario.`;
+            this.resetearFormulario();
+            this.cargarPistas();
+          },
+          error: () => {
+            // La pista existe pero los horarios fallaron: informar parcialmente
+            this.cargandoCrear = false;
+            this.mensajeExitoCrear = `La pista "${pistaCreada.nombrePista}" fue creada, pero los horarios no se guardaron. Configúralos manualmente.`;
+            this.resetearFormulario();
+            this.cargarPistas();
+          },
+        });
       },
       error: (err) => {
         this.cargandoCrear = false;
@@ -175,6 +223,8 @@ export class GestionPistas implements OnInit {
       requierePagoPrevio: false,
       activa: true,
     });
+    // Restaurar también los horarios al estado por defecto
+    this.diasHorario = HORARIO_DEFAULT.map(d => ({ ...d }));
   }
 
   getErrorMessage(campoName: string): string {

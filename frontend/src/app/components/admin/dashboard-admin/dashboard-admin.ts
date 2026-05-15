@@ -158,23 +158,58 @@ export class DashboardAdmin {
   // Método para activar / desactivar admin centro
   cambiarEstadoDirector(idUsuario: number, estaSuspendido: boolean) {
     const accion = estaSuspendido ? 'reactivar' : 'suspender';
-    const suspender = !estaSuspendido; 
-    
-    if (confirm(`¿Estás seguro de que deseas ${accion} a este director?`)) {
-      
+    const suspender = !estaSuspendido;
+
+    Swal.fire({
+      title: estaSuspendido ? '¿Reactivar director?' : '¿Suspender director?',
+      text: `Esta acción ${estaSuspendido ? 'restaurará' : 'bloqueará'} el acceso de este director al sistema.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: estaSuspendido ? 'Sí, reactivar' : 'Sí, suspender',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: estaSuspendido ? '#10b981' : '#ef4444',
+      cancelButtonColor: '#6b7280',
+      background: '#111114',
+      color: '#f0f0f5',
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
       this.adminGlobalService.cambiarEstadoDirector(idUsuario, suspender).subscribe({
-        next: (directorActualizado) => {
-          console.log(`Estado del director cambiado con éxito:`, directorActualizado);
-          
-          this.cargarDirectores(); 
+        next: () => {
+          // ── Actualización optimista: el array local cambia al instante ──
+          const director = this.directores.find(d => d.idUsuario === idUsuario);
+          if (director) {
+            director.suspendido = suspender;
+          }
+          this.cdRef.markForCheck();
+
+          Swal.fire({
+            icon: 'success',
+            title: estaSuspendido ? 'Director reactivado' : 'Director suspendido',
+            text: `El acceso ha sido ${estaSuspendido ? 'restaurado' : 'bloqueado'} correctamente.`,
+            background: '#111114',
+            color: '#f0f0f5',
+            confirmButtonColor: '#1a9fff',
+            timer: 2500,
+            showConfirmButton: false,
+          });
+
+          // Recarga para sincronizar con el estado real del servidor
+          this.cargarDirectores();
         },
         error: (err) => {
           console.error(`Error al intentar ${accion} al director`, err);
-          Swal.fire(`Hubo un problema al intentar ${accion} al director. Revisa la consola.`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `No se pudo ${accion} al director. Inténtalo de nuevo.`,
+            background: '#111114',
+            color: '#f0f0f5',
+            confirmButtonColor: '#1a9fff',
+          });
         }
       });
-      
-    }
+    });
   }
 
   // Método para crear un polideportivo
