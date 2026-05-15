@@ -27,10 +27,13 @@ export class GestionPistas implements OnInit {
   // Tipos de pista disponibles
   tiposPista: any[] = [];
 
+  //variable para saber si el precio de la reserva es 0 o no, para dejar checkeable el checkbox de "requiere pago previo" o no
+  visibleRequierePagoPrevio: boolean = false;
+
   constructor(
     private pistaService: PistaService,
     private fb: FormBuilder,
-    private tipoPistaService: TipoPistaService
+    private tipoPistaService: TipoPistaService,
   ) {
     this.formularioPista = this.fb.group({
       nombrePista: ['', [Validators.required, Validators.minLength(3)]],
@@ -46,6 +49,11 @@ export class GestionPistas implements OnInit {
   ngOnInit(): void {
     this.cargarPistas();
     this.cargarTiposPista();
+    this.cambiarVisibilidadRequierePagoPrevio();
+
+    this.formularioPista.get('precioHora')?.valueChanges.subscribe(precio => {
+      this.cambiarVisibilidadRequierePagoPrevio();
+    });
   }
 
   cargarPistas() {
@@ -108,7 +116,7 @@ export class GestionPistas implements OnInit {
     setTimeout(() => {
       this.mensajeExito = '';
       this.mensajeError = '';
-    }, 10000);
+    }, 4000);
   }
 
   crearPista() {
@@ -134,7 +142,7 @@ export class GestionPistas implements OnInit {
       precioHora: this.formularioPista.value.precioHora,
       tiempoMinCancelacionHoras: this.formularioPista.value.tiempoMinCancelacionHoras,
       requierePagoPrevio: this.formularioPista.value.requierePagoPrevio,
-      activa: this.formularioPista.value.activa
+      activa: this.formularioPista.value.activa,
     };
 
     this.pistaService.crear(nuevaPista).subscribe({
@@ -154,7 +162,7 @@ export class GestionPistas implements OnInit {
     setTimeout(() => {
       this.mensajeExitoCrear = '';
       this.mensajeErrorCrear = '';
-    }, 10000);
+    }, 4000);
   }
 
   resetearFormulario() {
@@ -186,5 +194,17 @@ export class GestionPistas implements OnInit {
     }
 
     return 'Campo inválido.';
+  }
+
+  cambiarVisibilidadRequierePagoPrevio() {
+    const precioHora = this.formularioPista.get('precioHora')?.value;
+    this.visibleRequierePagoPrevio = precioHora > 0;
+
+    if (!this.visibleRequierePagoPrevio) {
+      this.formularioPista.get('requierePagoPrevio')?.setValue(false);
+      this.formularioPista.get('requierePagoPrevio')?.disable();
+    } else {
+      this.formularioPista.get('requierePagoPrevio')?.enable();
+    }
   }
 }
