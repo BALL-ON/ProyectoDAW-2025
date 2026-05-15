@@ -108,7 +108,7 @@ export class GestionPistas implements OnInit {
     setTimeout(() => {
       this.mensajeExito = '';
       this.mensajeError = '';
-    }, 10000);
+    }, 4000);
   }
 
   crearPista() {
@@ -154,7 +154,7 @@ export class GestionPistas implements OnInit {
     setTimeout(() => {
       this.mensajeExitoCrear = '';
       this.mensajeErrorCrear = '';
-    }, 10000);
+    }, 4000);
   }
 
   resetearFormulario() {
