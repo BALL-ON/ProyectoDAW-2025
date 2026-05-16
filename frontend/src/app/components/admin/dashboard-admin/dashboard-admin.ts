@@ -93,14 +93,20 @@ export class DashboardAdmin {
       next: (respuesta) => {
         this.paginaActual = pagina;
         
-        this.directores = respuesta.content ? [...respuesta.content] : [];
-        
+        // El backend almacena la suspensión en bloqueadoHasta (bloqueado_hasta).
+        // El DTO puede no incluir 'suspendido' como booleano explícito,
+        // así que lo derivamos aquí para que el template funcione siempre.
+        const raw: any[] = respuesta.content ? respuesta.content : [];
+        this.directores = raw.map((d: any) => ({
+          ...d,
+          suspendido: d.bloqueadoHasta !== null && d.bloqueadoHasta !== undefined,
+        }));
+
         this.totalPaginas = respuesta.totalPages || 0;
         this.totalElementos = respuesta.totalElements || 0;
-        
-        this.cargando = false; 
-        
-        this.cdRef.markForCheck(); 
+
+        this.cargando = false;
+        this.cdRef.markForCheck();
       },
       error: (err) => {
         console.error('Error al cargar la página', pagina, err);
