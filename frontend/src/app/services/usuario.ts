@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth';
 import { ResenaResponseDTO, UsuarioResponseDTO } from '../components/perfil/perfil';
+import { environment } from '../../environments/environment.prod';
 
 export interface UsuarioUpdateDTO {
   nombre: string;
@@ -17,8 +18,8 @@ export class Usuario{
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   
-  private apiUrlUsuarios = 'http://localhost:9999/api/usuarios';
-  private apiUrlResenas = 'http://localhost:9999/api/resenas';
+  private apiUrlUsuarios = `${environment.apiUrl}/api/usuarios`;
+  private apiUrlResenas = `${environment.apiUrl}/api/resenas`;
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({

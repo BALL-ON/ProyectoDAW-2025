@@ -2,12 +2,13 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PistaRequest, PistaResponse } from '../model/pista.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PistaService {
-  private readonly apiUrl = 'http://localhost:9999/api/pistas';
+  private readonly apiUrl = `${environment.apiUrl}/api/pistas`;
 
   constructor(private http: HttpClient) {}
 

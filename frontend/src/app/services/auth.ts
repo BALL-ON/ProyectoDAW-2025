@@ -2,6 +2,7 @@ import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 export interface AuthResponse {
   token: string;
@@ -17,7 +18,7 @@ export class AuthService {
   private platformId = inject(PLATFORM_ID);  
   
   // URL principal del backend
-  private apiUrl = 'http://localhost:9999/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   // Las llaves para guardar en el navegador
   private readonly TOKEN_KEY = 'auth_token';

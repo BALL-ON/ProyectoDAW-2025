@@ -5,13 +5,14 @@ import {
   PolideportivoRequest,
   PolideportivoResponse,
 } from '../model/polideportivo.model';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PolideportivoService {
   
-  private readonly apiUrl = 'http://localhost:9999/api/polideportivos';
+  private readonly apiUrl = `${environment.apiUrl}/api/polideportivos`;
 
   constructor(private http: HttpClient) {}
 

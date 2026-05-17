@@ -10,13 +10,14 @@ import {
   QrReserva
 } from '../model/reserva.model';
 import { AuthService } from './auth';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReservaService {
   
-  private readonly apiUrl = 'http://localhost:9999/api/reservas';
+  private readonly apiUrl = `${environment.apiUrl}/api/reservas`;
 
   constructor(private http: HttpClient) {}
   private authService = inject(AuthService);
@@ -65,7 +66,7 @@ export class ReservaService {
   }
 
   crearResena(dto: ResenaRequest): Observable<any> {
-    return this.http.post<any>('http://localhost:9999/api/resenas', dto, { headers: this.getHeaders() });
+    return this.http.post<any>(`${environment.apiUrl}/api/resenas`, dto, { headers: this.getHeaders() });
   }
 
   obtenerReservasPorPolideportivo(idPolideportivo: number): Observable<any[]> {

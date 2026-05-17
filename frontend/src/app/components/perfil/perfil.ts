@@ -5,6 +5,7 @@ import { Usuario, UsuarioUpdateDTO } from '../../services/usuario';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ValidationErrors, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment';
 
 export interface UsuarioResponseDTO {
   idUsuario: number;
@@ -120,7 +121,7 @@ export class Perfil implements OnInit {
   cargarFotoPerfil() {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
 
-    this.http.get('http://localhost:9999/api/usuarios/mi-foto', { headers, responseType: 'blob' })
+    this.http.get(`${environment.apiUrl}/api/usuarios/mi-foto`, { headers, responseType: 'blob' })
       .subscribe({
         next: (imagenBlob: Blob) => {
           console.log('2. ¡Foto descargada con éxito!', imagenBlob); // 🔥 CHIVATO 2
@@ -142,7 +143,7 @@ export class Perfil implements OnInit {
 
       const headers = new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
 
-      this.http.put('http://localhost:9999/api/usuarios/mi-foto', formData, { headers })
+      this.http.put(`${environment.apiUrl}/api/usuarios/mi-foto`, formData, { headers })
         .subscribe({
           next: () => {
 

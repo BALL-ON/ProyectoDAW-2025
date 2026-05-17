@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TipoPista } from '../model/tipo.pista.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TipoPistaService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:9999/api/tipos-pista';
+  private readonly apiUrl = `${environment.apiUrl}/api/tipos-pista`;
 
   /* GET /api/tipos-pista — listado para filtros y selectores */
   listarTodos(): Observable<TipoPista[]> {

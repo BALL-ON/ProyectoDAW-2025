@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MensajeDTO } from '../interfaces/mensaje-dto';
+import { environment } from '../../environments/environment';
 
 /**
  * Servicio para el formulario de contacto y la gestión de mensajes recibidos.
@@ -17,9 +18,8 @@ import { MensajeDTO } from '../interfaces/mensaje-dto';
 @Injectable({ providedIn: 'root' })
 export class MensajeContacto {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:9999/api/contacto';
+  private readonly apiUrl = `${environment.apiUrl}/api/contacto`;
   private authService = inject(AuthService);
-
   /**
    * POST /api/contacto — Público.
    * Envía un mensaje desde el formulario de contacto.

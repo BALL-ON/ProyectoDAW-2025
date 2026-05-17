@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class AdminGlobalService {
 
   private http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost:9999/api/admin'; 
+  private apiUrl = `${environment.apiUrl}/api/admin`;
 
   registrarDirector(datosAdmin: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/director`, datosAdmin);
@@ -29,7 +30,7 @@ export class AdminGlobalService {
   }
 
   crearPolideportivo(datosPolideportivo: any): Observable<any> {
-    return this.http.post<any>('http://localhost:9999/api/polideportivos', datosPolideportivo);
+    return this.http.post<any>(`${environment.apiUrl}/api/polideportivos`, datosPolideportivo);
   }
 
   obtenerPolideportivos(pagina: number, tamano: number, nombre?: string, poblacion?: string): Observable<any> {
@@ -40,7 +41,7 @@ export class AdminGlobalService {
     if (nombre) params = params.set('nombre', nombre);
     if (poblacion) params = params.set('poblacion', poblacion);
 
-    return this.http.get<any>(`http://localhost:9999/api/polideportivos/paginados`, { params });
+    return this.http.get<any>(`${environment.apiUrl}/api/polideportivos/paginados`, { params });
   }
 
 }
