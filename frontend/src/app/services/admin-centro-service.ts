@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { DiaSemana } from '../model/horario.model';
+import { environment } from '../../environments/environment';
 
 /** DTO que espera el backend para crear un horario */
 export interface HorarioRequest {
