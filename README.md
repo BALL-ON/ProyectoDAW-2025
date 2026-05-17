@@ -1,8 +1,8 @@
-# Nombre de Vuestro Proyecto
+# BALL-ON
 
 ## Tecnologías
 * **Backend:** Java (Spring Boot)
-* **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
+* **Frontend:** HTML5, CSS3, Typescript (ANGULAR)
 * **Base de datos:** MySQL
 
 ## Instalación y Puesta en Marcha
