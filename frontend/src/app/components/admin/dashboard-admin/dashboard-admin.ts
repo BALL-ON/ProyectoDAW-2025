@@ -93,14 +93,20 @@ export class DashboardAdmin {
       next: (respuesta) => {
         this.paginaActual = pagina;
         
-        this.directores = respuesta.content ? [...respuesta.content] : [];
-        
+        // El backend almacena la suspensión en bloqueadoHasta (bloqueado_hasta).
+        // El DTO puede no incluir 'suspendido' como booleano explícito,
+        // así que lo derivamos aquí para que el template funcione siempre.
+        const raw: any[] = respuesta.content ? respuesta.content : [];
+        this.directores = raw.map((d: any) => ({
+          ...d,
+          suspendido: d.bloqueadoHasta !== null && d.bloqueadoHasta !== undefined,
+        }));
+
         this.totalPaginas = respuesta.totalPages || 0;
         this.totalElementos = respuesta.totalElements || 0;
-        
-        this.cargando = false; 
-        
-        this.cdRef.markForCheck(); 
+
+        this.cargando = false;
+        this.cdRef.markForCheck();
       },
       error: (err) => {
         console.error('Error al cargar la página', pagina, err);
@@ -138,6 +144,7 @@ export class DashboardAdmin {
           Swal.fire('Director de centro creado correctamente.');
           this.registroAdminForm.reset();
           this.registroAdminForm.get('idPolideportivo')?.setValue('');
+          this.cargarDirectores();
         },
         error: (err) => {
           console.error('Error del servidor:', err);
@@ -150,28 +157,65 @@ export class DashboardAdmin {
     } else {
       this.registroAdminForm.markAllAsTouched(); 
     }
+
+    
   }
 
   // Método para activar / desactivar admin centro
   cambiarEstadoDirector(idUsuario: number, estaSuspendido: boolean) {
     const accion = estaSuspendido ? 'reactivar' : 'suspender';
-    const suspender = !estaSuspendido; 
-    
-    if (confirm(`¿Estás seguro de que deseas ${accion} a este director?`)) {
-      
+    const suspender = !estaSuspendido;
+
+    Swal.fire({
+      title: estaSuspendido ? '¿Reactivar director?' : '¿Suspender director?',
+      text: `Esta acción ${estaSuspendido ? 'restaurará' : 'bloqueará'} el acceso de este director al sistema.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: estaSuspendido ? 'Sí, reactivar' : 'Sí, suspender',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: estaSuspendido ? '#10b981' : '#ef4444',
+      cancelButtonColor: '#6b7280',
+      background: '#111114',
+      color: '#f0f0f5',
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+
       this.adminGlobalService.cambiarEstadoDirector(idUsuario, suspender).subscribe({
-        next: (directorActualizado) => {
-          console.log(`Estado del director cambiado con éxito:`, directorActualizado);
-          
-          this.cargarDirectores(); 
+        next: () => {
+          // ── Actualización optimista: el array local cambia al instante ──
+          const director = this.directores.find(d => d.idUsuario === idUsuario);
+          if (director) {
+            director.suspendido = suspender;
+          }
+          this.cdRef.markForCheck();
+
+          Swal.fire({
+            icon: 'success',
+            title: estaSuspendido ? 'Director reactivado' : 'Director suspendido',
+            text: `El acceso ha sido ${estaSuspendido ? 'restaurado' : 'bloqueado'} correctamente.`,
+            background: '#111114',
+            color: '#f0f0f5',
+            confirmButtonColor: '#1a9fff',
+            timer: 2500,
+            showConfirmButton: false,
+          });
+
+          // Recarga para sincronizar con el estado real del servidor
+          this.cargarDirectores();
         },
         error: (err) => {
           console.error(`Error al intentar ${accion} al director`, err);
-          Swal.fire(`Hubo un problema al intentar ${accion} al director. Revisa la consola.`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `No se pudo ${accion} al director. Inténtalo de nuevo.`,
+            background: '#111114',
+            color: '#f0f0f5',
+            confirmButtonColor: '#1a9fff',
+          });
         }
       });
-      
-    }
+    });
   }
 
   // Método para crear un polideportivo
@@ -182,6 +226,7 @@ export class DashboardAdmin {
         next: (respuesta) => {
           Swal.fire('¡Polideportivo creado con éxito!');
           this.registroPolideportivoForm.reset({ metodoPagoPreferido: 'Presencial' }); 
+          this.cargarPolideportivos();
         },
         error: (err) => {
           console.error('Error al crear el polideportivo:', err);
