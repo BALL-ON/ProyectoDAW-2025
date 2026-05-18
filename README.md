@@ -12,6 +12,7 @@ git clone https://github.com/BALL-ON/ProyectoDAW-2025.git (Si tienes un archivo 
 
 ### 2. Base de Datos
 Crea una base de datos en MySQL llamada `bd_ballon`.
+Si quieres puedes importar la base de datos llamada "bd_ballon_final.sql" a `bd_ballon`, la cual ya tiene cosas creadas por el equipo.
 Crear un usuario llamado `usuario` con contraseña `usuario` con `ALL PRIVILEGES`.
 
 ### 3. Backend
