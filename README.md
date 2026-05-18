@@ -16,11 +16,17 @@ Crear un usuario llamado `usuario` con contraseña `usuario` con `ALL PRIVILEGES
 
 ### 3. Backend
 1.  Abre SpringToolSuite.
+
 2.  Entra en la carpeta `ProyectoDAW-2025`.
+
 3.  Puedes utilizar directamente el usuario creado anteriormente en la base de datos o editar el `application.properties` con tu usuario/pass de MySQL (este debe tener `ALL PRIVILEGES`).
-4.  Si al abrir el proyecto no aparece la carpeta `backend` se le debe dar a [click derecho en Package Explorer > Import... > Existing Projects into Workspace > Next > Browse... > backend]
-5.  Haz click derecho en la carpeta  `backend > Run as > Spring Boot App`.
-6.  Si da un error de ejecución y por consola aparece lo siguiente: 
+
+4.  Si al abrir el proyecto no aparece la carpeta `backend` se le debe dar a [click derecho en Package Explorer → Import... → Existing Projects into Workspace → Next → Browse... → backend]
+
+5.  Debemos comprobar que tenemos instalado el jdk-17, ya que el proyecto está desarrollado en el mismo, y sería óptimo que el Spring Boot también lo tenga. Para comprobarlo debemos ir a [`Window → Preferences... → Java → Installed JREs`], y ahí seleccionar `jdk-17`, y en el caso de que no lo tenga instalado, podrá encontrar este en la base del proyecto, deberá ir a a[`Add... → Standard VM → Next → Directory...`], y entonces deberá seleccionar la carpeta jdk-17 de la base del proyecto.
+
+6.  Haz click derecho en la carpeta  [`backend → Run as → Spring Boot App`].
+7.  Si da un error de ejecución y por consola aparece lo siguiente al final:
 
 `***************************
 APPLICATION FAILED TO START
@@ -34,15 +40,21 @@ Action:
 
 Consider defining a bean of type 'com.ballon.backend.mapper.UsuarioMapper' in your configuration.`
 
+7.  No te preocupes, este error suele darse cuando el SpringToolSuite instalado en el ordenador es demasiado moderno, sigue los siguientes pasos:
 
-7.  En el caso de que dé un error, no te alarmes, es normal, significa que las variables de entorno no se han configurado. Se debe hacer lo de los pasos 6., 7. y 8.; si no te ha dado el error y se ha ejecutado correctamente no es necesario seguir estos pasos.
-6.  Ahora debe ir a `Run > Run Configurations... > Spring Boot App > backend-BackendApplication > Enviroment`. 
-7.  Una vez allí pulsar en `Add...` y añadir las siguientes variables:
+    7.1. [`Clic derecho en el proyecto → Run As → Maven build... → en "Goals" escribe lo siguiente: 'clean install -DskipTests' → Run`]
+    
+    7.2. Forzar actualización del proyecto: [`Clic derecho en el proyecto → Maven → Update Project → marca "Force Update of Snapshots/Releases" → OK`]
+
+
+8.  En el caso de que dé un error, no te alarmes, es normal, significa que las variables de entorno no se han configurado. Se debe hacer lo de los pasos 6., 7. y 8.; si no te ha dado el error y se ha ejecutado correctamente no es necesario seguir estos pasos.
+9.  Ahora debe ir a `Run → Run Configurations... → Spring Boot App → backend-BackendApplication → Enviroment`. 
+10.  Una vez allí pulsar en `Add...` y añadir las siguientes variables:
                     
                                             MAIL_PASSWORD valor: ogicejcpwyicbiyn
                                             MAIL_USERNAME valor: ballontfg2026@gmail.com
 
-8.  Una vez creadas las variables se debe pulsar en `Apply > Close ` y volver a hacer el recorrido de `backend > Run as > Spring Boot App`. El servidor iniciará correctamente.
+8.  Una vez creadas las variables se debe pulsar en `Apply → Close ` y volver a hacer el recorrido de `backend → Run as → Spring Boot App`. El servidor iniciará correctamente.
 
 ### 4. Frontend
 1. Abre Visual Studio Code.
