@@ -21,7 +21,7 @@ Crear un usuario llamado `usuario` con contraseña `usuario` con `ALL PRIVILEGES
 
 3.  Si al abrir el proyecto no aparece la carpeta [`backend`] se le debe dar a [`click derecho en Package Explorer → Import... → Existing Projects into Workspace → Next → Browse... → backend`]
 
-4.  Debemos comprobar que tenemos instalado el jdk-17, ya que el proyecto está desarrollado en el mismo, y sería óptimo que el Spring Boot también lo tenga. Para comprobarlo debemos ir a [`Window → Preferences... → Java → Installed JREs`], y ahí seleccionar `jdk-17`, y en el caso de que no lo tenga instalado, podrá encontrar este en la base del proyecto, deberá ir a a[`Add... → Standard VM → Next → Directory...`], y entonces deberá seleccionar la carpeta jdk-17 de la base del proyecto.
+4.  Debemos comprobar que tenemos instalado el jdk-17, ya que el proyecto está desarrollado en el mismo, y sería óptimo que el Spring Boot también lo tenga. Para comprobarlo debemos ir a [`Window → Preferences... → Java → Installed JREs`], y ahí seleccionar `jdk-17`, y en el caso de que no lo tenga instalado, podrá descargarlo desde el siguiente enlace: (https://drive.google.com/file/d/1alk02BUQ1V6Cl5CaMyGJs2CXLaHhIZka/view?usp=sharing) (tenía subidp el que utilizo yo en mi entorno a drive, con instalar jdk-17 de cualquier sitio valdría, pero ya que lo tenía subido lo comparto), deberá ir a a[`Add... → Standard VM → Next → Directory...`], y entonces deberá seleccionar la carpeta jdk-17 de la base del proyecto.
 
 5. Debemos comprobar si las variables de entorno están configuradas correctamente. Para ello sigue los siguientes pasos:
 
