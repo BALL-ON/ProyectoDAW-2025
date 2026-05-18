@@ -10,7 +10,7 @@ import {
   QrReserva
 } from '../model/reserva.model';
 import { AuthService } from './auth';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
