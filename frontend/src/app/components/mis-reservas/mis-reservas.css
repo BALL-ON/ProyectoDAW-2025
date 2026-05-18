@@ -205,7 +205,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Para que quede por encima de todo */
+  z-index: 99999; /* Por encima de header, footer y cualquier elemento fijo */
 }
 
 .modal-content {
@@ -334,4 +334,101 @@
 @keyframes modalIn {
   from { opacity: 0; transform: translateY(20px) scale(0.95); }
   to { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* ════ RESPONSIVE ══════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .page-container {
+    margin-top: 70px;
+    padding: 0 16px;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Pestañas más compactas y con wrap por si hay muchas */
+  .tabs-container {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .tab-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  /* Cabecera de tarjeta: badge puede romper a línea nueva si el título es largo */
+  .reserva-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .reserva-title {
+    font-size: 1.2rem;
+  }
+
+  .reserva-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    margin-top: 60px;
+    padding: 0 12px;
+  }
+
+  .page-title {
+    font-size: 1.7rem;
+  }
+
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .reserva-card {
+    padding: 16px;
+  }
+
+  .reserva-body {
+    gap: 14px;
+  }
+
+  .info-value {
+    font-size: 1rem;
+  }
+
+  /* Botones de acción al 100% de ancho en móvil pequeño */
+  .reserva-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .btn-cancelar,
+  .btn-valorar,
+  .btn-qr,
+  .btn-pagar-ahora {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Modal de reseña más compacto */
+  .modal-content {
+    padding: 20px 16px;
+  }
+
+  .estrella {
+    font-size: 2.3rem;
+    gap: 10px;
+  }
+
+  .estrellas-container {
+    gap: 8px;
+  }
 }

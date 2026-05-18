@@ -1,12 +1,5 @@
-/* ════════════════════════════════════════════════════════════════════════
-   Ball·On — Footer
-   El cambio principal está en .footer-inner: pasa de max-width 1200px
-   a full-width con padding fluido (var(--page-pad)).
-   ════════════════════════════════════════════════════════════════════════ */
-
 .app-footer {
   position: relative;
-  z-index: 1;
   background: var(--black-2, #0d0d1a);
   border-top: 1px solid var(--border);
   margin-top: auto;
