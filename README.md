@@ -12,21 +12,62 @@ git clone [(https://github.com/BALL-ON/ProyectoDAW-2025.git)]
 
 ### 2. Base de Datos
 Crea una base de datos en MySQL llamada `bd_ballon`.
+Crear un usuario llamado `usuario` con contraseña `usuario` con `ALL PRIVILEGES`.
 
 ### 3. Backend
-1.  Entra en la carpeta `/backend`.
-2.  Abre el proyecto en IntelliJ/Eclipse.
-3.  Edita `application.properties` con tu usuario/pass de MySQL.
-4.  Haz click derecho en la carpeta  `backend > Run as > Spring Boot App`. Dará un error, pero no te alarmes, es normal, esta primera ejecución sirve para que se inicialice la preconfiguración necesaria. 
-5.  Ahora debe ir a `Run > Run Configurations... > Spring Boot App > backend-BackendApplication > Enviroment`. 
-6.  Una vez allí pulsar en `Add...` y añadir las siguientes variables:
-                    
-                    MAIL_PASSWORD valor: ogicejcpwyicbiyn
-                    MAIL_USERNAME valor: ballontfg2026@gmail.com
+1.  Abre SpringToolSuite.
+2.  Entra en la carpeta `ProyectoDAW-2025`.
+3.  Puedes utilizar directamente el usuario creado anteriormente en la base de datos o editar el `application.properties` con tu usuario/pass de MySQL (este debe tener `ALL PRIVILEGES`).
+4.  Si al abrir el proyecto no aparece la carpeta `backend` se le debe dar a [click derecho en Package Explorer > Import... > Existing Projects into Workspace > Next > Browse... > backend]
+5.  Haz click derecho en la carpeta  `backend > Run as > Spring Boot App`.
+6.  Si da un error de ejecución y por consola aparece lo siguiente: 
 
-7.  Una vez creadas las variables se debe pulsar en `Apply > Close ` y volver a hacer el recorrido de `backend > Run as > Spring Boot App`. El servidor iniciará correctamente.
+`***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 3 of constructor in com.ballon.backend.services.UsuarioService required a bean of type 'com.ballon.backend.mapper.UsuarioMapper' that could not be found.
+
+Action:
+
+Consider defining a bean of type 'com.ballon.backend.mapper.UsuarioMapper' in your configuration.`
+
+
+7.  En el caso de que dé un error, no te alarmes, es normal, significa que las variables de entorno no se han configurado. Se debe hacer lo de los pasos 6., 7. y 8.; si no te ha dado el error y se ha ejecutado correctamente no es necesario seguir estos pasos.
+6.  Ahora debe ir a `Run > Run Configurations... > Spring Boot App > backend-BackendApplication > Enviroment`. 
+7.  Una vez allí pulsar en `Add...` y añadir las siguientes variables:
+                    
+                                            MAIL_PASSWORD valor: ogicejcpwyicbiyn
+                                            MAIL_USERNAME valor: ballontfg2026@gmail.com
+
+8.  Una vez creadas las variables se debe pulsar en `Apply > Close ` y volver a hacer el recorrido de `backend > Run as > Spring Boot App`. El servidor iniciará correctamente.
 
 ### 4. Frontend
-1.  Entra en la carpeta `/frontend`.
-2.  Ejecuta el comando `npm install`
-3.  Ejecuta el comando `ng serve`
+1. Abre Visual Studio Code.
+2.  Se debe tener instalado previamente node.js, si no está instalado, lo puedes descargar desde el siguiente enlace: https://nodejs.org/es/download (docker y npm).
+3.  Navega a la carpeta `/frontend` desde VSC.
+4.  Ejecuta el comando `npm install`, si te da el siguiente error ejecuta el paso 5.; sino, puedes saltártelo: 
+
+
+    npm : No se puede cargar el archivo C:\Program Files\nodejs\npm.ps1 porque la ejecución de scripts está deshabilitada en este sistema. Para obtener más información, consulta el tema 
+
+    about_Execution_Policies en https:/go.microsoft.com/fwlink/?LinkID=135170.
+
+    En línea: 1 Carácter: 1
+
+    + npm install
+
+    + ~~~
+
+        + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+
+        + FullyQualifiedErrorId : UnauthorizedAccess
+
+    
+5. Abre el PowerShell como Administrador y ejecuta el siguiente comando:
+
+                                Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+6.  Ejecuta el comando `ng serve`
