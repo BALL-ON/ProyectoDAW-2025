@@ -8,7 +8,7 @@
 ## Instalación y Puesta en Marcha
 
 ### 1. Clonar el repositorio
-git clone [(https://github.com/BALL-ON/ProyectoDAW-2025.git)]
+git clone https://github.com/BALL-ON/ProyectoDAW-2025.git (Si tienes un archivo .zip con el proyecto, este paso no es necesario)
 
 ### 2. Base de Datos
 Crea una base de datos en MySQL llamada `bd_ballon`.
@@ -19,39 +19,37 @@ Crear un usuario llamado `usuario` con contraseña `usuario` con `ALL PRIVILEGES
 
 2.  Entra en la carpeta [`ProyectoDAW-2025`].
 
-3.  Puedes utilizar directamente el usuario creado anteriormente en la base de datos o editar el `application.properties` con tu usuario/pass de MySQL (este debe tener `ALL PRIVILEGES`).
+3.  Si al abrir el proyecto no aparece la carpeta [`backend`] se le debe dar a [`click derecho en Package Explorer → Import... → Existing Projects into Workspace → Next → Browse... → backend`]
 
-4.  Si al abrir el proyecto no aparece la carpeta [`backend`] se le debe dar a [`click derecho en Package Explorer → Import... → Existing Projects into Workspace → Next → Browse... → backend`]
+4.  Debemos comprobar que tenemos instalado el jdk-17, ya que el proyecto está desarrollado en el mismo, y sería óptimo que el Spring Boot también lo tenga. Para comprobarlo debemos ir a [`Window → Preferences... → Java → Installed JREs`], y ahí seleccionar `jdk-17`, y en el caso de que no lo tenga instalado, podrá encontrar este en la base del proyecto, deberá ir a a[`Add... → Standard VM → Next → Directory...`], y entonces deberá seleccionar la carpeta jdk-17 de la base del proyecto.
 
-5.  Debemos comprobar que tenemos instalado el jdk-17, ya que el proyecto está desarrollado en el mismo, y sería óptimo que el Spring Boot también lo tenga. Para comprobarlo debemos ir a [`Window → Preferences... → Java → Installed JREs`], y ahí seleccionar `jdk-17`, y en el caso de que no lo tenga instalado, podrá encontrar este en la base del proyecto, deberá ir a a[`Add... → Standard VM → Next → Directory...`], y entonces deberá seleccionar la carpeta jdk-17 de la base del proyecto.
+5. Debemos comprobar si las variables de entorno están configuradas correctamente. Para ello sigue los siguientes pasos:
 
-6. Debemos comprobar si las variables de entorno están configuradas correctamente. Para ello sigue los siguientes pasos:
+        5.1 Debemos ir a [`Run → Run Configurations... → Spring Boot App → backend-BackendApplication → Enviroment`]. 
 
-        6.1 Debemos ir a [`Run → Run Configurations... → Spring Boot App → backend-BackendApplication → Enviroment`]. 
-
-        6.2 Una vez allí debemos ver si están creadas las siguientes variables: pulsar en `Add...` y añadir las siguientes variables:
+        5.2 Una vez allí debemos ver si están creadas las siguientes variables: pulsar en `Add...` y añadir las siguientes variables:
 
                                             MAIL_PASSWORD valor: ogicejcpwyicbiyn
                                             MAIL_USERNAME valor: ballontfg2026@gmail.com
 
-        6.3 Si no están creadas pulsa en `Add...` y añádelas.
+        5.3 Si no están creadas pulsa en `Add...` y añádelas.
 
-        6.4 Una vez creadas haz [`Apply → Close `]
+        5.4 Una vez creadas haz [`Apply → Close `]
 
-6.  Haz click derecho en la carpeta  [`backend → Run as → Spring Boot App`].
+6.  Haz [`click derecho en la carpeta → backend → Run as → Spring Boot App`].
 7.  Si da un error de ejecución y por consola aparece lo siguiente al final sigue los pasos 7.1, 7.2 y 7.3:
 
-`***************************
-APPLICATION FAILED TO START
-***************************
+                        `***************************
+                        APPLICATION FAILED TO START
+                        ***************************
 
-Description:
+                        Description:
 
-Parameter 3 of constructor in com.ballon.backend.services.UsuarioService required a bean of type 'com.ballon.backend.mapper.UsuarioMapper' that could not be found.
+                        Parameter 3 of constructor in com.ballon.backend.services.UsuarioService required a bean of type 'com.ballon.backend.mapper.UsuarioMapper' that could not be found.
 
-Action:
+                        Action:
 
-Consider defining a bean of type 'com.ballon.backend.mapper.UsuarioMapper' in your configuration.`
+                        Consider defining a bean of type 'com.ballon.backend.mapper.UsuarioMapper' in your configuration.`
 
     7.1 [`Clic derecho en el proyecto → Run As → Maven build... → en "Goals" escribe lo siguiente: 'clean install -DskipTests' → Run`]
     
