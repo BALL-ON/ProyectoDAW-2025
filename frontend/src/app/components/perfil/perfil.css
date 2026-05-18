@@ -574,3 +574,55 @@
     gap: 8px;
   }
 }
+/* ════ RESPONSIVE (añadido) ════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .page-container {
+    padding-top: 72px;
+  }
+
+  .page-title {
+    font-size: 26px;
+  }
+
+  /* Paginación apilada igual que en lista-reservas */
+  .pagination-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .btn-page {
+    width: 100%;
+  }
+
+  .page-info {
+    font-size: 0.9rem;
+  }
+
+  /* Formulario de contraseña al 100% en móvil */
+  .minimal-password-form {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .page-container {
+    padding-top: 68px;
+  }
+
+  .glass-card {
+    padding: 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-stats {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+}

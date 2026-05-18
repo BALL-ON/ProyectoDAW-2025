@@ -385,3 +385,95 @@
   border-color: #10b981;
   box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
 }
+/* ════ RESPONSIVE ══════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 24px 16px;
+  }
+
+  /* Header apilado en móvil */
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-icon {
+    display: none; /* El icono decorativo no aporta en móvil */
+  }
+
+  /* Grids a 1 columna */
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Tarjetas con menos padding */
+  .admin-card,
+  .stat-card {
+    padding: 20px;
+  }
+
+  /* Previene zoom en inputs en iOS */
+  .form-group input {
+    font-size: 16px;
+  }
+
+  /* Tabla más compacta */
+  .modern-table th,
+  .modern-table td {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+
+  /* Botones de tabla más pequeños */
+  .btn-table-action {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 16px 12px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-number {
+    font-size: 2.2rem;
+  }
+
+  .admin-card,
+  .stat-card {
+    padding: 16px;
+  }
+
+  /* Las tarjetas de acceso rápido en columna */
+  .dash-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .card-info h3 {
+    font-size: 1rem;
+  }
+}

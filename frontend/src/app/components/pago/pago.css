@@ -249,3 +249,37 @@ select.input { appearance: none; cursor: pointer; }
   margin: 4px 0 0;
   letter-spacing: 0.5px;
 }
+/* ════ RESPONSIVE ══════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .pago-page {
+    padding: 24px 16px 40px;
+  }
+
+  .form-card {
+    padding: 24px 18px;
+  }
+
+  .resumen-card {
+    padding: 20px 16px;
+  }
+
+  /* Mes / Año / CVV apilados en lugar de 3 columnas aplastadas */
+  .row-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-card {
+    padding: 20px 14px;
+  }
+
+  .btn-pagar {
+    font-size: 16px;
+    padding: 14px;
+  }
+}

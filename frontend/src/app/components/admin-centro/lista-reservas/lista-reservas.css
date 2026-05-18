@@ -149,3 +149,44 @@
   cursor: not-allowed;
   opacity: 0.6;
 }
+/* ════ RESPONSIVE ══════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .admin-card {
+    padding: 16px;
+  }
+
+  .modern-table th,
+  .modern-table td {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+  }
+
+  /* La paginación se apila en lugar de aplastarse en 1 fila */
+  .pagination-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .btn-page {
+    width: 100%;
+  }
+
+  .page-info {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-card {
+    padding: 12px;
+  }
+
+  .modern-table th,
+  .modern-table td {
+    padding: 10px 6px;
+    font-size: 0.8rem;
+  }
+}
